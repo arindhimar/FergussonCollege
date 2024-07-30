@@ -1,0 +1,194 @@
+.container {
+    width: 100%;
+    border-top: 1px dotted black;
+    border-bottom: 1px dotted black;
+    padding: 1px 0;
+    background-color: #f0f0f0;
+    /* Light gray background */
+}
+
+.container h3 {
+    text-align: center;
+    color: #032B44;
+    /* Dark blue text color */
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th,
+td {
+    border: 1px solid #ddd;
+    /* Light gray border */
+    padding: 8px;
+    text-align: left;
+}
+
+th {
+    background-color: #4682B4;
+    /* Light blue background for headers */
+    color: #ffffff;
+    /* White text color for headers */
+}
+
+tr:nth-child(even) {
+    background-color: #f2f2f2;
+    /* Light gray background for even rows */
+}
+
+tfoot {
+    background-color: #032B44;
+    /* Dark blue background for footer */
+    color: #ffffff;
+    /* White text color for footer */
+}
+
+/* Unordered Lists (ul) */
+ul {
+    list-style-type: disc;
+    padding: 20px;
+    margin: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+}
+
+.container {
+    max-width: 600px;
+    margin: 40px auto;
+    padding: 20px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h2 {
+    margin-top: 0;
+}
+
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="password"],
+select,
+textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+}
+
+input[type="radio"],
+input[type="checkbox"] {
+    margin: 0 10px 0 0;
+}
+
+select {
+    padding: 10px;
+    width: 100%;
+}
+
+textarea {
+    height: 100px;
+    padding: 10px;
+    width: 100%;
+}
+
+input[type="submit"],
+input[type="reset"] {
+    background-color: #4CAF50;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+input[type="submit"]:hover,
+input[type="reset"]:hover {
+    background-color: #3e8e41;
+}
+
+.error {
+    color: red  ;
+    font-size: 12px;
+    margin-bottom: 10px;
+}
+
+ul.circle {
+    list-style-type: circle;
+}
+
+ul.square {
+    list-style-type: square;
+}
+
+
+/* Ordered Lists (ol) */
+ol {
+
+    padding: 20px;
+    margin: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+ol.lowercase {
+    list-style-type: lower-alpha;
+}
+
+ol.uppercase {
+    list-style-type: upper-alpha;
+}
+
+ol.roman {
+    list-style-type: lower-roman;
+}
+
+/* Description Lists (dl) */
+dl {
+    padding: 20px;
+    margin: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+dl dt {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+dl dd {
+    margin-left: 20px;
+    margin-bottom: 20px;
+}
+
+dl.no-bullets {
+    list-style-type: none;
+    padding: 0;
+}
+
+dl.no-bullets dt {
+    margin-bottom: 0;
+}
+
+dl.no-bullets dd {
+    margin-left: 20px;
+    margin-bottom: 20px;
+}

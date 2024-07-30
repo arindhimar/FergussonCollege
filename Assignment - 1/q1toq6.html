@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Assignment - 1</title>
+    <meta charset="UTF-8">
+    <style>
+        .container {
+            width: 100%;
+            border-top: 1px dotted black;
+            border-bottom: 1px dotted black;
+            padding: 1px 0;
+            background-color: #f0f0f0;
+            /* Light gray background */
+        }
+
+        .container h3 {
+            text-align: center;
+            color: #032B44;
+            /* Dark blue text color */
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            /* Light gray border */
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #4682B4;
+            /* Light blue background for headers */
+            color: #ffffff;
+            /* White text color for headers */
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+            /* Light gray background for even rows */
+        }
+
+        tfoot {
+            background-color: #032B44;
+            /* Dark blue background for footer */
+            color: #ffffff;
+            /* White text color for footer */
+        }
+
+        /* Unordered Lists (ul) */
+        ul {
+            list-style-type: disc;
+            padding: 20px;
+            margin: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            margin-top: 0;
+        }
+
+        
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="password"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+        }
+
+        input[type="radio"],
+        input[type="checkbox"] {
+            margin: 0 10px 0 0;
+        }
+
+        select {
+            padding: 10px;
+            width: 100%;
+        }
+
+        textarea {
+            height: 100px;
+            padding: 10px;
+            width: 100%;
+        }
+
+        input[type="submit"],
+        input[type="reset"] {
+            background-color: #4CAF50;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover,
+        input[type="reset"]:hover {
+            background-color: #3e8e41;
+        }
+
+        .error {
+            color: red  ;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+
+        ul.circle {
+            list-style-type: circle;
+        }
+
+        ul.square {
+            list-style-type: square;
+        }
+
+
+        /* Ordered Lists (ol) */
+        ol {
+
+            padding: 20px;
+            margin: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        ol.lowercase {
+            list-style-type: lower-alpha;
+        }
+
+        ol.uppercase {
+            list-style-type: upper-alpha;
+        }
+
+        ol.roman {
+            list-style-type: lower-roman;
+        }
+
+        /* Description Lists (dl) */
+        dl {
+            padding: 20px;
+            margin: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        dl dt {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        dl dd {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        dl.no-bullets {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        dl.no-bullets dt {
+            margin-bottom: 0;
+        }
+
+        dl.no-bullets dd {
+            margin-left: 20px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h3>Question 1</h3>
+    </div>
+
+    <!-- Table to display student information -->
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Subject</th>
+                <th>Marks</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr>
+                <td rowspan="2">Arin</td>
+                <td>Operating System</td>
+                <td>75</td>
+            </tr>
+            <tr>
+                <td>Advanced Web</td>
+                <td>65</td>
+            </tr>
+
+            <tr>
+                <td rowspan="2">Ashish</td>
+                <td>Operating System</td>
+                <td>80</td>
+            </tr>
+            <tr>
+                <td>Advanced Web</td>
+                <td>75</td>
+            </tr>
+
+            <tr>
+                <td rowspan="2">Bansi</td>
+                <td>Operating System</td>
+                <td>70</td>
+            </tr>
+            <tr>
+                <td>Advanced Web</td>
+                <td>60</td>
+            </tr>
+
+            <tr>
+                <td rowspan="2">Darshan</td>
+                <td>Operating System</td>
+                <td>85</td>
+            </tr>
+            <tr>
+                <td>Advanced Web</td>
+                <td>80</td>
+            </tr>
+
+            <tr>
+                <td rowspan="2">Vasu</td>
+                <td>Operating System</td>
+                <td>90</td>
+            </tr>
+            <tr>
+                <td>Advanced Web</td>
+                <td>85</td>
+            </tr>
+
+            <tr>
+                <td rowspan="2">Pratigna</td>
+                <td>Operating System</td>
+                <td>95</td>
+            </tr>
+            <tr>
+                <td>Advanced Web</td>
+                <td>90</td>
+            </tr>
+        </tbody>
+
+        <tfoot>
+            <tr>
+                <td></td>
+                <td colspan="2">Average: 79.5</td>
+            </tr>
+        </tfoot>
+    </table>
+    <div class="container">
+        <h3>Question 2</h3>
+    </div>
+    <!-- Table to display text formatting tags -->
+    <table>
+        <thead>
+            <tr>
+                <th>Tag</th>
+                <th>Description</th>
+                <th>Example</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr>
+                <td>&lt;b&gt;</td>
+                <td>Defines bold text</td>
+                <td><b>Bold text</b></td>
+            </tr>
+
+            <tr>
+                <td>&lt;i&gt;</td>
+                <td>Defines italic text</td>
+                <td><i>Italic text</i></td>
+            </tr>
+
+            <tr>
+                <td>&lt;u&gt;</td>
+                <td>Defines underlined text</td>
+                <td><u>Underlined text</u></td>
+            </tr>
+            <tr>
+                <td>&lt;strike&gt;</td>
+                <td>Defines strikethrough text</td>
+                <td><strike>Strikethrough text</strike></td>
+            </tr>
+
+            <tr>
+                <td>&lt;sub&gt;</td>
+                <td>Defines subscript text</td>
+                <td>H<sub>2</sub>O</td>
+            </tr>
+
+            <tr>
+                <td>&lt;sup&gt;</td>
+                <td>Defines superscript text</td>
+                <td>X<sup>2</sup></td>
+            </tr>
+
+            <tr>
+                <td>&lt;big&gt;</td>
+                <td>Defines big text</td>
+                <td><big>Big text</big></td>
+            </tr>
+
+            <tr>
+                <td>&lt;small&gt;</td>
+                <td>Defines small text</td>
+                <td><small>Small text</small></td>
+            </tr>
+
+            <tr>
+                <td>&lt;font&gt;</td>
+                <td>Defines font, color, and size of text</td>
+                <td>
+                    <font face="Arial" color="red" size="5">Font example</font>
+                </td>
+            </tr>
+
+            <tr>
+                <td>&lt;mark&gt;</td>
+                <td>Defines marked or highlighted text</td>
+                <td><mark>Marked text</mark></td>
+            </tr>
+
+            <tr>
+                <td>&lt;del&gt;</td>
+                <td>Defines deleted text</td>
+                <td><del>Deleted text</del></td>
+            </tr>
+
+            <tr>
+                <td>&lt;ins&gt;</td>
+                <td>Defines inserted text</td>
+                <td><ins>Inserted text</ins></td>
+            </tr>
+        </tbody>
+    </table>
+    <div class="container">
+        <h3>Question 3</h3>
+    </div>
+
+    <!-- Unordered Lists (ul) -->
+    <h2>Unordered Lists (ul)</h2>
+    <ul>
+        <li>Item 1</li>
+        <li>Item 2</li>
+        <li>Item 3</li>
+    </ul>
+
+    <ul style="list-style-type: circle;">
+        <li>Item 1</li>
+        <li>Item 2</li>
+        <li>Item 3</li>
+    </ul>
+
+    <ul style="list-style-type: square;">
+        <li>Item 1</li>
+        <li>Item 2</li>
+        <li>Item 3</li>
+    </ul>
+
+
+
+    <!-- Ordered Lists (ol) -->
+    <h2>Ordered Lists (ol)</h2>
+    <ol>
+        <li>Item 1</li>
+        <li>Item 2</li>
+        <li>Item 3</li>
+    </ol>
+
+    <ol type="a">
+        <li>Item 1</li>
+        <li>Item 2</li>
+        <li>Item 3</li>
+    </ol>
+
+    <ol type="A">
+        <li>Item 1</li>
+        <li>Item 2</li>
+        <li>Item 3</li>
+    </ol>
+
+    <ol type="i">
+        <li>Item 1</li>
+        <li>Item 2</li>
+        <li>Item 3</li>
+    </ol>
+
+    <!-- Description Lists (dl) -->
+    <h2>Description Lists (dl)</h2>
+    <dl>
+        <dt>Term 1</dt>
+        <dd>Description of Term 1</dd>
+        <dt>Term 2</dt>
+        <dd>Description of Term 2</dd>
+        <dt>Term 3</dt>
+        <dd>Description of Term 3</dd>
+    </dl>
+
+    <dl style="list-style-type: none; padding: 0;">
+        <dt>Term 1</dt>
+        <dd style="margin-left: 20px;">Description of Term 1</dd>
+        <dt>Term 2</dt>
+        <dd style="margin-left: 20px;">Description of Term 2</dd>
+        <dt>Term 3</dt>
+        <dd style="margin-left: 20px;">Description of Term 3</dd>
+    </dl>
+    <div class="container">
+        <h3>Question 4</h3>
+    </div>
+    <h3>Image Examples</h3>
+    <h2>Question 4</h2>
+
+    <h3>Image Examples</h3>
+
+    <section>
+        <h4>Basic Image</h4>
+        <figure>
+            <img src="https://images.pexels.com/photos/206359/pexels-photo-206359.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                alt="Basic Image" width="300" height="200" style="display: block; margin: 20px auto;">
+        </figure>
+    </section>
+
+    <section>
+        <h4>Aligned Image</h4>
+        <figure>
+            <img src="https://images.pexels.com/photos/206359/pexels-photo-206359.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                alt="Aligned Image" width="300" height="200" style="float: right; margin: 10px;">
+        </figure>
+    </section>
+
+    <section>
+        <h4>Image with Border</h4>
+        <figure>
+            <img src="https://images.pexels.com/photos/206359/pexels-photo-206359.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                alt="Image with Border" width="300" height="200" style="border: 5px solid #ccc; margin: 20px auto;">
+        </figure>
+    </section>
+
+    <section>
+        <h4>Image with Width and Height</h4>
+        <figure>
+            <img src="https://images.pexels.com/photos/206359/pexels-photo-206359.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                alt="Image with Width and Height" width="300" height="200" style="display: block; margin: 20px auto;">
+        </figure>
+    </section>
+
+    <section>
+        <h4>Image with CSS Styles</h4>
+        <figure>
+            <img src="https://images.pexels.com/photos/206359/pexels-photo-206359.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                alt="Image with CSS Styles" width="300" height="200"
+                style="border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); margin: 20px auto;">
+        </figure>
+    </section>
+
+    <section>
+        <h4>Image with Float</h4>
+        <figure>
+            <img src="https://images.pexels.com/photos/206359/pexels-photo-206359.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                alt="Image with Float" width="300" height="200" style="float: left; margin: 10px;">
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit amet nulla auctor, vestibulum magna sed,
+                convallis ex.</p>
+        </figure>
+    </section>
+
+    <section>
+        <h4>Image with Multiple Attributes</h4>
+        <figure>
+            <img src="https://images.pexels.com/photos/206359/pexels-photo-206359.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                alt="Image with Multiple Attributes" width="300" height="200"
+                style="border: 2px solid #ccc; border-radius: 10px; margin: 20px auto;">
+        </figure>
+    </section>
+
+    <div class="container">
+        <h3>Question 5</h3>
+    </div>
+
+    <!-- Employee Registration Form -->
+    <form style="padding: 20px;">
+        <h2>Employee Registration</h2>
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name"><br><br>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email"><br><br>
+        <label for="phone">Phone:</label>
+        <input type="tel" id="phone" name="phone"><br><br>
+        <label for="department">Department:</label>
+        <select id="department" name="department">
+            <option value="">Select Department</option>
+            <option value="IT">IT</option>
+            <option value="HR">HR</option>
+            <option value="Finance">Finance</option>
+        </select><br><br>
+        <label for="designation">Designation:</label>
+        <input type="text" id="designation" name="designation"><br><br>
+        <label for="dob">Date of Birth:</label>
+        <input type="date" id="dob" name="dob"><br><br>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password"><br><br>
+        <label for="confirm_password">Confirm Password:</label>
+        <input type="password" id="confirm_password" name="confirm_password"><br><br>
+        <label for="address">Address:</label>
+        <textarea id="address" name="address"></textarea><br><br>
+        <label for="gender">Gender:</label>
+        <input type="radio" id="male" name="gender" value="male">
+        <label for="male">Male</label>
+        <input type="radio" id="female" name="gender" value="female">
+        <label for="female">Female</label>
+        <input type="radio" id="other" name="gender" value="other">
+        <label for="other">Other</label><br><br>
+        <label for="hobbies">Hobbies:</label>
+        <input type="checkbox" id="reading" name="hobbies" value="reading">
+        <label for="reading">Reading</label>
+        <input type="checkbox" id="sports" name="hobbies" value="sports">
+        <label for="sports">Sports</label>
+        <input type="checkbox" id="music" name="hobbies" value="music">
+        <label for="music">Music</label><br><br>
+        <input type="submit" value="Register">
+        <input type="reset" value="Reset">
+    </form>
+    <div class="container">
+        <h3>Question 6</h3>
+    </div>
+    <div style="padding: 15px;">
+    <h1>This is the Main Heading</h1>
+    <p>This is the first paragraph of text. You can write anything you like here.</p>
+    <p>This is the second paragraph of text. Feel free to add more content.</p>
+
+    <!-- Unordered List -->
+    <h2>Unordered List</h2>
+    <ul>
+        <li>An unordered list can be specified with the tags &lt;ul&gt; and &lt;/ul&gt;.</li>
+        <li>An unordered list typically contains a number of list items that can be specified with tags &lt;li&gt; and &lt;/li&gt;.</li>
+        <li>After you have created your unordered list, check out what happens when you convert it to an ordered list by replacing the tags &lt;ul&gt; and &lt;/ul&gt; with &lt;ol&gt; and &lt;/ol&gt;, respectively.</li>
+    </ul>
+
+    <!-- Ordered List -->
+    <h2>Ordered List</h2>
+    <ol>
+        <li>An unordered list can be specified with the tags &lt;ul&gt; and &lt;/ul&gt;.</li>
+        <li>An unordered list typically contains a number of list items that can be specified with tags &lt;li&gt; and &lt;/li&gt;.</li>
+        <li>After you have created your unordered list, check out what happens when you convert it to an ordered list by replacing the tags &lt;ul&gt; and &lt;/ul&gt; with &lt;ol&gt; and &lt;/ol&gt;, respectively.</li>
+    </ol>
+
+    <!-- Image -->
+    <h2>Image</h2>
+    <img src="https://images.pexels.com/photos/206359/pexels-photo-206359.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" alt="Sample Image">
+</div>
+</body>
+
+</html>
