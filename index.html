@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            position: relative;
+            background-color: black;
+            /* Background color to contrast with links */
+            overflow: hidden;
+        }
+
+        #myCanvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            /* Canvas is behind the links container */
+        }
+
+        .links-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+            /* Links container is on top of the canvas */
+            text-align: center; /* Center text alignment */
+        }
+
+        .folder {
+            margin: 10px 0;
+            /* Space between folders */
+        }
+
+        .link {
+            color: white;
+            text-decoration: none;
+            font-size: 18px;
+            margin: 5px 0;
+            transition: transform 0.3s ease, color 0.3s ease;
+            padding: 10px;
+            display: block;
+        }
+
+        .link:hover {
+            transform: scale(1.1);
+            /* Slightly enlarge the link */
+            color: #ff0;
+            /* Change color on hover */
+        }
+
+        .inner-links {
+            display: none;
+            /* Hide inner links initially */
+            flex-direction: column;
+            margin-top: 5px;
+            padding-left: 20px;
+            text-align: left; /* Align text to the left */
+        }
+
+        .inner-links a {
+            font-size: 16px;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="myCanvas"></canvas>
+    <div class="links-container">
+        <div class="folder">
+            <a href="#" class="link" onclick="toggleInnerLinks('assignment', event)">Assignment - 1</a>
+            <div id="assignment" class="inner-links">
+                <a href="Assignment - 1/question1.html" class="link">Go to Question 1</a>
+                <a href="Assignment - 1/question2.html" class="link">Go to Question 2</a>
+                <a href="Assignment - 1/question3.html" class="link">Go to Question 3</a>
+                <a href="Assignment - 1/question4.html" class="link">Go to Question 4</a>
+                <a href="Assignment - 1/question5.html" class="link">Go to Question 5</a>
+                <a href="Assignment - 1/question6.html" class="link">Go to Question 6</a>
+                <a href="Assignment - 1/question7.html" class="link">Go to Question 7</a>
+                <a href="Assignment - 1/question8.html" class="link">Go to Question 8</a>
+                <a href="Assignment - 1/question9.html" class="link">Go to Question 9</a>
+            </div>
+        </div>
+        <div class="folder">
+            <a href="#" class="link" onclick="toggleInnerLinks('canvas', event)">Canvas</a>
+            <div id="canvas" class="inner-links">
+                <a href="Fun.html" target="_blank" class="link">File 1</a>
+        
+                <!-- Subfolder -->
+                <div class="folder">
+                    <a href="#" class="link" onclick="toggleInnerLinks('particle', event)">Particle</a>
+                    <div id="particle" class="inner-links">
+                        <a href="Canvas/Particle/Constellation.html" target="_blank" class="link">Constellation</a>
+                        <a href="Canvas/Particle/Particle.html" target="_blank" class="link">Particle</a>
+                        <a href="Canvas/Particle/Tracing.html" target="_blank" class="link">Tracing</a>
+                        <a href="Canvas/Particle/TrailAdvanced.html" target="_blank" class="link">Trail Advanced</a>
+                        <a href="Canvas/Particle/TrailAdvancedWithColors.html" target="_blank" class="link">Trail Advanced with Colors</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="folder">
+            <a href="#" class="link" onclick="toggleInnerLinks('dragAndDrop', event)">DragAndDrop</a>
+            <div id="dragAndDrop" class="inner-links">
+                <a href="DragAndDrop/dnd.html" class="link">DragAndDrop</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        var particleArray = [];
+        const canvas = document.getElementById("myCanvas");
+        const ctx = canvas.getContext("2d");
+        let hue = 0;
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        class Particle {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.size = Math.random() * 10 + 1;
+                this.speedX = Math.random() * 3 - 1.5;
+                this.speedY = Math.random() * 3 - 1.5;
+                this.color = 'hsl(' + hue + ', 100%, 50%)';
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.size > 0.2) this.size -= 0.1;
+            }
+
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function handleParticles() {
+            for (let i = 0; i < particleArray.length; i++) {
+                particleArray[i].update();
+                particleArray[i].draw();
+                if (particleArray[i].size <= 0.3) {
+                    particleArray.splice(i, 1);
+                    i--;
+                }
+            }
+        }
+
+        canvas.addEventListener('click', function (event) {
+            for (let i = 0; i < 50; i++) {
+                particleArray.push(new Particle(event.clientX, event.clientY));
+            }
+        });
+
+        canvas.addEventListener('mousemove', function (event) {
+            for (let i = 0; i < 10; i++) {
+                particleArray.push(new Particle(event.clientX, event.clientY));
+            }
+        });
+
+        window.addEventListener('resize', function () {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'rgba(0,0,0,0.08)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            handleParticles();
+            hue += 10;
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+
+        function toggleInnerLinks(id, event) {
+            event.preventDefault(); // Prevent default anchor behavior
+        
+            // Get the current link's parent folder
+            const currentFolder = event.target.parentNode;
+        
+            // Close previously opened links that are not parents or children of the current link
+            const allInnerLinks = document.querySelectorAll('.inner-links');
+            allInnerLinks.forEach(link => {
+                if (link.id !== id && !currentFolder.contains(link) && !link.contains(currentFolder)) {
+                    link.style.display = 'none';
+                }
+            });
+        
+            // Toggle the clicked folder's inner links
+            const innerLinks = document.getElementById(id);
+            if (innerLinks) {
+                const isActive = innerLinks.style.display === 'flex';
+                innerLinks.style.display = isActive ? 'none' : 'flex';
+            }
+        }
+    </script>
+</body>
+
+</html>
