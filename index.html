@@ -4,8 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-
+    <title>Arin Dhimar's FullStack - 1 Repo</title>
     <style>
         body {
             margin: 0;
@@ -16,7 +15,6 @@
             height: 100vh;
             position: relative;
             background-color: black;
-            /* Background color to contrast with links */
             overflow: hidden;
         }
 
@@ -27,7 +25,6 @@
             width: 100%;
             height: 100%;
             z-index: 1;
-            /* Canvas is behind the links container */
         }
 
         .links-container {
@@ -39,13 +36,11 @@
             left: 50%;
             transform: translate(-50%, -50%);
             z-index: 2;
-            /* Links container is on top of the canvas */
-            text-align: center; /* Center text alignment */
+            text-align: center;
         }
 
         .folder {
             margin: 10px 0;
-            /* Space between folders */
         }
 
         .link {
@@ -60,18 +55,15 @@
 
         .link:hover {
             transform: scale(1.1);
-            /* Slightly enlarge the link */
             color: #ff0;
-            /* Change color on hover */
         }
 
         .inner-links {
             display: none;
-            /* Hide inner links initially */
             flex-direction: column;
             margin-top: 5px;
             padding-left: 20px;
-            text-align: left; /* Align text to the left */
+            text-align: left;
         }
 
         .inner-links a {
@@ -85,25 +77,37 @@
     <canvas id="myCanvas"></canvas>
     <div class="links-container">
         <div class="folder">
-            <a href="#" class="link" onclick="toggleInnerLinks('assignment', event)">Assignment - 1</a>
+            <a href="#" class="link" onclick="toggleInnerLinks('assignment', event)">FullStack- 1</a>
             <div id="assignment" class="inner-links">
-                <a href="Assignment - 1/question1.html" class="link">Go to Question 1</a>
-                <a href="Assignment - 1/question2.html" class="link">Go to Question 2</a>
-                <a href="Assignment - 1/question3.html" class="link">Go to Question 3</a>
-                <a href="Assignment - 1/question4.html" class="link">Go to Question 4</a>
-                <a href="Assignment - 1/question5.html" class="link">Go to Question 5</a>
-                <a href="Assignment - 1/question6.html" class="link">Go to Question 6</a>
-                <a href="Assignment - 1/question7.html" class="link">Go to Question 7</a>
-                <a href="Assignment - 1/question8.html" class="link">Go to Question 8</a>
-                <a href="Assignment - 1/question9.html" class="link">Go to Question 9</a>
+                <div class="folder">
+                    <a href="#" class="link" onclick="toggleInnerLinks('classAssignment', event)">ClassAssignment - 1</a>
+                    <div id="classAssignment" class="inner-links">
+                        <a href="FullStack - 1/ClassAssignment - 1/question1.html" class="link">Go to Question 1</a>
+                        <a href="FullStack - 1/ClassAssignment - 1/question2.html" class="link">Go to Question 2</a>
+                        <a href="FullStack - 1/ClassAssignment - 1/question3.html" class="link">Go to Question 3</a>
+                        <a href="FullStack - 1/ClassAssignment - 1/question4.html" class="link">Go to Question 4</a>
+                        <a href="FullStack - 1/ClassAssignment - 1/question5.html" class="link">Go to Question 5</a>
+                        <a href="FullStack - 1/ClassAssignment - 1/question6.html" class="link">Go to Question 6</a>
+                        <a href="FullStack - 1/ClassAssignment - 1/question7.html" class="link">Go to Question 7</a>
+                        <a href="FullStack - 1/ClassAssignment - 1/question8.html" class="link">Go to Question 8</a>
+                        <a href="FullStack - 1/ClassAssignment - 1/question9.html" class="link">Go to Question 9</a>
+                    </div>
+                </div>
+                <div class="folder">
+                    <a href="#" class="link" onclick="toggleInnerLinks('assignment1', event)">Assignment - 1</a>
+                    <div id="assignment1" class="inner-links">
+                        <a href="FullStack - 1/Assignment -1/Q1A.html" class="link">Go to Question 1</a>
+                        <a href="FullStack - 1/Assignment -1/Q1B.html" class="link">Go to Question 2</a>
+                        <a href="FullStack - 1/Assignment -1/Q2A.HTML" class="link">Go to Question 3</a>
+                        <a href="FullStack - 1/Assignment -1/Q3A.HTML" class="link">Go to Question 4</a>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="folder">
-            <a href="#" class="link" onclick="toggleInnerLinks('canvas', event)">Canvas</a>
-            <div id="canvas" class="inner-links">
+            <a href="#" class="link" onclick="toggleInnerLinks('canvasLinks', event)">Canvas</a>
+            <div id="canvasLinks" class="inner-links">
                 <a href="Canvas/Fun.html" target="_blank" class="link">File 1</a>
-        
-                <!-- Subfolder -->
                 <div class="folder">
                     <a href="#" class="link" onclick="toggleInnerLinks('particle', event)">Particle</a>
                     <div id="particle" class="inner-links">
@@ -116,7 +120,6 @@
                 </div>
             </div>
         </div>
-        
         <div class="folder">
             <a href="#" class="link" onclick="toggleInnerLinks('dragAndDrop', event)">DragAndDrop</a>
             <div id="dragAndDrop" class="inner-links">

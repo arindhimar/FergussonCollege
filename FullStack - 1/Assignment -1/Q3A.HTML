@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drag and Drop Image into Rectangle</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        .rectangle {
+            width: 300px;
+            height: 300px;
+            border: 2px solid #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .rectangle img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+        .draggable-image {
+            width: 100px;
+            cursor: grab;
+        }
+    </style>
+</head>
+<body>
+    <div class="rectangle" id="rectangle" ondrop="drop(event)" ondragover="allowDrop(event)">
+        Drop the image here
+    </div>
+    <img src="https://images.pexels.com/photos/206359/pexels-photo-206359.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1" id="draggableImage" class="draggable-image" draggable="true" ondragstart="drag(event)">
+
+    <script>
+        function allowDrop(event) {
+            event.preventDefault();
+        }
+
+        function drag(event) {
+            event.dataTransfer.setData("text", event.target.id);
+        }
+
+        function drop(event) {
+            event.preventDefault();
+            const data = event.dataTransfer.getData("text");
+            const image = document.getElementById(data);
+            const rectangle = document.getElementById("rectangle");
+            rectangle.innerHTML = "";
+            rectangle.appendChild(image);
+        }
+    </script>
+</body>
+</html>

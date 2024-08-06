@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geolocation Example with Canvas, SVG, and Media</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #007BFF;
+            color: white;
+            margin-bottom: 20px;
+        }
+        #output {
+            margin-top: 20px;
+            font-size: 16px;
+        }
+        #canvas {
+            margin-top: 20px;
+            border: 1px solid #000;
+        }
+        svg {
+            margin-top: 20px;
+        }
+        audio, video {
+            margin-top: 20px;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <button onclick="getLocation()">Where am I?</button>
+    <div id="output"></div>
+
+    <canvas id="canvas" width="200" height="200"></canvas>
+
+    <svg width="100" height="100" viewBox="0 0 100 100">
+        <polygon points="50,15 61,35 85,35 66,50 75,75 50,60 25,75 34,50 15,35 39,35" 
+                 style="fill:gold;stroke:black;stroke-width:2" />
+    </svg>
+
+    <audio controls>
+        <source src="tempAudio.mp3" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
+    <video controls width="320" height="240">
+        <source src="tempVideo.mp4" type="video/mp4">
+        Your browser does not support the video element.
+    </video>
+
+    <script>
+        function getLocation() {
+            const output = document.getElementById('output');
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition, showError);
+            } else {
+                output.innerHTML = "Geolocation is not supported by this browser.";
+            }
+        }
+
+        function showPosition(position) {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+            document.getElementById('output').innerHTML = `Latitude: ${latitude} <br> Longitude: ${longitude}`;
+        }
+
+        function showError(error) {
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    document.getElementById('output').innerHTML = "User denied the request for Geolocation.";
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    document.getElementById('output').innerHTML = "Location information is unavailable.";
+                    break;
+                case error.TIMEOUT:
+                    document.getElementById('output').innerHTML = "The request to get user location timed out.";
+                    break;
+                case error.UNKNOWN_ERROR:
+                    document.getElementById('output').innerHTML = "An unknown error occurred.";
+                    break;
+            }
+        }
+
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = 'lightblue';
+        ctx.fillRect(10, 10, 180, 180);
+        ctx.fillStyle = 'blue';
+        ctx.beginPath();
+        ctx.arc(100, 100, 50, 0, 2 * Math.PI);
+        ctx.fill();
+    </script>
+</body>
+</html>
