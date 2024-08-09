@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Typing Animation</title>
+    <style>
+        :root {
+            --cursor-color: white;
+        }
+
+        body {
+            background-color: black;
+            font-family: monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .typing {
+            color: transparent;
+            position: relative;
+            display: inline-block;
+        }
+
+        .typing::before {
+            content: attr(data-text);
+            color: white;
+            position: absolute;
+            left: 0;
+            top: 0;
+            overflow: hidden;
+            animation: typing 3.5s steps(40, end) forwards, blink-caret 0.75s step-end infinite;
+            white-space: nowrap;
+            border-right: 0.1em solid var(--cursor-color);
+        }
+        
+            
+
+        @keyframes typing {
+            from { width: 0; }
+            to { width: 100%; }
+        }
+
+        @keyframes blink-caret {
+            from, to { border-color: transparent; }
+            50% { border-color: var(--cursor-color); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 class="typing" data-text="This is typing animation">This is typing animation </h2>
+    </div>
+</body>
+</html>
