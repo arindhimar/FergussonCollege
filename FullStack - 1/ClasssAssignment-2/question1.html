@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Product Table</title>
+    <meta charset="UTF-8">
+    <style>
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #4682B4;
+            color: #ffffff;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        .description {
+            display: none;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            max-height: 0;
+            background-color: #f9f9f9;
+            padding: 10px;
+        }
+
+        .active .description {
+            display: block;
+            max-height: 100px; /* Adjust based on content size */
+        }
+
+        .btn {
+            cursor: pointer;
+            background-color: #4682B4;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            text-align: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #315f81;
+        }
+    </style>
+</head>
+
+<body>
+    <table>
+        <thead>
+            <tr>
+                <th>Product Name</th>
+                <th>Price</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr class="product-row">
+                <td>Product 1</td>
+                <td>$10</td>
+                <td><button class="btn" onclick="toggleDescription(this)">Know More</button></td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <div class="description">This is the description for Product 1. It provides detailed information about the product.</div>
+                </td>
+            </tr>
+            <tr class="product-row">
+                <td>Product 2</td>
+                <td>$20</td>
+                <td><button class="btn" onclick="toggleDescription(this)">Know More</button></td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <div class="description">This is the description for Product 2. It provides detailed information about the product.</div>
+                </td>
+            </tr>
+            <tr class="product-row">
+                <td>Product 3</td>
+                <td>$30</td>
+                <td><button class="btn" onclick="toggleDescription(this)">Know More</button></td>
+            </tr>
+            <tr>
+                <td colspan="3">
+                    <div class="description">This is the description for Product 3. It provides detailed information about the product.</div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+    <script>
+        function toggleDescription(button) {
+            const row = button.closest('tr').nextElementSibling;
+            row.classList.toggle('active');
+        }
+    </script>
+</body>
+
+</html>

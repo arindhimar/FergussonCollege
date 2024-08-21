@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Display Capital</title>
+    <style>
+        /* Blinking effect for the header */
+        @keyframes blink {
+            50% {
+                opacity: 0;
+            }
+        }
+        h1 {
+            animation: blink 1s infinite;
+            color: darkblue;
+        }
+        .capital {
+            font-size: 24px;
+            color: green;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Display Capital</h1>
+    <label for="country">Select a country:</label>
+    <select id="country" onchange="showCapital()">
+        <option value="">--Select a country--</option>
+        <option value="India">India</option>
+        <option value="USA">USA</option>
+        <option value="Japan">Japan</option>
+        <option value="Germany">Germany</option>
+        <option value="Australia">Australia</option>
+    </select>
+
+    <p>The capital is: <span id="capital" class="capital"></span></p>
+
+    <script>
+        function showCapital() {
+            const country = document.getElementById("country").value;
+            const capitalElement = document.getElementById("capital");
+            let capital = "";
+
+            switch (country) {
+                case "India":
+                    capital = "New Delhi";
+                    break;
+                case "USA":
+                    capital = "Washington, D.C.";
+                    break;
+                case "Japan":
+                    capital = "Tokyo";
+                    break;
+                case "Germany":
+                    capital = "Berlin";
+                    break;
+                case "Australia":
+                    capital = "Canberra";
+                    break;
+                default:
+                    capital = "";
+            }
+
+            capitalElement.textContent = capital;
+        }
+    </script>
+
+</body>
+</html>
