@@ -19,6 +19,7 @@
             font-size: 24px;
             color: green;
             font-weight: bold;
+            font-family: "Courier New", Courier, monospace;
         }
     </style>
 </head>
@@ -38,9 +39,24 @@
     <p>The capital is: <span id="capital" class="capital"></span></p>
 
     <script>
+        function typeWriter(text, elementId, speed = 100) {
+            const element = document.getElementById(elementId);
+            let i = 0;
+
+            function type() {
+                if (i < text.length) {
+                    element.textContent += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                }
+            }
+
+            element.textContent = ""; // Clear previous text
+            type();
+        }
+
         function showCapital() {
             const country = document.getElementById("country").value;
-            const capitalElement = document.getElementById("capital");
             let capital = "";
 
             switch (country) {
@@ -63,7 +79,12 @@
                     capital = "";
             }
 
-            capitalElement.textContent = capital;
+            // Apply typewriter effect
+            if (capital) {
+                typeWriter(capital, "capital");
+            } else {
+                document.getElementById("capital").textContent = "";
+            }
         }
     </script>
 
