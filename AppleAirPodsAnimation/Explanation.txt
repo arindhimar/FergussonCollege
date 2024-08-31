@@ -1,0 +1,26 @@
+
+
+Apple
+Its products
+WebPage Real
+Ever wondered how this works?
+As Cs student we shoould think about it
+
+Anyone of you can you guess how this is working 
+
+As you can see it works on the basis of scrolling as we scroll the animation/transition is getting changed
+
+on the board explain them this
+
+Lets understand this with an example
+
+We have seen books right which have multiple images on each page , when we flip the pages we see some effect , its the same here 
+
+resizeCanvas();
+
+onLoad - resizeCanvas() & load all the images; also explain how we got the link for the images
+
+We need to divide the whole page into parts based upon total frames that we have 
+
+now coming to the main part if the code is to caluculate to show which frame to show and when , now first we need to convert it to fraction 
+ 

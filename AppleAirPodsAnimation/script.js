@@ -1,19 +1,15 @@
 var images = [];
 var loadedImages = 0;
-var totalImages = 64;
+var totalImages = 64;//med are only
 var currentFrameIndex = 0;
 
 var canvas = document.getElementById("myCanvas");
 var ctx = canvas.getContext("2d");
 
-function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-}
 
 window.onload = () => {
     resizeCanvas();
-    canvas.style.background = 'transparent';
+    canvas.style.background = 'transparent';//glass painting 
 
     for (let i = 0; i < totalImages; i++) {
         var img = new Image();
@@ -30,15 +26,29 @@ window.onload = () => {
     }
 }
 
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    // renderImages();
+}
+
+
 window.addEventListener('scroll', function () {
-    var scrollTop = document.documentElement.scrollTop;
-    var maxScrollTop = document.documentElement.scrollHeight - window.innerHeight;
+    var scrollTop = document.documentElement.scrollTop; // to keep track of how far we've scrolled 
+    // console.log(scrollTop);
+    var maxScrollTop = document.documentElement.scrollHeight - window.innerHeight;// all the say from 0 to the absolute end , scoll heigt = total height of the page , innerHeight is the visible part
+    // console.log(maxScrollTop);
     
     if (maxScrollTop > 0) { // Check to prevent invalid scrollFraction
-        var scrollFraction = scrollTop / maxScrollTop;
+        var scrollFraction = scrollTop / maxScrollTop; //(1-0)
+        //console.log(scrollFraction)
         var frameCount = totalImages;
+        
         var frameIndex = Math.min(frameCount - 1, Math.floor(scrollFraction * frameCount));
+
         currentFrameIndex = frameIndex;
+
+        // console.log(currentFrameIndex);
         renderImages();
     }
 });
