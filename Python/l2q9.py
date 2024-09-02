@@ -1,4 +1,4 @@
-d={1:'arin',2:'ashish',3:'alvf',4:'namless',5:'hooman'}
+d={1:'arin',2:'ashish',3:'alvf',4:'nameless',5:'hooman'}
 
 print(d)
 

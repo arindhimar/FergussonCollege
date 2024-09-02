@@ -1,6 +1,6 @@
 var images = [];
 var loadedImages = 0;
-var totalImages = 64;//med are only
+var totalImages = 64; //med are only
 var currentFrameIndex = 0;
 
 var canvas = document.getElementById("myCanvas");
@@ -13,7 +13,7 @@ window.onload = () => {
 
     for (let i = 0; i < totalImages; i++) {
         var img = new Image();
-        img.src = `https://www.apple.com/105/media/us/airpods-pro/2022/d2deeb8e-83eb-48ea-9721-f567cf0fffa8/anim/hero/medium/${String(i).padStart(4, '0')}.png`;
+        img.src = `https://www.apple.com/105/media/us/airpods-pro/2022/d2deeb8e-83eb-48ea-9721-f567cf0fffa8/anim/hero/medium/${String(i).padStart(4,  '0')}.png`;
 
         img.onload = () => {
             loadedImages++;
