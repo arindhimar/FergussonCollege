@@ -1,0 +1,20 @@
+Spacing 
+If you go over to to the flipkart website the product image is fixed while on the other side when you scroll down of the meesho page you can see the position is not fixed , also when you resize the window flipkart upto some extent shows sign og responsiveness while its not the same for meesho
+Product Page
+
+
+Pop Up
+Well I dont know if it is related to web development or not but to keep user intrested to our website is necessary to show relevant results, there is a pop up that is shown on the website of flipkart which uses local storage to keep a track if the user is logged in or not , which directly or indireclty helps users to stick to the website
+Home Page
+
+Animation
+How many of you have visitef apple's website 
+None , quite intresting 
+Let us go to apple Website 
+I'll give you some 2 minutes and tell me what do you guys see on the website at first.
+Can anyone of you guess how this is working 
+As you can see it works on the basis of scrolling as we scroll the animation/transition is getting changed
+
+FlipBook Example
+
+
