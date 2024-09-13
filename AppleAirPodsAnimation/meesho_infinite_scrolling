@@ -1,0 +1,57 @@
+import React, { useState, useEffect } from 'react';
+
+
+export function App(props) {
+  const [isHovered, setIsHovered] = useState(false);
+  const [data, setData] = useState(null);
+
+  // Simulate data loading
+  const loadData = () => {
+    return Math.floor(Math.random() * 100); // Returns a random number between 0 and 100
+  };
+
+  useEffect(() => {
+    let intervalId;
+
+    if (isHovered) {
+      // Start interval to load data every second
+      intervalId = setInterval(() => {
+        setData(loadData());
+      }, 1000);
+    } else {
+      // Clear interval if not hovering
+      clearInterval(intervalId);
+    }
+
+    // Cleanup interval on component unmount or when isHovered changes
+    return () => clearInterval(intervalId);
+  }, [isHovered]);
+  return (
+    <div
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      style={{
+        width: '200px',
+        height: '200px',
+        backgroundColor: 'lightblue',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        textAlign: 'center',
+        cursor: 'pointer'
+      }}
+    >
+      <div>
+        <h2>Hover over me!</h2>
+        {data !== null && <p>Data: {data}</p>}
+      </div>
+    </div>
+  );
+}
+
+// Log to console
+console.log('Hello console')
+
+
+//https://playcode.io/react
+
