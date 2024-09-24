@@ -1,0 +1,185 @@
+/* style.css - Enhanced Dark Theme */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #121212; /* Rich dark background */
+    margin: 0;
+    color: #e0e0e0; /* Light gray text for better readability */
+}
+
+.heading h2 {
+    margin: 20px;
+    font-size: 28px;
+    color: #ffffff; /* White heading */
+    text-transform: uppercase; /* Uppercase for a modern look */
+    letter-spacing: 2px; /* Letter spacing for elegance */
+    text-shadow: 0px 4px 10px rgba(0, 0, 0, 0.4); /* Soft shadow for depth */
+}
+
+.partition {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center elements horizontally */
+    width: 100%;
+}
+
+.input {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.input input[type="text"] {
+    width: 320px;
+    padding: 12px;
+    font-size: 18px;
+    background-color: #333; /* Dark input background */
+    color: #ffffff; /* White text */
+    border: 2px solid #5cdb95; /* Accent border */
+    border-radius: 6px; /* Rounded corners */
+    transition: all 0.3s ease;
+}
+
+.input input[type="text"]:focus {
+    border-color: #8EE4AF; /* Light green on focus */
+    outline: none;
+    box-shadow: 0px 0px 8px rgba(94, 230, 118, 0.8); /* Glow effect */
+}
+
+.input input[type="button"] {
+    margin-top: 10px;
+    padding: 12px 25px;
+    font-size: 16px;
+    background-color: #5cdb95; /* Bright green button */
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transitions */
+}
+
+.input input[type="button"]:hover {
+    background-color: #379683; /* Darker green on hover */
+    box-shadow: 0px 4px 15px rgba(94, 230, 118, 0.6); /* Soft hover shadow */
+}
+
+.startboth {
+    margin-bottom: 30px;
+}
+
+.startboth input[type="button"] {
+    padding: 12px 25px;
+    font-size: 16px;
+    background-color: #8EE4AF; /* Lighter green for the start button */
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.startboth input[type="button"]:hover {
+    background-color: #66b893; /* Darker hover color */
+    box-shadow: 0px 4px 15px rgba(66, 178, 147, 0.6); /* Soft shadow on hover */
+}
+
+.sorting-container {
+    display: flex;
+    justify-content: space-between;
+    width: 80%;
+}
+
+.bubble-sort, .insertion-sort {
+    width: 48%;
+    background-color: #222; /* Dark background for sorting areas */
+    border: 1px solid #444; /* Subtle borders */
+    padding: 20px;
+    box-shadow: 2px 2px 15px rgba(0, 0, 0, 0.4); /* Deeper shadow for depth */
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    height: 400px;
+    margin-top: 20px;
+    position: relative;
+    margin: 5px;
+    border-radius: 8px; /* Rounded corners for the containers */
+}
+
+.bar {
+    width: 30px;
+    margin: 0 5px;
+    background-color: #5cdb95; /* Bright green bars */
+    border-radius: 4px; /* Rounded bars */
+    transition: background-color 0.2s ease, transform 0.2s ease; /* Smooth animations */
+}
+
+.bar:hover {
+    background-color: #8EE4AF; /* Lighter green on hover */
+    transform: scale(1.1); /* Slight enlargement on hover */
+}
+
+/* Styling for the array label */
+.array-label {
+    margin-top: 20px;
+    font-size: 20px;
+    color: #ffffff; /* White text to match the dark theme */
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-align: center;
+}
+
+/* Styling for the array display */
+.array-display {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.array-box {
+    width: 50px;
+    height: 50px;
+    background-color: #5cdb95; /* Bright green color for the boxes */
+    color: white;
+    font-size: 18px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 5px;
+    border-radius: 6px; /* Rounded corners */
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth transitions */
+}
+
+.array-box:hover {
+    background-color: #8EE4AF; /* Lighter green on hover */
+    transform: scale(1.1); /* Slight enlargement on hover */
+}
+
+
+.toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #444; /* Default dark background */
+    color: #fff; /* White text */
+    padding: 15px 20px;
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5); /* Shadow effect */
+    z-index: 1000; /* Make sure it appears above other content */
+    display: none; /* Hide by default for animation */
+    opacity: 1;
+    transition: opacity 0.5s ease;
+}
+
+/* Optional: Style for success messages */
+.toast-success {
+    background-color: #28a745; /* Green for success */
+}
+
+/* Optional: Style for warning messages */
+.toast-warning {
+    background-color: #ffc107; /* Yellow for warnings */
+}
+
