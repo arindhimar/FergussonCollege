@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payroll Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .basic-info {
+            margin-bottom: 20px;
+        }
+
+        .basic-info label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .basic-info input[type="text"], .basic-info input[type="number"] {
+            width: 100%;
+            padding: 10px 15px; /* added 15px horizontal padding */
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            box-sizing: border-box; /* added box-sizing to include padding in width calculation */
+        }
+        
+        .sliders {
+            margin-bottom: 20px;
+        }
+
+        .slider-container {
+            margin-top: 20px;
+        }
+
+        .slider-container label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .slider-container input[type="range"] {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .output {
+            margin-top: 20px;
+        }
+
+        .output label {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .output input[type="number"] {
+            width: 100%;
+            padding: 10px 15px; /* added 15px horizontal padding */
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            background-color: #f0f0f0;
+            box-sizing: border-box; /* added box-sizing to include padding in width calculation */
+        }
+
+        h1,
+        h2 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Payroll Calculator</h1>
+        <form>
+            <div class="basic-info">
+                <label for="name">Name:</label>
+                <input type="text" style="margin-right: -10%;" id="name" name="name"><br><br>
+                <label for="basic-pay">Basic Pay:</label>
+                <input type="number" id="basic-pay" name="basic-pay"><br><br>
+            </div>
+            <div class="sliders">
+                <h2>Adjust Sliders:</h2>
+                <div class="slider-container">
+                    <label for="da-slider">DA (%):</label>
+                    <input type="range" id="da-slider" name="da-slider" min="0" max="100" value="0"><br><br>
+                    <label for="hra-slider">HRA (%):</label>
+                    <input type="range" id="hra-slider" name="hra-slider" min="0" max="100" value="0"><br><br>
+                    <label for="pf-slider">PF (%):</label>
+                    <input type="range" id="pf-slider" name="pf-slider" min="0" max="100" value="0"><br><br>
+                    <label for="tax-slider">Tax (%):</label>
+                    <input type="range" id="tax-slider" name="tax-slider" min="0" max="100" value="0"><br><br>
+                </div>
+            </div>
+            <div class="output">
+                <h2>Payroll Details:</h2>
+                <label for="gross-pay">Gross Pay:</label>
+                <input type="number" id="gross-pay" name="gross-pay" readonly><br><br>
+                <label for="deduction">Deduction:</label>
+                <input type="number" id="deduction" name="deduction" ><br><br>
+                <label for="net-pay">Net Pay:</label>
+                <input type="number" id="net-pay" name="net-pay" readonly><br><br>
+            </div>
+        </form>
+    </div>
+</body>
+
+</html>

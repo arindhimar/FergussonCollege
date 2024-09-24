@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basic Calculator</title>
+    <style>
+        body {
+            height: 100vh;
+            font-family: Arial, sans-serif;
+            background-color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .calculator {
+            width: 250px;
+            margin: 0 40px 40px 40px auto;
+            padding: 20px;
+            background-color: #333;
+            border: 1px solid #555;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .display {
+            width: 94%;
+            padding: 10px;
+            font-size: 24px;
+            text-align: right;
+            border: 1px solid #555;
+            color: #0ff;
+            background-color: #333;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+        
+        #display {
+            width: 100%;
+            padding: 0;
+            border: none;
+            font-size: 24px;
+            text-align: right;
+            color: #0ff;
+            background-color: #333;
+        }
+        
+        .keys {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-gap: 10px;
+        }
+        
+        .key {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            color: #0ff;
+            background-color: #333;
+        }
+        
+        .key:hover {
+            background-color: #444;
+        }
+        
+        .key:active {
+            background-color: #555;
+        }
+        
+        #equals {
+            background-color: #0ff;
+            color: #000;
+            grid-column: 3 / 5;
+        }
+        
+        #equals:hover {
+            background-color: #00f;
+        }
+        
+        #equals:active {
+            background-color: #0ff;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <div class="display" >
+            <input type="text" id="display" readonly>
+        </div>
+        <div class="keys">
+            <button class="key" id="clear">C</button>
+            <button class="key" id="backspace">←</button>
+            <button class="key" id="divide">/</button>
+            <button class="key" id="multiply">*</button>
+            <button class="key" id="7">7</button>
+            <button class="key" id="8">8</button>
+            <button class="key" id="9">9</button>
+            <button class="key" id="subtract">-</button>
+            <button class="key" id="4">4</button>
+            <button class="key" id="5">5</button>
+            <button class="key" id="6">6</button>
+            <button class="key" id="add">+</button>
+            <button class="key" id="1">1</button>
+            <button class="key" id="2">2</button>
+            <button class="key" id="3">3</button>
+            <button class="key" id="0">0</button>
+            <button class="key" id="decimal">.</button>
+            <button class="key" id="equals">=</button>
+        </div>
+    </div>
+</body>
+</html>

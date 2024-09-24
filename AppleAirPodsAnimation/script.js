@@ -35,20 +35,23 @@ function resizeCanvas() {
 
 window.addEventListener('scroll', function () {
     var scrollTop = document.documentElement.scrollTop; // to keep track of how far we've scrolled 
-    // console.log(scrollTop);
+    // console.log(scrollTo p);
     var maxScrollTop = document.documentElement.scrollHeight - window.innerHeight;// all the say from 0 to the absolute end , scoll heigt = total height of the page , innerHeight is the visible part
+    // console.log(document.documentElement.scrollHeight);
+    // console.log(window.innerHeight);
+    
     // console.log(maxScrollTop);
     
     if (maxScrollTop > 0) { // Check to prevent invalid scrollFraction
         var scrollFraction = scrollTop / maxScrollTop; //(1-0)
-        //console.log(scrollFraction)
+        console.log(scrollFraction)
         var frameCount = totalImages;
         
         var frameIndex = Math.min(frameCount - 1, Math.floor(scrollFraction * frameCount));
 
         currentFrameIndex = frameIndex;
 
-        // console.log(currentFrameIndex);
+        // console.log(currentFrameIndex);  
         renderImages();
     }
 });

@@ -3,6 +3,7 @@ using namespace std;
 
 int partition(vector<int> &arr, int low, int high)
 {
+    // cout<<low<<high<<"==========";
     int pivot = arr[low];
 
     int i = low + 1;
@@ -10,17 +11,37 @@ int partition(vector<int> &arr, int low, int high)
 
     while (i <= j)
     {
-        while (i <= high && arr[i] <= pivot)
+        cout<<"OLD I = "<<i;
+        while (i <= high && arr[i] <= pivot){
             i++;
+            cout<<" new i="<<i<<endl;
+        }
 
         while (j >= low && arr[j] > pivot)
             j--;
 
-        if (i < j)
-            swap(arr[i], arr[j]);
+        cout<<"j = "<<j<<endl;
+        // cout <<"================="<<i<<"==============="<<j;
+        if (i < j){
+            // cout<<"Yay!!!!!!";
+                    swap(arr[i], arr[j]);
+        }
     }
+    
+    //     cout<<endl;
+    // for(auto i:arr){
+    //     cout<<i<< " ";
+    // }
+
+    cout<<"new wakla"<<i<<j<<"==========";
+    
 
     swap(arr[j], arr[low]);
+
+        for(auto i:arr){
+        cout<<i<< " ";
+    }
+
 
     return j;
 }
