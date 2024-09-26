@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,7 +14,7 @@
             justify-content: center;
             align-items: center;
         }
-        
+
         .calculator {
             width: 250px;
             margin: 0 40px 40px 40px auto;
@@ -24,7 +25,7 @@
             display: flex;
             flex-direction: column;
         }
-        
+
         .display {
             width: 94%;
             padding: 10px;
@@ -38,7 +39,7 @@
             justify-content: flex-end;
             align-items: center;
         }
-        
+
         #display {
             width: 100%;
             padding: 0;
@@ -48,13 +49,13 @@
             color: #0ff;
             background-color: #333;
         }
-        
+
         .keys {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
             grid-gap: 10px;
         }
-        
+
         .key {
             padding: 10px;
             border: none;
@@ -63,33 +64,34 @@
             color: #0ff;
             background-color: #333;
         }
-        
+
         .key:hover {
             background-color: #444;
         }
-        
+
         .key:active {
             background-color: #555;
         }
-        
+
         #equals {
             background-color: #0ff;
             color: #000;
             grid-column: 3 / 5;
         }
-        
+
         #equals:hover {
             background-color: #00f;
         }
-        
+
         #equals:active {
             background-color: #0ff;
         }
     </style>
 </head>
+
 <body>
     <div class="calculator">
-        <div class="display" >
+        <div class="display">
             <input type="text" id="display" readonly>
         </div>
         <div class="keys">
@@ -113,5 +115,66 @@
             <button class="key" id="equals">=</button>
         </div>
     </div>
+
+    <script>
+        const display = document.getElementById('display');
+        const keys = document.querySelectorAll('.key');
+
+        let currentNumber = '';
+        let previousNumber = '';
+        let operation = '';
+
+        keys.forEach(key => {
+            key.addEventListener('click', () => {
+                const keyValue = key.id;
+
+                if (keyValue === 'clear') {
+                    currentNumber = '';
+                    previousNumber = '';
+                    operation = '';
+                    display.value = '';
+                } else if (keyValue === 'backspace') {
+                    currentNumber = currentNumber.slice(0, -1);
+                    display.value = currentNumber;
+                } else if (keyValue === 'equals') {
+                    if (currentNumber !== '' && previousNumber !== '') {
+                        const result = calculate(previousNumber, currentNumber, operation);
+                        display.value = result;
+                        currentNumber = result.toString();
+                        previousNumber = '';
+                        operation = '';
+                    }
+                } else if (keyValue === 'divide' || keyValue === 'multiply' || keyValue === 'subtract' || keyValue === 'add') {
+                    if (currentNumber !== '') {
+                        previousNumber = currentNumber;
+                        currentNumber = '';
+                        operation = keyValue;
+                    }
+                } else {
+                    currentNumber += keyValue;
+                    display.value = currentNumber;
+                }
+            });
+        });
+
+        function calculate(num1, num2, operation) {
+            num1 = parseFloat(num1);
+            num2 = parseFloat(num2);
+
+            switch (operation) {
+                case 'divide':
+                    return num1 / num2;
+                case 'multiply':
+                    return num1 * num2;
+                case 'subtract':
+                    return num1 - num2;
+                case 'add':
+                    return num1 + num2;
+                default:
+                    return 0;
+            }
+        }
+    </script>
 </body>
+
 </html>
