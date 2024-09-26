@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,7 +10,7 @@
             font-family: Arial, sans-serif;
             background-color: #f9f9f9;
         }
-        
+
         .container {
             max-width: 300px;
             margin: 40px auto;
@@ -18,14 +19,14 @@
             border: 1px solid #ddd;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
-        
+
         #input-field {
             width: 93%;
             padding: 10px;
             margin-bottom: 20px;
             border: 1px solid #ccc;
         }
-        
+
         #output-div {
             font-size: 14px;
             font-weight: bold;
@@ -38,10 +39,39 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
-        <input type="text" id="input-field" placeholder="Enter a string to count vowels">
+        <input type="text" id="input-field" placeholder="Enter a string to count vowels" autocomplete="off">
         <div id="output-div">Vowel count : 0</div>
     </div>
+    <script>
+        document.getElementById("input-field").addEventListener('input', countVowels)
+        function countVowels() {
+
+
+            let temp = document.getElementById("input-field").value
+
+
+            //console.log(temp.toString().length)
+
+            if (temp.toString().length > 0) {
+                let count = 0
+                for (let ch of temp) {
+                    if(ch.toLowerCase() == 'a'||ch.toLowerCase() == 'e'||ch.toLowerCase() == 'i'||ch.toLowerCase() == 'o'||ch.toLowerCase() == 'u') {
+                        count++;
+                    }
+                }
+                //console.log(count)
+                document.getElementById("output-div").innerHTML = "Vowel count : "+count
+            }
+            else{
+                document.getElementById("output-div").innerHTML = "Vowel count : 0"
+            }
+
+
+        }
+    </script>
 </body>
+
 </html>

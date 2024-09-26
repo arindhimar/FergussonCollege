@@ -106,6 +106,27 @@ body {
     border-radius: 8px; /* Rounded corners for the containers */
 }
 
+.card-header {
+    background-color: #333; /* Dark background for the heading */
+    padding: 15px 15px 0 15px;
+    border-bottom: 1px solid #444; /* Subtle border */
+}
+
+.card-header h3 {
+    margin-top: 0;
+    font-size: 20px;
+    color: #ffffff; /* White text to match the dark theme */
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-align: center;
+}
+
+.card-body {
+    padding: 20px;
+}
+
+
+
 .bar {
     width: 30px;
     margin: 0 5px;
