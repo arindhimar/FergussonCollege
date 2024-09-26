@@ -151,31 +151,34 @@ body {
 }
 
 /* Styling for the array display */
-.array-display {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    margin-top: 10px;
-}
-
 .array-box {
-    width: 50px;
-    height: 50px;
-    background-color: #5cdb95; /* Bright green color for the boxes */
+    width: 30px;
+    background-color: #5cdb95;
     color: white;
     font-size: 18px;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: flex-end;
     margin: 5px;
-    border-radius: 6px; /* Rounded corners */
-    transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth transitions */
+    border-radius: 6px;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    height: 50px; /* Default height, but this will be overridden */
 }
 
 .array-box:hover {
-    background-color: #8EE4AF; /* Lighter green on hover */
-    transform: scale(1.1); /* Slight enlargement on hover */
+    background-color: #8EE4AF;
+    transform: scale(1.1);
 }
+
+.array-display {
+    display: flex;
+    flex-wrap: nowrap; /* Prevent wrapping so bars align horizontally */
+    justify-content: center;
+    align-items: flex-end; /* Align items to bottom */
+    height: 200px; /* Set container height to accommodate bar heights */
+    margin-top: 10px;
+}
+
 
 
 .toast {
