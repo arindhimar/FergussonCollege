@@ -1,156 +1,197 @@
-/* style.css - Enhanced Dark Theme */
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background-color: #121212; /* Rich dark background */
+/* Global Styling */
+* {
     margin: 0;
-    color: #e0e0e0; /* Light gray text for better readability */
+    padding: 0;
+    box-sizing: border-box;
 }
 
-.heading h2 {
-    margin: 20px;
-    font-size: 28px;
-    color: #ffffff; /* White heading */
-    text-transform: uppercase; /* Uppercase for a modern look */
-    letter-spacing: 2px; /* Letter spacing for elegance */
-    text-shadow: 0px 4px 10px rgba(0, 0, 0, 0.4); /* Soft shadow for depth */
+body {
+    font-family: 'Poppins', sans-serif; /* Updated font */
+    background-color: #121212;
+    color: #e0e0e0;
+    scroll-behavior: smooth;
 }
 
-.partition {
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* Center elements horizontally */
+/* Navigation Bar Styling */
+nav {
+    position: fixed;
+    top: 0;
     width: 100%;
-}
-
-.input {
-    margin-bottom: 20px;
+    background-color: rgba(51, 51, 51, 0.9); /* Semi-transparent background */
+    z-index: 1000;
+    padding: 15px 0;
     text-align: center;
+    transition: background-color 0.5s ease; /* Smooth transition for background */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5); /* Shadow for depth */
 }
 
-.input input[type="text"] {
-    width: 320px;
-    padding: 12px;
-    font-size: 18px;
-    background-color: #333; /* Dark input background */
-    color: #ffffff; /* White text */
-    border: 2px solid #5cdb95; /* Accent border */
-    border-radius: 6px; /* Rounded corners */
-    transition: all 0.3s ease;
-}
-
-.input input[type="text"]:focus {
-    border-color: #8EE4AF; /* Light green on focus */
-    outline: none;
-    box-shadow: 0px 0px 8px rgba(94, 230, 118, 0.8); /* Glow effect */
-}
-
-.input input[type="button"] {
-    margin-top: 10px;
-    padding: 12px 25px;
-    font-size: 16px;
-    background-color: #5cdb95; /* Bright green button */
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transitions */
-}
-
-.input input[type="button"]:hover {
-    background-color: #379683; /* Darker green on hover */
-    box-shadow: 0px 4px 15px rgba(94, 230, 118, 0.6); /* Soft hover shadow */
-}
-
-.startboth {
-    margin-bottom: 30px;
-}
-
-.startboth input[type="button"] {
-    padding: 12px 25px;
-    font-size: 16px;
-    background-color: #8EE4AF; /* Lighter green for the start button */
-    color: #ffffff;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.startboth input[type="button"]:hover {
-    background-color: #66b893; /* Darker hover color */
-    box-shadow: 0px 4px 15px rgba(66, 178, 147, 0.6); /* Soft shadow on hover */
-}
-
-.sorting-container {
-    display: flex;
-    justify-content: space-between;
-    width: 80%;
-}
-
-.bubble-sort, .insertion-sort {
-    width: 48%;
-    background-color: #222; /* Dark background for sorting areas */
-    border: 1px solid #444; /* Subtle borders */
-    padding: 20px;
-    box-shadow: 2px 2px 15px rgba(0, 0, 0, 0.4); /* Deeper shadow for depth */
+nav ul {
+    list-style: none;
     display: flex;
     justify-content: center;
-    align-items: flex-end;
-    height: 400px;
-    margin-top: 20px;
-    position: relative;
-    margin: 5px;
-    border-radius: 8px; /* Rounded corners for the containers */
 }
 
-.card-header {
-    background-color: #333; /* Dark background for the heading */
-    padding: 15px 15px 0 15px;
-    border-bottom: 1px solid #444; /* Subtle border */
+nav ul li {
+    margin: 0 20px;
 }
 
-.card-header h3 {
-    margin-top: 0;
-    font-size: 20px;
-    color: #ffffff; /* White text to match the dark theme */
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    text-align: center;
+nav ul li a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 18px;
+    padding: 10px 20px;
+    transition: color 0.3s ease, background-color 0.3s ease; /* Smooth transition */
+    position: relative; /* For pseudo-element */
 }
 
-.card-body {
+nav ul li a::after {
+    content: '';
+    display: block;
+    height: 2px;
+    width: 0;
+    background: #5cdb95; /* Indicator color */
+    transition: width 0.3s ease;
+    position: absolute;
+    left: 50%;
+    bottom: -5px; /* Position below the link */
+}
+
+nav ul li a:hover::after {
+    width: 100%; /* Expand on hover */
+    left: 0; /* Align to the left */
+}
+
+nav ul li a:hover {
+    color: #8EE4AF; /* Light green on hover */
+}
+
+nav ul li a:active {
+    transform: scale(0.95); /* Slight scale down on click */
+}
+
+/* Section Styling */
+.section {
+    min-height: calc(100vh - 60px); /* Minimum height for navbar */
+    padding-top: 60px; /* Prevents navbar overlap */
+    display: flex;
+    flex-direction: column; /* Stack halves vertically */
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    animation: fadeIn 1s forwards; /* Fade in effect */
+}
+
+.half {
+    flex: 1; /* Take equal height */
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Align content to the top */
+    width: 100%; /* Full width */
     padding: 20px;
 }
 
-
-
-.bar {
-    width: 30px;
-    margin: 0 5px;
-    background-color: #5cdb95; /* Bright green bars */
-    border-radius: 4px; /* Rounded bars */
-    transition: background-color 0.2s ease, transform 0.2s ease; /* Smooth animations */
+/* Design for Info Containers */
+.info-container {
+    background-color: rgba(30, 30, 30, 0.95); /* Darker background for better contrast */
+    border-radius: 10px; /* Rounded corners */
+    padding: 30px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.7); /* Enhanced shadow */
+    max-width: 500px; /* Increased maximum width for the info container */
+    height: 100%; /* Full height of the half */
+    display: flex; /* Enable flexbox for vertical alignment */
+    flex-direction: column; /* Stack children vertically */
+    justify-content: center; /* Center content vertically */
+    text-align: left; /* Align text to the left */
+    position: relative; /* Position relative for pseudo-elements */
 }
 
-.bar:hover {
-    background-color: #8EE4AF; /* Lighter green on hover */
-    transform: scale(1.1); /* Slight enlargement on hover */
+/* Pseudo-element for info container decoration */
+.info-container::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: 0;
+    right: 0;
+    height: 10px;
+    background: linear-gradient(to right, #5cdb95, #8EE4AF);
+    border-radius: 10px 10px 0 0; /* Rounded top corners */
 }
 
-/* Styling for the array label */
+.left {
+    justify-content: flex-start; /* Align content to the left */
+}
+
+.right {
+    background-color: #1e1e1e; /* Dark background for the right section */
+    padding: 20px; /* Padding around the content */
+    display: flex; /* Use flexbox for layout */
+    flex-direction: column; /* Stack elements vertically */
+    justify-content: flex-start; /* Align content to the top */
+    align-items: stretch; /* Make children stretch to full width */
+    height: 100%; /* Full height of the parent section */
+}
+
+
+/* Input Container */
+.input {
+    display: flex; /* Use flexbox for alignment */
+    flex-direction: column; /* Stack inputs vertically */
+    margin-bottom: 20px; /* Space below the input container */
+}
+
+/* Array Input Styles */
+#arrayInput {
+    padding: 10px; /* Padding inside the input */
+    border: 1px solid #5cdb95; /* Border color */
+    border-radius: 5px; /* Rounded corners */
+    background-color: #333; /* Dark background */
+    color: #fff; /* White text */
+    margin-bottom: 10px; /* Space below the input */
+}
+
+/* Add Button Styles */
+#addButton,#addBubbleSortValue,#startBubbleVisualization {
+    background-color: #5cdb95; /* Button color */
+    border: none; /* No border */
+    border-radius: 5px; /* Rounded corners */
+    padding: 10px; /* Padding inside the button */
+    color: #121212; /* Text color */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s; /* Transition effect */
+}
+
+/* Hover Effect for Add Button */
+#addButton:hover,#addBubbleSortValue:hover,#startBubbleVisualization:hover {
+    background-color: #8EE4AF; /* Lighter color on hover */
+}
+
+/* Array Display Styling */
 .array-label {
-    margin-top: 20px;
-    font-size: 20px;
-    color: #ffffff; /* White text to match the dark theme */
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    text-align: center;
+    margin-top: 20px; /* Space above the label */
+    font-size: 20px; /* Font size for the label */
+    color: #e0e0e0; /* Label color */
 }
 
-/* Styling for the array display */
+/* Array Display Area */
+#arrayDisplay {
+    display: flex;
+    align-items: bottom; /* Align boxes to the bottom */
+    height: 100%; /* Full height of the parent container */
+    width: 100%; /* Full width of the parent container */
+    position: relative; /* For absolute positioning of boxes */
+}
+
+.array-display {
+    display: flex;
+    flex-wrap: nowrap; /* Prevent wrapping so bars align horizontally */
+    justify-content: center;
+    align-items: flex-end; /* Align items to bottom */
+    height: 200px; /* Set container height to accommodate bar heights */
+    margin-top: 10px;
+}
+
+
+
 .array-box {
     width: 30px;
     background-color: #5cdb95;
@@ -170,40 +211,266 @@ body {
     transform: scale(1.1);
 }
 
-.array-display {
-    display: flex;
-    flex-wrap: nowrap; /* Prevent wrapping so bars align horizontally */
-    justify-content: center;
-    align-items: flex-end; /* Align items to bottom */
-    height: 200px; /* Set container height to accommodate bar heights */
-    margin-top: 10px;
+/* Start Both Button Container */
+.startboth {
+    margin-top: 20px; /* Space above the button container */
 }
 
+/* Start Button Styles */
+#startButton {
+    background-color: #5cdb95; /* Button color */
+    border: none; /* No border */
+    border-radius: 5px; /* Rounded corners */
+    padding: 10px 15px; /* Padding inside the button */
+    color: #121212; /* Text color */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s; /* Transition effect */
+}
 
+/* Hover Effect for Start Button */
+#startButton:hover {
+    background-color: #8EE4AF; /* Lighter color on hover */
+}
 
-.toast {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: #444; /* Default dark background */
-    color: #fff; /* White text */
-    padding: 15px 20px;
+/* Sorting Visualization Card */
+.bubble-sort-card {
+    background-color: rgba(40, 40, 40, 0.9); /* Semi-transparent background */
     border-radius: 8px; /* Rounded corners */
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5); /* Shadow effect */
-    z-index: 1000; /* Make sure it appears above other content */
-    display: none; /* Hide by default for animation */
-    opacity: 1;
-    transition: opacity 0.5s ease;
+    padding: 20px; /* Padding inside */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Shadow effect */
+    margin-top: 20px; /* Space above the card */
 }
 
-/* Optional: Style for success messages */
-.toast-success {
-    background-color: #28a745; /* Green for success */
+/* Bubble Sort Card Header */
+.card-header {
+    border-bottom: 1px solid #5cdb95; /* Underline header */
+    margin-bottom: 10px; /* Space below the header */
 }
 
-/* Optional: Style for warning messages */
-.toast-warning {
-    background-color: #ffc107; /* Yellow for warnings */
+/* Bubble Sort Visualization Current State Display */
+#bubbleSortImportant {
+    font-weight: bold; /* Bold text for important values */
+    margin-bottom: 10px; /* Space below the important values */
+    display: flex;
 }
 
+#arrayDisplay1 {
+    background-color: #333; /* Dark background for current state */
+    border-radius: 5px; /* Rounded corners */
+    padding: 10px; /* Padding inside */
+    min-height: 50px; /* Minimum height for display */
+    color: #fff; /* White text color */
+    overflow: auto; /* Enable scrolling if content overflows */
+}
+
+.bubble-sort {
+    background-color: #1e1e1e;
+}
+
+.insertion-sort {
+    background-color: #2b2b2b;
+}
+
+.comparison {
+    background-color: #333333;
+}
+
+h2 {
+    font-size: 28px; /* Adjusted font size for improved hierarchy */
+    color: #ffffff;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 15px; /* Space below heading */
+}
+
+p {
+    font-size: 16px; /* Font size for paragraph text */
+    margin: 10px 0;
+    color: #e0e0e0; /* Color for paragraph text */
+}
+
+button.read-more {
+    background-color: #5cdb95; /* Button color */
+    border: none;
+    border-radius: 5px;
+    padding: 10px 15px;
+    color: #121212; /* Text color */
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s; /* Added transform transition */
+    margin-top: 10px; /* Space above the button */
+    font-weight: 600; /* Bold text */
+}
+
+button.read-more:hover {
+    background-color: #8EE4AF; /* Lighter green on hover */
+    transform: scale(1.05); /* Slightly enlarge button on hover */
+}
+
+.code-card {
+    background-color: rgba(40, 40, 40, 0.9); /* Semi-transparent background */
+    border-radius: 8px; /* Rounded corners */
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Subtle shadow */
+    max-width: 600px; /* Maximum width */
+    margin-top: 20px; /* Space above the card */
+}
+
+.language-select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: none;
+    border-radius: 5px;
+    background-color: #5cdb95;
+    color: #121212;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.language-select:hover {
+    background-color: #8EE4AF; /* Lighter green on hover */
+}
+
+.code-display {
+    background-color: #1e1e1e; /* Dark background for code */
+    border-radius: 5px;
+    padding: 10px;
+    overflow: auto; /* Enable scrolling if code overflows */
+}
+
+.info-container {
+    position: relative; /* Make this position relative for absolute positioning of the icon */
+    background-color: rgba(30, 30, 30, 0.9); /* Semi-transparent background */
+    border-radius: 8px; /* Rounded corners */
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Subtle shadow */
+    max-width: 500px; /* Increased maximum width for the info container */
+    height: 100%; /* Full height of the half */
+    display: flex; /* Enable flexbox for vertical alignment */
+    flex-direction: column; /* Stack children vertically */
+    justify-content: center; /* Center content vertically */
+    text-align: left; /* Align text to the left */
+}
+
+.info-icon {
+    position: absolute; /* Position the icon absolutely */
+    top: 10px; /* Adjust as needed */
+    right: 10px; /* Adjust as needed */
+    font-size: 24px; /* Adjust size */
+    cursor: pointer; /* Change cursor on hover */
+    color: #5cdb95; /* Icon color */
+    transition: color 0.3s; /* Smooth color transition */
+}
+
+.info-icon:hover {
+    color: #8EE4AF; /* Lighter color on hover */
+}
+
+/* Complexity Container Styling */
+.complexity-container {
+    background-color: rgba(40, 40, 40, 0.8); /* Slightly different background */
+    border-radius: 8px; /* Rounded corners */
+    padding: 15px;
+    margin-top: 20px; /* Space above the complexity container */
+}
+
+.complexity-list {
+    list-style: none;
+    padding-left: 0; /* Remove padding */
+    display: none; /* Initially hidden */
+}
+
+.toggle-complexity {
+    cursor: pointer; /* Pointer for hover effect */
+    display: flex;
+    justify-content: space-between; /* Align items */
+    align-items: center; /* Center vertically */
+}
+
+.toggle-icon {
+    transition: transform 0.3s; /* Smooth transition */
+}
+
+/* Rotate icon when expanded */
+.toggle-complexity.expanded .toggle-icon {
+    transform: rotate(45deg);
+}
+
+
+
+/* Keyframes for fade-in animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px); /* Slide up effect */
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Custom Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #333; /* Dark scrollbar track */
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: #5cdb95; /* Green scrollbar thumb */
+    border-radius: 10px;
+    border: 3px solid #333; /* Adds padding to thumb */
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: #8EE4AF; /* Light green on hover */
+}
+
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+/* Responsive Design */
+@media (min-width: 768px) {
+    .section {
+        flex-direction: row; /* Stack halves horizontally */
+    }
+
+    .half {
+        flex: 1; /* Take equal width */
+        height: auto; /* Auto height */
+    }
+
+    h2 {
+        font-size: 36px; /* Larger font size for larger screens */
+    }
+
+    .info-container {
+        max-width: 600px; /* Further increased max-width for better readability */
+        height: auto; /* Allow auto height */
+    }
+}
+
+/* Add extra media queries for smaller screens if needed */
+@media (max-width: 767px) {
+    .info-container {
+        padding: 15px; /* Reduced padding for smaller screens */
+        max-width: 90%; /* Use more width on small screens */
+    }
+    
+    .code-card {
+        margin-top: 15px; /* Adjust space above the card */
+    }
+}

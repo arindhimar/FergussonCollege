@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sorting Visualization</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> 
+</head>
+
+<body>
+    <div class="heading">
+        <h2>Bubble Sort & Insertion Sort Comparison</h2>
+    </div>
+
+    <div class="partition">
+        <div class="input">
+            <input type="text" id="arrayInput" placeholder="Enter numbers one by one">
+            <br>
+            <input type="button" value="Add" id="addButton">
+        </div>
+
+        <h3 class="array-label">Input Array:</h3>
+        <div id="arrayDisplay" class="array-display"></div>
+
+        <div class="startboth">
+            <input type="button" value="Start Both" id="startButton">
+        </div>
+
+        <!-- Sorting visualizations and comparison section -->
+        <div class="sorting-container">
+            <!-- Bubble Sort Section -->
+            <div class="bubble-sort" id="bubbleSort">
+                <div class="card-header">
+                    <h3>Bubble Sort</h3>
+                </div>
+                <div class="card-body">
+                    <h4>Swapped Values:</h4>
+                    <div id="bubbleSortImportant" class="important-value"></div>
+                    <div id="arrayDisplay1" class="array-display"></div>
+                </div>
+            </div>
+
+            <!-- Insertion Sort Section -->
+            <div class="insertion-sort" id="insertionSort">
+                <div class="card-header">
+                    <h3>Insertion Sort</h3>
+                </div>
+                <div class="card-body">
+                    <h4>Key Element:</h4>
+                    <div id="insertionSortKey" class="important-value"></div>
+                    <div id="arrayDisplay2" class="array-display"></div>
+                </div>
+            </div>
+
+            <!-- Comparison Section -->
+            <div class="comparison" id="comparison">
+                <div class="card-header">
+                    <h3>Comparison</h3>
+                </div>
+                <div class="card-body">
+                    <h4>Comparison Details:</h4>
+                    <div id="comparisonDetails" class="important-value"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

@@ -1,4 +1,104 @@
 $(document).ready(function () {
+    $('#bubbleSortLanguage').change(function () {
+        const language = $(this).val();
+        const codeDisplay = $('#bubbleSortCode');
+
+        let code = '';
+        switch (language) {
+            case 'python':
+                code = `def bubble_sort(arr):
+    n = len(arr)
+    for i in range(n):
+        for j in range(0, n-i-1):
+            if arr[j] > arr[j+1]:
+                arr[j], arr[j+1] = arr[j+1], arr[j]
+    return arr`;
+                break;
+            case 'javascript':
+                code = `function bubbleSort(arr) {
+    let n = arr.length;
+    for (let i = 0; i < n; i++) {
+        for (let j = 0; j < n - i - 1; j++) {
+            if (arr[j] > arr[j + 1]) {
+                [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+            }
+        }
+    }
+    return arr;
+}`;
+                break;
+            case 'cpp':
+                code = `void bubbleSort(int arr[], int n) {
+    for (int i = 0; i < n-1; i++) {
+        for (int j = 0; j < n-i-1; j++) {
+            if (arr[j] > arr[j+1]) {
+                std::swap(arr[j], arr[j+1]);
+            }
+        }
+    }
+}`;
+                break;
+        }
+
+        codeDisplay.html(`<pre><code class="language-${language}">${code}</code></pre>`);
+    });
+
+    // Similar code for Insertion Sort
+    $('#insertionSortLanguage').change(function () {
+        const language = $(this).val();
+        const codeDisplay = $('#insertionSortCode');
+
+        let code = '';
+        switch (language) {
+            case 'python':
+                code = `def insertion_sort(arr):
+    for i in range(1, len(arr)):
+        key = arr[i]
+        j = i - 1
+        while j >= 0 and key < arr[j]:
+            arr[j + 1] = arr[j]
+            j -= 1
+        arr[j + 1] = key
+    return arr`;
+                break;
+            case 'javascript':
+                code = `function insertionSort(arr) {
+    for (let i = 1; i < arr.length; i++) {
+        let key = arr[i];
+        let j = i - 1;
+        while (j >= 0 && arr[j] > key) {
+            arr[j + 1] = arr[j];
+            j--;
+        }
+        arr[j + 1] = key;
+    }
+    return arr;
+}`;
+                break;
+            case 'cpp':
+                code = `void insertionSort(int arr[], int n) {
+    for (int i = 1; i < n; i++) {
+        int key = arr[i];
+        int j = i - 1;
+        while (j >= 0 && arr[j] > key) {
+            arr[j + 1] = arr[j];
+            j = j - 1;
+        }
+        arr[j + 1] = key;
+    }
+}`;
+                break;
+        }
+
+        codeDisplay.html(`<pre><code class="language-${language}">${code}</code></pre>`);
+    });
+
+    $('.toggle-complexity').click(function () {
+        $(this).next('.complexity-list').slideToggle(); // Toggle the visibility of the complexity list
+        $(this).toggleClass('expanded'); // Rotate icon
+    });
+
+
     const array = [];
 
     // Function to display the array in boxes
@@ -21,25 +121,30 @@ $(document).ready(function () {
 
     async function visualizeArray(arr, index1, index2, swapped = false) {
         $("#arrayDisplay1").empty(); // Clear the bubble sort display
-
+    
         const maxValue = Math.max(...arr, 1); // Avoid division by zero
         arr.forEach((value, index) => {
-            const heightPercentage = (value / maxValue) * 100;
+            const widthPercentage = (value / maxValue) * 100; // Calculate width relative to the max value
             const box = $('<div></div>')
                 .addClass('array-box')
-                .css('height', `${heightPercentage}%`)
+                .css({
+                    'height': `${widthPercentage}%`, // Set a fixed height for uniformity
+                    'display': 'inline-block', // Display horizontally
+                    'margin': '0 2px' // Add some space between the boxes
+                })
                 .text(value);
-
+    
             // Highlight the elements being compared
             if (index === index1 || index === index2) {
                 box.css('background-color', swapped ? '#ff6347' : '#f1c40f'); // Use different color for swap
             }
-
+    
             $("#arrayDisplay1").append(box);
         });
-
+    
         await sleep(500); // Adjust the delay as needed
     }
+    
 
     async function visualizeBubbleImportantValues(val1, val2) {
         $("#bubbleSortImportant").empty(); // Clear previous values
@@ -74,112 +179,31 @@ $(document).ready(function () {
         // Final visualization when sorting is done
         await visualizeArray(bubbleSortArray, -1, -1, true);
     }
-    async function visualizeInsertionKey(key) {
-        $("#insertionSortKey").empty(); // Clear previous key
-        const keyBox = $('<div></div>').addClass('array-box').text(key).css('background-color', '#f1c40f');
 
-        $("#insertionSortKey").append(keyBox); // Show current key value
-    }
-
-    async function insertionSort() {
-        let n = array.length;
-        let insertionSortArray = [...array];
-
-        for (let i = 1; i < n; i++) {
-            let key = insertionSortArray[i];
-            let j = i - 1;
-
-            // Highlight the key element
-            await visualizeInsertionKey(key);
-            await visualizeInsertionArray(insertionSortArray, i, j, true);
-
-            while (j >= 0 && insertionSortArray[j] > key) {
-                insertionSortArray[j + 1] = insertionSortArray[j];
-                j--;
-
-                // Visualize the array after shifting the element
-                await visualizeInsertionArray(insertionSortArray, i, j + 1, false);
-            }
-            insertionSortArray[j + 1] = key;
-
-            // Visualize the array after placing the key in its correct position
-            await visualizeInsertionArray(insertionSortArray, j + 1, -1, true);
-        }
-
-        // Final visualization when sorting is done
-        await visualizeInsertionArray(insertionSortArray, -1, -1, true);
-    }
-
-    async function visualizeInsertionArray(arr, keyIndex, compareIndex, inserted = false) {
-        $("#arrayDisplay2").empty(); // Clear the insertion sort display
-
-        const maxValue = Math.max(...arr, 1); // Avoid division by zero
-        arr.forEach((value, index) => {
-            const heightPercentage = (value / maxValue) * 100;
-            const box = $('<div></div>')
-                .addClass('array-box')
-                .css('height', `${heightPercentage}%`)
-                .text(value);
-
-            // Highlight the key element
-            if (index === keyIndex) {
-                box.css('background-color', '#f1c40f'); // Highlight the key element in yellow
-            }
-
-            // Highlight the comparison element
-            if (index === compareIndex && !inserted) {
-                box.css('background-color', '#ff6347'); // Highlight the comparison element in red
-            }
-
-            $("#arrayDisplay2").append(box);
-        });
-
-        await sleep(500); // Adjust the delay as needed
-    }
-
-
-
-
-    // Event listener for the 'Add' button and Enter key press
-    $('#addButton').click(function () {
-        const inputValue = $('#arrayInput').val().trim();
-
-        if (inputValue !== '' && !isNaN(inputValue)) { // Ensure input is not empty and is a number
-            const number = Number(inputValue);
-            array.push(number);
-            updateArrayDisplay();
-            $('#arrayInput').val('');
-        } else {
-            // Show error message in the designated area (if needed)
-            $('#arrayInput').val('');
-        }
-    });
-
-    $('#arrayInput').keypress(function (e) {
-        if (e.which === 13) { // Enter key is pressed
-            const inputValue = $(this).val().trim();
-
+        // Event listener for the 'Add' button and Enter key press
+        $('#addBubbleSortValue').click(function () {
+            const inputValue = $('#arrayInput').val().trim();
+    
             if (inputValue !== '' && !isNaN(inputValue)) { // Ensure input is not empty and is a number
                 const number = Number(inputValue);
                 array.push(number);
                 updateArrayDisplay();
-                $(this).val('');
+                $('#arrayInput').val('');
             } else {
                 // Show error message in the designated area (if needed)
-                $(this).val('');
+                $('#arrayInput').val('');
             }
-        }
-    });
+        });
 
-    // Event listener for the 'Start Both' button
-    $("#startButton").click(async function () {
-        $("#arrayDisplay1").empty();
-        $("#arrayDisplay2").empty();
-        $("#arrayDisplay").children().clone().appendTo("#arrayDisplay1");
-        $("#arrayDisplay").children().clone().appendTo("#arrayDisplay2");
+        $("#startBubbleVisualization").click(async function () {
+            $("#arrayDisplay1").empty();
+            $("#arrayDisplay2").empty();
+            $("#arrayDisplay").children().clone().appendTo("#arrayDisplay1");
+            $("#arrayDisplay").children().clone().appendTo("#arrayDisplay2");
+    
+            // Run both sorting algorithms simultaneously
+            await Promise.all([bubbleSort()]);
+        });
 
-        // Run both sorting algorithms simultaneously
-        await Promise.all([bubbleSort(), insertionSort()]);
-    });
 
 });
