@@ -26,8 +26,10 @@
             <div class="info-container">
                 <i class="info-icon" title="Bubble Sort is a simple sorting algorithm...">ℹ️</i>
                 <h2>Bubble Sort</h2>
-                <p>Bubble Sort is a simple sorting algorithm that repeatedly steps through the list, compares adjacent elements, and swaps them if they are in the wrong order. It is named for the way larger elements "bubble" to the top of the list.</p>
-                
+                <p>Bubble Sort is a simple sorting algorithm that repeatedly steps through the list, compares adjacent
+                    elements, and swaps them if they are in the wrong order. It is named for the way larger elements
+                    "bubble" to the top of the list.</p>
+
                 <!-- Complexity Analysis with Toggle -->
                 <div class="complexity-container">
                     <h3 class="toggle-complexity">Complexity Analysis <span class="toggle-icon">➕</span></h3>
@@ -38,7 +40,7 @@
                         <li><strong>Space Complexity:</strong> O(1)</li>
                     </ul>
                 </div>
-                
+
                 <!-- Code Section -->
                 <div class="code-card">
                     <h3>Select Language:</h3>
@@ -68,14 +70,14 @@ def bubble_sort(arr):
                     <br>
                     <input type="button" value="Add" id="addBubbleSortValue">
                 </div>
-        
+
                 <h3 class="array-label">Input Array:</h3>
                 <div id="arrayDisplay" class="array-display"></div>
-        
+
                 <div class="startboth">
                     <input type="button" value="Visualize" id="startBubbleVisualization">
                 </div>
-        
+
                 <!-- Sorting visualizations -->
                 <div class="sorting-container">
                     <!-- Bubble Sort Visualization -->
@@ -102,7 +104,9 @@ def bubble_sort(arr):
             <div class="info-container">
                 <i class="info-icon" title="Insertion Sort is an efficient sorting algorithm...">ℹ️</i>
                 <h2>Insertion Sort</h2>
-                <p>Insertion Sort is an efficient sorting algorithm that builds the final sorted array one item at a time. It is much less efficient on large lists than more advanced algorithms like quicksort or merge sort.</p>
+                <p>Insertion Sort is an efficient sorting algorithm that builds the final sorted array one item at a
+                    time. It is much less efficient on large lists than more advanced algorithms like quicksort or merge
+                    sort.</p>
 
                 <!-- Complexity Analysis with Toggle -->
                 <div class="complexity-container">
@@ -134,22 +138,36 @@ def insertion_sort(arr):
             j -= 1
         arr[j + 1] = key
     return arr
-                        </code></pre>
+                    </code></pre>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="half right">
+        <div class="half right" style="background-color: #2b2b2b;">
             <div class="partition">
-                <h3>Insertion Sort Visualization</h3>
+                <div class="input">
+                    <input type="text" id="insertionArrayInput" placeholder="Enter numbers one by one">
+                    <br>
+                    <input type="button" value="Add" id="addInsertionSortValue">
+                </div>
+
+                <h3 class="array-label">Input Array:</h3>
+                <div id="arrayInsertionDisplay" class="array-display"></div>
+
+                <div class="startboth">
+                    <input type="button" value="Visualize" id="startInsertionVisualization">
+                </div>
+
+                <!-- Sorting visualizations -->
                 <div class="sorting-container">
-                    <!-- Insertion Sort Visualization Placeholder -->
-                    <div class="insertion-sort-card" id="insertionSort">
+                    <div class="bubble-sort-card"" id="insertionSort">
                         <div class="card-header">
                             <h3>Insertion Sort Visualization</h3>
                         </div>
                         <div class="card-body">
                             <h4>Current State:</h4>
+                            
+
                             <div id="insertionSortDisplay" class="array-display"></div>
                         </div>
                     </div>
@@ -157,6 +175,7 @@ def insertion_sort(arr):
             </div>
         </div>
     </div>
+
 
     <!-- Comparison Section -->
     <div id="comparisonSection" class="section comparison">

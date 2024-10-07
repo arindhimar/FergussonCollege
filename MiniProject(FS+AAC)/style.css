@@ -140,7 +140,7 @@ nav ul li a:active {
 }
 
 /* Array Input Styles */
-#arrayInput {
+#arrayInput,#insertionArrayInput {
     padding: 10px; /* Padding inside the input */
     border: 1px solid #5cdb95; /* Border color */
     border-radius: 5px; /* Rounded corners */
@@ -150,7 +150,7 @@ nav ul li a:active {
 }
 
 /* Add Button Styles */
-#addButton,#addBubbleSortValue,#startBubbleVisualization {
+#addButton,#addBubbleSortValue,#startBubbleVisualization,#addInsertionSortValue,#startInsertionVisualization {
     background-color: #5cdb95; /* Button color */
     border: none; /* No border */
     border-radius: 5px; /* Rounded corners */
@@ -161,7 +161,7 @@ nav ul li a:active {
 }
 
 /* Hover Effect for Add Button */
-#addButton:hover,#addBubbleSortValue:hover,#startBubbleVisualization:hover {
+#addButton:hover,#addBubbleSortValue:hover,#startBubbleVisualization:hover,#startInsertionVisualization:hover,#addInsertionSortValue:hover   {
     background-color: #8EE4AF; /* Lighter color on hover */
 }
 
@@ -173,7 +173,7 @@ nav ul li a:active {
 }
 
 /* Array Display Area */
-#arrayDisplay {
+#arrayDisplay,#arrayInsertionDisplay {
     display: flex;
     align-items: bottom; /* Align boxes to the bottom */
     height: 100%; /* Full height of the parent container */
@@ -254,7 +254,7 @@ nav ul li a:active {
     display: flex;
 }
 
-#arrayDisplay1 {
+#arrayDisplay1 , #insertionSortDisplay {
     background-color: #333; /* Dark background for current state */
     border-radius: 5px; /* Rounded corners */
     padding: 10px; /* Padding inside */
