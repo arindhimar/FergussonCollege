@@ -166,7 +166,7 @@ def insertion_sort(arr):
                         </div>
                         <div class="card-body">
                             <h4>Current State:</h4>
-                            
+                            <!-- <div id="arrayDisplay1" class="array-display"></div> -->
 
                             <div id="insertionSortDisplay" class="array-display"></div>
                         </div>
@@ -177,18 +177,59 @@ def insertion_sort(arr):
     </div>
 
 
-    <!-- Comparison Section -->
-    <div id="comparisonSection" class="section comparison">
-        <div class="half">
-            <h2>Comparison - Part 1</h2>
+<!-- Comparison Section -->
+<div id="comparisonSection" class="section comparison">
+    <div class="comparison-container">
+        <div class="comparison-intro">
+            <h2>Bubble Sort & Insertion Sort Comparison</h2>
             <p>Here you can analyze the performance of both algorithms in various scenarios.</p>
+            <div class="input">
+                <input type="text" id="comparisionArrayInput" placeholder="Enter numbers one by one">
+                <br>
+                <input type="button" value="Add" id="addComparisionSortValue">
+            </div>
+
+            <div class="startboth">
+                <input type="button" value="Visualize" id="startComparisionVisualization">
+            </div>
+
+            <h3 class="array-label">Input Array:</h3>
+            <div id="arrayComparisionDisplay" class="array-display"></div>
         </div>
-        <div class="half">
-            <h2>Comparison - Part 2</h2>
-            <p>Visualizations and analysis for different dataset sizes.</p>
+        <div class="comparison-details">
+            <div class="comparison-half bubble-sort-comparison">
+                <h3>Bubble Sort</h3>
+                <div class="sorting-container">
+                    <div class="bubble-sort-card" id="comparisonBubbleSort">
+                        <div class="card-header">
+                            <h3>Bubble Sort Visualization</h3>
+                        </div>
+                        <div class="card-body">
+                            <h4>Intermediate Values:</h4>
+                            <div id="comparisonBubbleIntermediateValues" class="intermediate-value"></div>
+                            <div id="comparisonBubbleSortDisplay" class="array-display"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="comparison-half insertion-sort-comparison">
+                <h3>Insertion Sort</h3>
+                <div class="sorting-container">
+                    <div class="bubble-sort-card" id="comparisonInsertionSort">
+                        <div class="card-header">
+                            <h3>Insertion Sort Visualization</h3>
+                        </div>
+                        <div class="card-body">
+                            <h4>Intermediate Values:</h4>
+                            <div id="comparisonInsertionIntermediateValues" class="intermediate-value"></div>
+                            <div id="comparisonInsertionSortDisplay" class="array-display"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
-
+</div>
     <script src="script.js"></script>
 </body>
 

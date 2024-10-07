@@ -6,7 +6,8 @@
 }
 
 body {
-    font-family: 'Poppins', sans-serif; /* Updated font */
+    font-family: 'Poppins', sans-serif;
+    /* Updated font */
     background-color: #121212;
     color: #e0e0e0;
     scroll-behavior: smooth;
@@ -17,12 +18,15 @@ nav {
     position: fixed;
     top: 0;
     width: 100%;
-    background-color: rgba(51, 51, 51, 0.9); /* Semi-transparent background */
+    background-color: rgba(51, 51, 51, 0.9);
+    /* Semi-transparent background */
     z-index: 1000;
     padding: 15px 0;
     text-align: center;
-    transition: background-color 0.5s ease; /* Smooth transition for background */
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5); /* Shadow for depth */
+    transition: background-color 0.5s ease;
+    /* Smooth transition for background */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    /* Shadow for depth */
 }
 
 nav ul {
@@ -40,8 +44,10 @@ nav ul li a {
     text-decoration: none;
     font-size: 18px;
     padding: 10px 20px;
-    transition: color 0.3s ease, background-color 0.3s ease; /* Smooth transition */
-    position: relative; /* For pseudo-element */
+    transition: color 0.3s ease, background-color 0.3s ease;
+    /* Smooth transition */
+    position: relative;
+    /* For pseudo-element */
 }
 
 nav ul li a::after {
@@ -49,60 +55,83 @@ nav ul li a::after {
     display: block;
     height: 2px;
     width: 0;
-    background: #5cdb95; /* Indicator color */
+    background: #5cdb95;
+    /* Indicator color */
     transition: width 0.3s ease;
     position: absolute;
     left: 50%;
-    bottom: -5px; /* Position below the link */
+    bottom: -5px;
+    /* Position below the link */
 }
 
 nav ul li a:hover::after {
-    width: 100%; /* Expand on hover */
-    left: 0; /* Align to the left */
+    width: 100%;
+    /* Expand on hover */
+    left: 0;
+    /* Align to the left */
 }
 
 nav ul li a:hover {
-    color: #8EE4AF; /* Light green on hover */
+    color: #8EE4AF;
+    /* Light green on hover */
 }
 
 nav ul li a:active {
-    transform: scale(0.95); /* Slight scale down on click */
+    transform: scale(0.95);
+    /* Slight scale down on click */
 }
 
 /* Section Styling */
 .section {
-    min-height: calc(100vh - 60px); /* Minimum height for navbar */
-    padding-top: 60px; /* Prevents navbar overlap */
+    min-height: calc(100vh - 60px);
+    /* Minimum height for navbar */
+    padding-top: 60px;
+    /* Prevents navbar overlap */
     display: flex;
-    flex-direction: column; /* Stack halves vertically */
+    flex-direction: column;
+    /* Stack halves vertically */
     justify-content: center;
     align-items: center;
     opacity: 0;
-    animation: fadeIn 1s forwards; /* Fade in effect */
+    animation: fadeIn 1s forwards;
+    /* Fade in effect */
 }
 
 .half {
-    flex: 1; /* Take equal height */
+    flex: 1;
+    /* Take equal height */
     display: flex;
     justify-content: center;
-    align-items: flex-start; /* Align content to the top */
-    width: 100%; /* Full width */
+    align-items: flex-start;
+    /* Align content to the top */
+    width: 100%;
+    /* Full width */
     padding: 20px;
 }
 
 /* Design for Info Containers */
 .info-container {
-    background-color: rgba(30, 30, 30, 0.95); /* Darker background for better contrast */
-    border-radius: 10px; /* Rounded corners */
+    background-color: rgba(30, 30, 30, 0.95);
+    /* Darker background for better contrast */
+    border-radius: 10px;
+    /* Rounded corners */
     padding: 30px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.7); /* Enhanced shadow */
-    max-width: 500px; /* Increased maximum width for the info container */
-    height: 100%; /* Full height of the half */
-    display: flex; /* Enable flexbox for vertical alignment */
-    flex-direction: column; /* Stack children vertically */
-    justify-content: center; /* Center content vertically */
-    text-align: left; /* Align text to the left */
-    position: relative; /* Position relative for pseudo-elements */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.7);
+    /* Enhanced shadow */
+    max-width: 500px;
+    /* Increased maximum width for the info container */
+    height: 100%;
+    /* Full height of the half */
+    display: flex;
+    /* Enable flexbox for vertical alignment */
+    flex-direction: column;
+    /* Stack children vertically */
+    justify-content: center;
+    /* Center content vertically */
+    text-align: left;
+    /* Align text to the left */
+    position: relative;
+    /* Position relative for pseudo-elements */
 }
 
 /* Pseudo-element for info container decoration */
@@ -114,79 +143,130 @@ nav ul li a:active {
     right: 0;
     height: 10px;
     background: linear-gradient(to right, #5cdb95, #8EE4AF);
-    border-radius: 10px 10px 0 0; /* Rounded top corners */
+    border-radius: 10px 10px 0 0;
+    /* Rounded top corners */
 }
 
 .left {
-    justify-content: flex-start; /* Align content to the left */
+    justify-content: flex-start;
+    /* Align content to the left */
 }
 
 .right {
-    background-color: #1e1e1e; /* Dark background for the right section */
-    padding: 20px; /* Padding around the content */
-    display: flex; /* Use flexbox for layout */
-    flex-direction: column; /* Stack elements vertically */
-    justify-content: flex-start; /* Align content to the top */
-    align-items: stretch; /* Make children stretch to full width */
-    height: 100%; /* Full height of the parent section */
+    background-color: #1e1e1e;
+    /* Dark background for the right section */
+    padding: 20px;
+    /* Padding around the content */
+    display: flex;
+    /* Use flexbox for layout */
+    flex-direction: column;
+    /* Stack elements vertically */
+    justify-content: flex-start;
+    /* Align content to the top */
+    align-items: stretch;
+    /* Make children stretch to full width */
+    height: 100%;
+    /* Full height of the parent section */
 }
 
 
 /* Input Container */
 .input {
-    display: flex; /* Use flexbox for alignment */
-    flex-direction: column; /* Stack inputs vertically */
-    margin-bottom: 20px; /* Space below the input container */
+    display: flex;
+    /* Use flexbox for alignment */
+    flex-direction: column;
+    /* Stack inputs vertically */
+    margin-bottom: 20px;
+    /* Space below the input container */
 }
 
 /* Array Input Styles */
-#arrayInput,#insertionArrayInput {
-    padding: 10px; /* Padding inside the input */
-    border: 1px solid #5cdb95; /* Border color */
-    border-radius: 5px; /* Rounded corners */
-    background-color: #333; /* Dark background */
-    color: #fff; /* White text */
-    margin-bottom: 10px; /* Space below the input */
+#arrayInput,
+#insertionArrayInput,
+#comparisionArrayInput {
+    padding: 10px;
+    /* Padding inside the input */
+    border: 1px solid #5cdb95;
+    /* Border color */
+    border-radius: 5px;
+    /* Rounded corners */
+    background-color: #333;
+    /* Dark background */
+    color: #fff;
+    /* White text */
+    margin-bottom: 10px;
+    /* Space below the input */
 }
 
 /* Add Button Styles */
-#addButton,#addBubbleSortValue,#startBubbleVisualization,#addInsertionSortValue,#startInsertionVisualization {
-    background-color: #5cdb95; /* Button color */
-    border: none; /* No border */
-    border-radius: 5px; /* Rounded corners */
-    padding: 10px; /* Padding inside the button */
-    color: #121212; /* Text color */
-    cursor: pointer; /* Pointer cursor on hover */
-    transition: background-color 0.3s; /* Transition effect */
+#addButton,
+#startComparisionVisualization,
+#addComparisionSortValue,
+#addBubbleSortValue,
+#startBubbleVisualization,
+#addInsertionSortValue,
+#startInsertionVisualization {
+    background-color: #5cdb95;
+    /* Button color */
+    border: none;
+    /* No border */
+    border-radius: 5px;
+    /* Rounded corners */
+    padding: 10px;
+    /* Padding inside the button */
+    color: #121212;
+    /* Text color */
+    cursor: pointer;
+    /* Pointer cursor on hover */
+    transition: background-color 0.3s;
+    /* Transition effect */
 }
 
 /* Hover Effect for Add Button */
-#addButton:hover,#addBubbleSortValue:hover,#startBubbleVisualization:hover,#startInsertionVisualization:hover,#addInsertionSortValue:hover   {
-    background-color: #8EE4AF; /* Lighter color on hover */
+#addButton:hover,
+#startComparisionVisualization:hover,
+#addComparisionSortValue:hover,
+#addBubbleSortValue:hover,
+#startBubbleVisualization:hover,
+#startInsertionVisualization:hover,
+#addInsertionSortValue:hover {
+    background-color: #8EE4AF;
+    /* Lighter color on hover */
 }
 
 /* Array Display Styling */
 .array-label {
-    margin-top: 20px; /* Space above the label */
-    font-size: 20px; /* Font size for the label */
-    color: #e0e0e0; /* Label color */
+    margin-top: 20px;
+    /* Space above the label */
+    font-size: 20px;
+    /* Font size for the label */
+    color: #e0e0e0;
+    /* Label color */
 }
 
 /* Array Display Area */
-#arrayDisplay,#arrayInsertionDisplay {
+#arrayDisplay,
+#arrayInsertionDisplay {
     display: flex;
-    align-items: bottom; /* Align boxes to the bottom */
-    height: 100%; /* Full height of the parent container */
-    width: 100%; /* Full width of the parent container */
-    position: relative; /* For absolute positioning of boxes */
+    align-items: bottom;
+    /* Align boxes to the bottom */
+    height: 100%;
+    /* Full height of the parent container */
+    width: 100%;
+    /* Full width of the parent container */
+    position: relative;
+    /* For absolute positioning of boxes */
 }
 
 .array-display {
     display: flex;
-    flex-wrap: nowrap; /* Prevent wrapping so bars align horizontally */
+    flex-wrap: nowrap;
+    /* Prevent wrapping so bars align horizontally */
     justify-content: center;
-    align-items: flex-end; /* Align items to bottom */
-    height: 200px; /* Set container height to accommodate bar heights */
+    align-items: flex-end;
+    /* Align items to bottom */
+    height: 200px;
+    /* Set container height to accommodate bar heights */
     margin-top: 10px;
 }
 
@@ -203,7 +283,8 @@ nav ul li a:active {
     margin: 5px;
     border-radius: 6px;
     transition: background-color 0.3s ease, transform 0.3s ease;
-    height: 50px; /* Default height, but this will be overridden */
+    height: 50px;
+    /* Default height, but this will be overridden */
 }
 
 .array-box:hover {
@@ -213,54 +294,79 @@ nav ul li a:active {
 
 /* Start Both Button Container */
 .startboth {
-    margin-top: 20px; /* Space above the button container */
+    margin-top: 20px;
+    /* Space above the button container */
 }
 
 /* Start Button Styles */
 #startButton {
-    background-color: #5cdb95; /* Button color */
-    border: none; /* No border */
-    border-radius: 5px; /* Rounded corners */
-    padding: 10px 15px; /* Padding inside the button */
-    color: #121212; /* Text color */
-    cursor: pointer; /* Pointer cursor on hover */
-    transition: background-color 0.3s; /* Transition effect */
+    background-color: #5cdb95;
+    /* Button color */
+    border: none;
+    /* No border */
+    border-radius: 5px;
+    /* Rounded corners */
+    padding: 10px 15px;
+    /* Padding inside the button */
+    color: #121212;
+    /* Text color */
+    cursor: pointer;
+    /* Pointer cursor on hover */
+    transition: background-color 0.3s;
+    /* Transition effect */
 }
 
 /* Hover Effect for Start Button */
 #startButton:hover {
-    background-color: #8EE4AF; /* Lighter color on hover */
+    background-color: #8EE4AF;
+    /* Lighter color on hover */
 }
 
 /* Sorting Visualization Card */
 .bubble-sort-card {
-    background-color: rgba(40, 40, 40, 0.9); /* Semi-transparent background */
-    border-radius: 8px; /* Rounded corners */
-    padding: 20px; /* Padding inside */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Shadow effect */
-    margin-top: 20px; /* Space above the card */
+    background-color: rgba(40, 40, 40, 0.9);
+    /* Semi-transparent background */
+    border-radius: 8px;
+    /* Rounded corners */
+    padding: 20px;
+    /* Padding inside */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    /* Shadow effect */
+    margin-top: 20px;
+    /* Space above the card */
 }
 
 /* Bubble Sort Card Header */
 .card-header {
-    border-bottom: 1px solid #5cdb95; /* Underline header */
-    margin-bottom: 10px; /* Space below the header */
+    border-bottom: 1px solid #5cdb95;
+    /* Underline header */
+    margin-bottom: 10px;
+    /* Space below the header */
 }
 
 /* Bubble Sort Visualization Current State Display */
 #bubbleSortImportant {
-    font-weight: bold; /* Bold text for important values */
-    margin-bottom: 10px; /* Space below the important values */
+    font-weight: bold;
+    /* Bold text for important values */
+    margin-bottom: 10px;
+    /* Space below the important values */
     display: flex;
 }
 
-#arrayDisplay1 , #insertionSortDisplay {
-    background-color: #333; /* Dark background for current state */
-    border-radius: 5px; /* Rounded corners */
-    padding: 10px; /* Padding inside */
-    min-height: 50px; /* Minimum height for display */
-    color: #fff; /* White text color */
-    overflow: auto; /* Enable scrolling if content overflows */
+#arrayDisplay1,
+#insertionSortDisplay {
+    background-color: #333;
+    /* Dark background for current state */
+    border-radius: 5px;
+    /* Rounded corners */
+    padding: 10px;
+    /* Padding inside */
+    min-height: 50px;
+    /* Minimum height for display */
+    color: #fff;
+    /* White text color */
+    overflow: auto;
+    /* Enable scrolling if content overflows */
 }
 
 .bubble-sort {
@@ -273,46 +379,99 @@ nav ul li a:active {
 
 .comparison {
     background-color: #333333;
+    padding: 40px 20px;
 }
 
+
+.comparison-container {
+    display: flex;
+    flex-direction: column;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.comparison-intro {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.comparison-details {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.comparison-half {
+    flex: 1;
+    background-color: rgba(40, 40, 40, 0.9);
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+}
+
+.bubble-sort-comparison {
+    border-top: 3px solid #5cdb95;
+}
+
+.insertion-sort-comparison {
+    border-top: 3px solid #8EE4AF;
+}
+
+
 h2 {
-    font-size: 28px; /* Adjusted font size for improved hierarchy */
+    font-size: 28px;
+    /* Adjusted font size for improved hierarchy */
     color: #ffffff;
     text-transform: uppercase;
     letter-spacing: 1px;
-    margin-bottom: 15px; /* Space below heading */
+    margin-bottom: 15px;
+    /* Space below heading */
 }
 
 p {
-    font-size: 16px; /* Font size for paragraph text */
+    font-size: 16px;
+    /* Font size for paragraph text */
     margin: 10px 0;
-    color: #e0e0e0; /* Color for paragraph text */
+    color: #e0e0e0;
+    /* Color for paragraph text */
 }
 
 button.read-more {
-    background-color: #5cdb95; /* Button color */
+    background-color: #5cdb95;
+    /* Button color */
     border: none;
     border-radius: 5px;
     padding: 10px 15px;
-    color: #121212; /* Text color */
+    color: #121212;
+    /* Text color */
     cursor: pointer;
-    transition: background-color 0.3s, transform 0.3s; /* Added transform transition */
-    margin-top: 10px; /* Space above the button */
-    font-weight: 600; /* Bold text */
+    transition: background-color 0.3s, transform 0.3s;
+    /* Added transform transition */
+    margin-top: 10px;
+    /* Space above the button */
+    font-weight: 600;
+    /* Bold text */
 }
 
 button.read-more:hover {
-    background-color: #8EE4AF; /* Lighter green on hover */
-    transform: scale(1.05); /* Slightly enlarge button on hover */
+    background-color: #8EE4AF;
+    /* Lighter green on hover */
+    transform: scale(1.05);
+    /* Slightly enlarge button on hover */
 }
 
 .code-card {
-    background-color: rgba(40, 40, 40, 0.9); /* Semi-transparent background */
-    border-radius: 8px; /* Rounded corners */
+    background-color: rgba(40, 40, 40, 0.9);
+    /* Semi-transparent background */
+    border-radius: 8px;
+    /* Rounded corners */
     padding: 20px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Subtle shadow */
-    max-width: 600px; /* Maximum width */
-    margin-top: 20px; /* Space above the card */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    /* Subtle shadow */
+    max-width: 600px;
+    /* Maximum width */
+    margin-top: 20px;
+    /* Space above the card */
 }
 
 .language-select {
@@ -328,67 +487,97 @@ button.read-more:hover {
 }
 
 .language-select:hover {
-    background-color: #8EE4AF; /* Lighter green on hover */
+    background-color: #8EE4AF;
+    /* Lighter green on hover */
 }
 
 .code-display {
-    background-color: #1e1e1e; /* Dark background for code */
+    background-color: #1e1e1e;
+    /* Dark background for code */
     border-radius: 5px;
     padding: 10px;
-    overflow: auto; /* Enable scrolling if code overflows */
+    overflow: auto;
+    /* Enable scrolling if code overflows */
 }
 
 .info-container {
-    position: relative; /* Make this position relative for absolute positioning of the icon */
-    background-color: rgba(30, 30, 30, 0.9); /* Semi-transparent background */
-    border-radius: 8px; /* Rounded corners */
+    position: relative;
+    /* Make this position relative for absolute positioning of the icon */
+    background-color: rgba(30, 30, 30, 0.9);
+    /* Semi-transparent background */
+    border-radius: 8px;
+    /* Rounded corners */
     padding: 20px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Subtle shadow */
-    max-width: 500px; /* Increased maximum width for the info container */
-    height: 100%; /* Full height of the half */
-    display: flex; /* Enable flexbox for vertical alignment */
-    flex-direction: column; /* Stack children vertically */
-    justify-content: center; /* Center content vertically */
-    text-align: left; /* Align text to the left */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    /* Subtle shadow */
+    max-width: 500px;
+    /* Increased maximum width for the info container */
+    height: 100%;
+    /* Full height of the half */
+    display: flex;
+    /* Enable flexbox for vertical alignment */
+    flex-direction: column;
+    /* Stack children vertically */
+    justify-content: center;
+    /* Center content vertically */
+    text-align: left;
+    /* Align text to the left */
 }
 
 .info-icon {
-    position: absolute; /* Position the icon absolutely */
-    top: 10px; /* Adjust as needed */
-    right: 10px; /* Adjust as needed */
-    font-size: 24px; /* Adjust size */
-    cursor: pointer; /* Change cursor on hover */
-    color: #5cdb95; /* Icon color */
-    transition: color 0.3s; /* Smooth color transition */
+    position: absolute;
+    /* Position the icon absolutely */
+    top: 10px;
+    /* Adjust as needed */
+    right: 10px;
+    /* Adjust as needed */
+    font-size: 24px;
+    /* Adjust size */
+    cursor: pointer;
+    /* Change cursor on hover */
+    color: #5cdb95;
+    /* Icon color */
+    transition: color 0.3s;
+    /* Smooth color transition */
 }
 
 .info-icon:hover {
-    color: #8EE4AF; /* Lighter color on hover */
+    color: #8EE4AF;
+    /* Lighter color on hover */
 }
 
 /* Complexity Container Styling */
 .complexity-container {
-    background-color: rgba(40, 40, 40, 0.8); /* Slightly different background */
-    border-radius: 8px; /* Rounded corners */
+    background-color: rgba(40, 40, 40, 0.8);
+    /* Slightly different background */
+    border-radius: 8px;
+    /* Rounded corners */
     padding: 15px;
-    margin-top: 20px; /* Space above the complexity container */
+    margin-top: 20px;
+    /* Space above the complexity container */
 }
 
 .complexity-list {
     list-style: none;
-    padding-left: 0; /* Remove padding */
-    display: none; /* Initially hidden */
+    padding-left: 0;
+    /* Remove padding */
+    display: none;
+    /* Initially hidden */
 }
 
 .toggle-complexity {
-    cursor: pointer; /* Pointer for hover effect */
+    cursor: pointer;
+    /* Pointer for hover effect */
     display: flex;
-    justify-content: space-between; /* Align items */
-    align-items: center; /* Center vertically */
+    justify-content: space-between;
+    /* Align items */
+    align-items: center;
+    /* Center vertically */
 }
 
 .toggle-icon {
-    transition: transform 0.3s; /* Smooth transition */
+    transition: transform 0.3s;
+    /* Smooth transition */
 }
 
 /* Rotate icon when expanded */
@@ -402,8 +591,10 @@ button.read-more:hover {
 @keyframes fadeIn {
     from {
         opacity: 0;
-        transform: translateY(30px); /* Slide up effect */
+        transform: translateY(30px);
+        /* Slide up effect */
     }
+
     to {
         opacity: 1;
         transform: translateY(0);
@@ -416,17 +607,21 @@ button.read-more:hover {
 }
 
 ::-webkit-scrollbar-track {
-    background: #333; /* Dark scrollbar track */
+    background: #333;
+    /* Dark scrollbar track */
 }
 
 ::-webkit-scrollbar-thumb {
-    background-color: #5cdb95; /* Green scrollbar thumb */
+    background-color: #5cdb95;
+    /* Green scrollbar thumb */
     border-radius: 10px;
-    border: 3px solid #333; /* Adds padding to thumb */
+    border: 3px solid #333;
+    /* Adds padding to thumb */
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background-color: #8EE4AF; /* Light green on hover */
+    background-color: #8EE4AF;
+    /* Light green on hover */
 }
 
 
@@ -434,9 +629,11 @@ button.read-more:hover {
     0% {
         transform: scale(1);
     }
+
     50% {
         transform: scale(1.05);
     }
+
     100% {
         transform: scale(1);
     }
@@ -445,32 +642,41 @@ button.read-more:hover {
 /* Responsive Design */
 @media (min-width: 768px) {
     .section {
-        flex-direction: row; /* Stack halves horizontally */
+        flex-direction: row;
+        /* Stack halves horizontally */
     }
 
     .half {
-        flex: 1; /* Take equal width */
-        height: auto; /* Auto height */
+        flex: 1;
+        /* Take equal width */
+        height: auto;
+        /* Auto height */
     }
 
     h2 {
-        font-size: 36px; /* Larger font size for larger screens */
+        font-size: 36px;
+        /* Larger font size for larger screens */
     }
 
     .info-container {
-        max-width: 600px; /* Further increased max-width for better readability */
-        height: auto; /* Allow auto height */
+        max-width: 600px;
+        /* Further increased max-width for better readability */
+        height: auto;
+        /* Allow auto height */
     }
 }
 
 /* Add extra media queries for smaller screens if needed */
 @media (max-width: 767px) {
     .info-container {
-        padding: 15px; /* Reduced padding for smaller screens */
-        max-width: 90%; /* Use more width on small screens */
+        padding: 15px;
+        /* Reduced padding for smaller screens */
+        max-width: 90%;
+        /* Use more width on small screens */
     }
-    
+
     .code-card {
-        margin-top: 15px; /* Adjust space above the card */
+        margin-top: 15px;
+        /* Adjust space above the card */
     }
 }

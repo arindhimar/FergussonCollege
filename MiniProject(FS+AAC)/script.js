@@ -343,4 +343,187 @@ $(document).ready(function () {
     });
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    async function insertionSort() {
+        let insertionSortArray = [...insertionArray];
+
+        for (let i = 1; i < insertionSortArray.length; i++) {
+            let key = insertionSortArray[i];
+            let j = i - 1;
+
+            // Visualize the current state
+            await visualizeInsertionArray(insertionSortArray, i, j);
+
+            while (j >= 0 && insertionSortArray[j] > key) {
+                insertionSortArray[j + 1] = insertionSortArray[j];
+                j--;
+
+                // Visualize the current state after each shift
+                await visualizeInsertionArray(insertionSortArray, i, j);
+            }
+            insertionSortArray[j + 1] = key;
+
+            // Final state visualization after inserting key
+            await visualizeInsertionArray(insertionSortArray, -1, -1);
+        }
+    }
+
+    async function bubbleSort() {
+        let n = array.length;
+        let bubbleSortArray = [...array];
+
+        for (let i = 0; i < n - 1; i++) {
+            for (let j = 0; j < n - i - 1; j++) {
+                // Visualize the comparison
+                await visualizeArray(bubbleSortArray, j, j + 1);
+
+                if (bubbleSortArray[j] > bubbleSortArray[j + 1]) {
+                    // Swap elements
+                    let temp = bubbleSortArray[j];
+                    bubbleSortArray[j] = bubbleSortArray[j + 1];
+                    bubbleSortArray[j + 1] = temp;
+
+                    // Update visualization after swap
+                    await visualizeArray(bubbleSortArray, j, j + 1, true);
+                    await visualizeBubbleImportantValues(bubbleSortArray[j], bubbleSortArray[j + 1]);
+                }
+            }
+        }
+        // Final visualization when sorting is done
+        await visualizeArray(bubbleSortArray, -1, -1, true);
+    }
+
+
+
+
+
+
+
+
+
+
+    const comparisonArray = [];
+
+    function updateComparisonArrayDisplay() {
+        $('#arrayComparisionDisplay').empty();
+        const maxValue = Math.max(...comparisonArray, 1);
+        comparisonArray.forEach(value => {
+            const heightPercentage = (value / maxValue) * 100;
+            const box = $('<div></div>')
+                .addClass('array-box')
+                .css('height', `${heightPercentage}%`)
+                .text(value);
+            $('#arrayComparisionDisplay').append(box);
+        });
+    }
+
+    $('#addComparisionSortValue').click(function () {
+        const inputValue = $('#comparisionArrayInput').val().trim();
+        if (inputValue !== '' && !isNaN(inputValue)) {
+            const number = Number(inputValue);
+            comparisonArray.push(number);
+            updateComparisonArrayDisplay();
+            $('#comparisionArrayInput').val('');
+        } else {
+            $('#comparisionArrayInput').val('');
+        }
+    });
+
+    async function visualizeComparisonArray(arr, algorithm, index1, index2, key = null) {
+        const displayId = algorithm === 'bubble' ? "comparisonBubbleSortDisplay" : "comparisonInsertionSortDisplay";
+        $(`#${displayId}`).empty();
+
+        const maxValue = Math.max(...arr, 1);
+        arr.forEach((value, index) => {
+            const heightPercentage = (value / maxValue) * 100;
+            const box = $('<div></div>')
+                .addClass('array-box')
+                .css({
+                    'height': `${heightPercentage}%`,
+                    'display': 'inline-block',
+                    'margin': '0 2px'
+                })
+                .text(value);
+
+            if (index === index1 || index === index2) {
+                box.css('background-color', '#f1c40f');
+            }
+
+            $(`#${displayId}`).append(box);
+        });
+
+        // Display intermediate values
+        if (algorithm === 'bubble') {
+            $('#comparisonBubbleIntermediateValues').text(`Comparing: ${arr[index1]} and ${arr[index2]}`);
+        } else {
+            $('#comparisonInsertionIntermediateValues').text(`Key: ${key}, Comparing with: ${arr[index2]}`);
+        }
+
+        await sleep(500);
+    }
+
+    async function comparisonBubbleSort(arr) {
+        let n = arr.length;
+        for (let i = 0; i < n - 1; i++) {
+            for (let j = 0; j < n - i - 1; j++) {
+                await visualizeComparisonArray(arr, 'bubble', j, j + 1);
+                if (arr[j] > arr[j + 1]) {
+                    [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+                    await visualizeComparisonArray(arr, 'bubble', j, j + 1);
+                }
+            }
+        }
+    }
+
+    async function comparisonInsertionSort(arr) {
+        for (let i = 1; i < arr.length; i++) {
+            let key = arr[i];
+            let j = i - 1;
+            await visualizeComparisonArray(arr, 'insertion', i, j, key);
+            while (j >= 0 && arr[j] > key) {
+                arr[j + 1] = arr[j];
+                j--;
+                await visualizeComparisonArray(arr, 'insertion', i, j, key);
+            }
+            arr[j + 1] = key;
+            await visualizeComparisonArray(arr, 'insertion', i, j + 1, key);
+        }
+    }
+
+    $("#startComparisionVisualization").click(async function () {
+        const bubbleSortArray = [...comparisonArray];
+        const insertionSortArray = [...comparisonArray];
+
+        $("#comparisonBubbleSortDisplay").empty();
+        $("#comparisonInsertionSortDisplay").empty();
+
+        // Start both sorting algorithms simultaneously
+        await Promise.all([
+            comparisonBubbleSort(bubbleSortArray),
+            comparisonInsertionSort(insertionSortArray)
+        ]);
+    });
+
+
+
 });
