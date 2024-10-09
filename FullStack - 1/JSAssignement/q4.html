@@ -61,7 +61,6 @@
             background-color: #3e8e41;
         }
 
-        /* Validation response styles */
         .validation-response {
             padding: 10px;
             border-radius: 5px;
@@ -125,11 +124,10 @@
             <div class="form-group">
                 <input type="submit" value="Register">
             </div>
-            <div id="formRespone" class="validation-response">
-
-            </div>
+            <div id="formRespone" class="validation-response"></div>
         </form>
     </div>
+
     <script>
         const form = document.getElementById('registration-form');
         const validationResponse = document.getElementById('formRespone');
@@ -147,28 +145,33 @@
             let message = '';
             let className = '';
 
-            if (name === '' || email === '' || password === '' || confirmPassword === '' || phone === '' || address === '') {
-                message = 'Error: Please fill in all fields.';
-                className = 'error';
-            } else if (!validateName(name)) {
-                message = 'Error: Name must be at least 3 characters long.';
-                className = 'error';
-            } else if (!validateEmail(email)) {
-                message = 'Error: Invalid email address.';
-                className = 'error';
-            } else if (!validatePhone(phone)) {
-                message = 'Error: Invalid phone number.';
-                className = 'error';
-            } else if (!validateAddress(address)) {
-                message = 'Error: Invalid address.';
-                className = 'error';
-            } else if (password !== confirmPassword) {
-                message = 'Error: Passwords do not match.';
-                className = 'error';
-            } else {
-                message = 'Registration successful!';
-                className = 'success';
-            }
+            // Chaining validation with callback
+            validateName(name, (valid, msg) => {
+                if (!valid) {
+                    message = msg;
+                    className = 'error';
+                } else {
+                    validateEmail(email, (valid, msg) => {
+                        if (!valid) {
+                            message = msg;
+                            className = 'error';
+                        } else {
+                            validatePhone(phone, (valid, msg) => {
+                                if (!valid) {
+                                    message = msg;
+                                    className = 'error';
+                                } else if (password !== confirmPassword) {
+                                    message = 'Error: Passwords do not match.';
+                                    className = 'error';
+                                } else {
+                                    message = 'Registration successful!';
+                                    className = 'success';
+                                }
+                            });
+                        }
+                    });
+                }
+            });
 
             validationResponse.innerHTML = message;
             validationResponse.classList.remove('error', 'success');
@@ -180,34 +183,30 @@
             }, 5000);
         });
 
-        function validateName(name) {
+        function validateName(name, callback) {
             if (name.length < 3) {
-                return false;
+                callback(false, 'Error: Name must be at least 3 characters long.');
+            } else {
+                callback(true);
             }
-            return true;
         }
 
-        function validateEmail(email) {
+        function validateEmail(email, callback) {
             const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
             if (emailRegex.test(email)) {
-                return true;
+                callback(true);
+            } else {
+                callback(false, 'Error: Invalid email address.');
             }
-            return false;
         }
 
-        function validatePhone(phone) {
+        function validatePhone(phone, callback) {
             const phoneRegex = /^[6-9]{1}\d{9}$/;
             if (phoneRegex.test(phone)) {
-                return true;
+                callback(true);
+            } else {
+                callback(false, 'Error: Invalid phone number.');
             }
-            return false;
-        }
-
-        function validateAddress(address) {
-            if (address.length < 10) {
-                return false;
-            }
-            return true;
         }
     </script>
 </body>

@@ -1,5 +1,5 @@
 $(document).ready(function () {
-    const array = [];
+    const array = []; b
 
     // Function to display the array in boxes
     function updateArrayDisplay() {

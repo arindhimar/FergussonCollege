@@ -24,19 +24,15 @@
             margin-bottom: 20px;
         }
 
-        .basic-info label {
-            display: block;
-            margin-bottom: 10px;
-        }
-
-        .basic-info input[type="text"], .basic-info input[type="number"] {
+        .basic-info input[type="text"],
+        .basic-info input[type="number"] {
             width: 100%;
-            padding: 10px 15px; /* added 15px horizontal padding */
+            padding: 10px 15px;
             margin-bottom: 20px;
             border: 1px solid #ccc;
-            box-sizing: border-box; /* added box-sizing to include padding in width calculation */
+            box-sizing: border-box;
         }
-        
+
         .sliders {
             margin-bottom: 20px;
         }
@@ -45,43 +41,25 @@
             margin-top: 20px;
         }
 
-        .slider-container label {
-            display: block;
-            margin-bottom: 10px;
-        }
-
         .slider-container input[type="range"] {
             width: 100%;
             margin-bottom: 20px;
         }
 
-        .output {
-            margin-top: 20px;
-        }
-
-        .output label {
-            display: block;
-            margin-bottom: 10px;
-        }
-
         .output input[type="number"] {
             width: 100%;
-            padding: 10px 15px; /* added 15px horizontal padding */
+            padding: 10px 15px;
             margin-bottom: 20px;
             border: 1px solid #ccc;
             background-color: #f0f0f0;
-            box-sizing: border-box; /* added box-sizing to include padding in width calculation */
+            box-sizing: border-box;
         }
 
-        h1,
-        h2 {
+        h1, h2 {
             color: #333;
             margin-bottom: 10px;
         }
     </style>
-
-
-
 
 </head>
 
@@ -91,21 +69,21 @@
         <form>
             <div class="basic-info">
                 <label for="name">Name:</label>
-                <input type="text" style="margin-right: -10%;" id="name" name="name"><br><br>
+                <input type="text" id="name" name="name"><br><br>
                 <label for="basic-pay">Basic Pay:</label>
                 <input type="number" id="basic-pay" name="basic-pay"><br><br>
             </div>
             <div class="sliders">
                 <h2>Adjust Sliders:</h2>
                 <div class="slider-container">
-                    <label for="da-slider" id="da-label">DA (0%):</label>
-                    <input type="range" id="da-slider" name="da-slider" min="0" max="100" value="0"><br><br>
-                    <label for="hra-slider" id="hra-label">HRA (0%):</label>
-                    <input type="range" id="hra-slider" name="hra-slider" min="0" max="100" value="0"><br><br>
-                    <label for="pf-slider" id="pf-label">PF (0%):</label>
-                    <input type="range" id="pf-slider" name="pf-slider" min="0" max="100" value="0"><br><br>
-                    <label for="tax-slider" id="tax-label">Tax (0%):</label>
-                    <input type="range" id="tax-slider" name="tax-slider" min="0" max="100" value="0"><br><br>
+                    <label id="da-label">DA (0%):</label>
+                    <input type="range" id="da-slider" min="0" max="100" value="0"><br><br>
+                    <label id="hra-label">HRA (0%):</label>
+                    <input type="range" id="hra-slider" min="0" max="100" value="0"><br><br>
+                    <label id="pf-label">PF (0%):</label>
+                    <input type="range" id="pf-slider" min="0" max="100" value="0"><br><br>
+                    <label id="tax-label">Tax (0%):</label>
+                    <input type="range" id="tax-slider" min="0" max="100" value="0"><br><br>
                 </div>
             </div>
             <div class="output">
@@ -122,64 +100,68 @@
 
     <script>
         document.getElementById("basic-pay").addEventListener('input', getInput);
-        
-        function getInput(){
-            let name = document.getElementById("name").value
-            let basicSalary = document.getElementById("basic-pay").value
-            if(basicSalary>0){
-                document.getElementById("basic-pay").addEventListener('input', calculateSalarySlip);
-                
-                document.getElementById("da-slider").addEventListener('input', calculateSalarySlip);
-                document.getElementById("hra-slider").addEventListener('input', calculateSalarySlip);
-                document.getElementById("pf-slider").addEventListener('input', calculateSalarySlip);
-                document.getElementById("tax-slider").addEventListener('input', calculateSalarySlip);
-                document.getElementById("deduction").addEventListener('input', calculateSalarySlip);
 
-            }
-            else{
+        function getInput() {
+            const basicSalary = parseFloat(document.getElementById("basic-pay").value);
 
-                document.getElementById("basic-pay").removeEventListener('input', calculateSalarySlip);
-                document.getElementById("da-slider").removeEventListener('input', calculateSalarySlip);
-                document.getElementById("hra-slider").removeEventListener('input', calculateSalarySlip);
-                document.getElementById("pf-slider").removeEventListener('input', calculateSalarySlip);
-                document.getElementById("tax-slider").removeEventListener('input', calculateSalarySlip);
-                document.getElementById("deduction").removeEventListener('input', calculateSalarySlip);
+            if (basicSalary > 0) {
+                enableCalculation();
+            } else {
+                disableCalculation();
             }
         }
 
-        function calculateSalarySlip(){
+        function enableCalculation() {
+            document.getElementById("da-slider").addEventListener('input', calculateWithCallback);
+            document.getElementById("hra-slider").addEventListener('input', calculateWithCallback);
+            document.getElementById("pf-slider").addEventListener('input', calculateWithCallback);
+            document.getElementById("tax-slider").addEventListener('input', calculateWithCallback);
+            document.getElementById("deduction").addEventListener('input', calculateWithCallback);
+        }
 
-            let basicSalary =  parseFloat(document.getElementById("basic-pay").value)
-        
-            let da = parseFloat(document.getElementById("da-slider").value)
-            let hra = parseFloat(document.getElementById("hra-slider").value)
-            let pf = parseFloat(document.getElementById("pf-slider").value)
-            let tax = parseFloat(document.getElementById("tax-slider").value)
-            let deduction = parseFloat(document.getElementById("deduction").value)
-        
-            document.getElementById("da-label").innerHTML="DA ("+da+"%)"
-            document.getElementById("hra-label").innerHTML="HRA ("+hra+"%)"
-            document.getElementById("pf-label").innerHTML="PF ("+pf+"%)"
-            document.getElementById("tax-label").innerHTML="TAX ("+tax+"%)"
-        
-            let daAmount = basicSalary * (da / 100);
-            let hraAmount = basicSalary * (hra / 100);
-            let pfAmount = basicSalary * (pf / 100);
-            let taxAmount = basicSalary * (tax / 100);
-        
-            let grossPay = basicSalary + daAmount + hraAmount;
+        function disableCalculation() {
+            document.getElementById("da-slider").removeEventListener('input', calculateWithCallback);
+            document.getElementById("hra-slider").removeEventListener('input', calculateWithCallback);
+            document.getElementById("pf-slider").removeEventListener('input', calculateWithCallback);
+            document.getElementById("tax-slider").removeEventListener('input', calculateWithCallback);
+            document.getElementById("deduction").removeEventListener('input', calculateWithCallback);
+        }
+
+        function calculateWithCallback() {
+            calculateSalarySlip((grossPay, netPay) => {
+                document.getElementById("gross-pay").value = grossPay.toFixed(2);
+                document.getElementById("net-pay").value = netPay.toFixed(2);
+            });
+        }
+
+        // Salary calculation with callback
+        function calculateSalarySlip(callback) {
+            const basicSalary = parseFloat(document.getElementById("basic-pay").value);
+
+            const da = parseFloat(document.getElementById("da-slider").value);
+            const hra = parseFloat(document.getElementById("hra-slider").value);
+            const pf = parseFloat(document.getElementById("pf-slider").value);
+            const tax = parseFloat(document.getElementById("tax-slider").value);
+            const deduction = parseFloat(document.getElementById("deduction").value);
+
+            document.getElementById("da-label").innerHTML = "DA (" + da + "%)";
+            document.getElementById("hra-label").innerHTML = "HRA (" + hra + "%)";
+            document.getElementById("pf-label").innerHTML = "PF (" + pf + "%)";
+            document.getElementById("tax-label").innerHTML = "TAX (" + tax + "%)";
+
+            const daAmount = basicSalary * (da / 100);
+            const hraAmount = basicSalary * (hra / 100);
+            const pfAmount = basicSalary * (pf / 100);
+            const taxAmount = basicSalary * (tax / 100);
+
+            const grossPay = basicSalary + daAmount + hraAmount;
             let netPay = grossPay - pfAmount - taxAmount - deduction;
-            
-            document.getElementById("gross-pay").value = grossPay.toFixed(2)
 
-            if(netPay<0)
-            document.getElementById("net-pay").value = parseFloat(0.00)
-            else
-            document.getElementById("net-pay").value = netPay.toFixed(2)
+            if (netPay < 0) netPay = 0;
+
+            // Invoke the callback with grossPay and netPay
+            callback(grossPay, netPay);
         }
-
-        
-
     </script>
 
 </body>
