@@ -586,6 +586,34 @@ button.read-more:hover {
     transform: rotate(45deg);
 }
 
+/* Test Case Dropdown */
+.test-case-dropdown {
+    margin: 15px 0;
+    display: flex;
+    align-items: center;
+}
+
+.test-case-dropdown label {
+    font-size: 18px;
+    color: #ffffff;
+    margin-right: 10px;
+}
+
+.test-case-select {
+    padding: 10px;
+    background-color: #1e1e1e;
+    color: #fff;
+    border: 1px solid #5cdb95;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.test-case-select:focus {
+    outline: none;
+    border-color: #8EE4AF;
+}
+
 
 
 /* Keyframes for fade-in animation */

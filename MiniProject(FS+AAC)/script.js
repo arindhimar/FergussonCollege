@@ -99,17 +99,16 @@ $(document).ready(function () {
     });
 
 
-    const array = [];
+    var array = [];
 
     // Function to display the array in boxes
+    // Function to update the array display
     function updateArrayDisplay() {
         $('#arrayDisplay').empty();
-        const maxValue = Math.max(...array, 1); // Avoid division by zero if array is empty
+
         array.forEach(value => {
-            const heightPercentage = (value / maxValue) * 100; // Calculate height relative to the max value
             const box = $('<div></div>')
                 .addClass('array-box')
-                .css('height', `${heightPercentage}%`) // Set height dynamically
                 .text(value);
             $('#arrayDisplay').append(box);
         });
@@ -202,6 +201,39 @@ $(document).ready(function () {
         $('#arrayInput').val('');
     });
 
+    // Event listener for the Test Case dropdown for Bubble Sort
+    $('#bubbleTestCaseSelect').change(function () {
+        const selectedCase = $(this).val();
+
+        // Clear the current array and display
+        array = [];
+        $('#arrayInput').val(''); // Clear the input field
+
+        // Generate the appropriate test case array
+        let testArray = [];
+
+        switch (selectedCase) {
+            case 'best': // Best case: Already sorted array
+                testArray = Array.from({ length: 10 }, (_, i) => i + 1); // 1, 2, 3, ..., 10
+                break;
+
+            case 'average': // Average case: Random array
+                testArray = Array.from({ length: 10 }, () => Math.floor(Math.random() * 100)); // Random values between 0-99
+                break;
+
+            case 'worst': // Worst case: Reverse sorted array
+                testArray = Array.from({ length: 10 }, (_, i) => 10 - i); // 10, 9, 8, ..., 1
+                break;
+        }
+
+        // Populate the array with the generated test case values
+        testArray.forEach(value => array.push(value));
+
+        // Update the display with the test case array
+        updateArrayDisplay();
+    });
+
+
 
     $('#insertionSortLanguage').change(function () {
         const language = $(this).val();
@@ -252,17 +284,17 @@ $(document).ready(function () {
         codeDisplay.html(`<pre><code class="language-${language}">${code}</code></pre>`);
     });
 
-    const insertionArray = [];
+    let insertionArray = [];
 
-    // Function to display the array in boxes for Insertion Sort
+
+
+    // Function to update the insertion array display
     function updateInsertionArrayDisplay() {
         $('#arrayInsertionDisplay').empty();
-        const maxValue = Math.max(...insertionArray, 1); // Avoid division by zero if array is empty
+
         insertionArray.forEach(value => {
-            const heightPercentage = (value / maxValue) * 100; // Calculate height relative to the max value
             const box = $('<div></div>')
                 .addClass('array-box')
-                .css('height', `${heightPercentage}%`) // Set height dynamically
                 .text(value);
             $('#arrayInsertionDisplay').append(box);
         });
@@ -317,6 +349,39 @@ $(document).ready(function () {
         }
     }
 
+    // Event listener for the Test Case dropdown
+    $('#insertionTestCaseSelect').change(function () {
+        const selectedCase = $(this).val();
+
+        // Clear the current insertion array and display
+        insertionArray = [];
+        $('#insertionArrayInput').val(''); // Clear the input field
+
+        // Generate the appropriate test case array
+        let testArray = [];
+
+        switch (selectedCase) {
+            case 'best': // Best case: Already sorted array
+                testArray = Array.from({ length: 10 }, (_, i) => i + 1); // 1, 2, 3, ..., 10
+                break;
+
+            case 'average': // Average case: Random array
+                testArray = Array.from({ length: 10 }, () => Math.floor(Math.random() * 100)); // Random values between 0-99
+                break;
+
+            case 'worst': // Worst case: Reverse sorted array
+                testArray = Array.from({ length: 10 }, (_, i) => 10 - i); // 10, 9, 8, ..., 1
+                break;
+        }
+
+        // Populate the insertion array with the generated test case values
+        testArray.forEach(value => insertionArray.push(value));
+
+        // Update the display with the test case array
+        updateInsertionArrayDisplay();
+    });
+
+
     // Event listener for the 'Add' button for Insertion Sort
     $('#addInsertionSortValue').click(function () {
         const inputValue = $('#insertionArrayInput').val().trim();
@@ -338,7 +403,6 @@ $(document).ready(function () {
         // Clear the input field
         $('#insertionArrayInput').val('');
     });
-
 
     $("#startInsertionVisualization").click(async function () {
         $("#insertionSortDisplay").empty();
@@ -438,7 +502,7 @@ $(document).ready(function () {
 
 
 
-    const comparisonArray = [];
+    var comparisonArray = [];
 
     function updateComparisonArrayDisplay() {
         $('#arrayComparisionDisplay').empty();
@@ -452,6 +516,37 @@ $(document).ready(function () {
             $('#arrayComparisionDisplay').append(box);
         });
     }
+
+    $('#comparisonTestCaseSelect').change(function () {
+        const selectedCase = $(this).val();
+    
+        // Clear the current comparison array and display
+        comparisonArray = [];
+        $('#comparisionArrayInput').val(''); // Clear the input field
+    
+        // Generate the appropriate test case array
+        let testArray = [];
+    
+        switch (selectedCase) {
+            case 'best': // Best case: Already sorted array
+                testArray = Array.from({ length: 10 }, (_, i) => i + 1); // 1, 2, 3, ..., 10
+                break;
+    
+            case 'average': // Average case: Random array
+                testArray = Array.from({ length: 10 }, () => Math.floor(Math.random() * 100)); // Random values between 0-99
+                break;
+    
+            case 'worst': // Worst case: Reverse sorted array
+                testArray = Array.from({ length: 10 }, (_, i) => 10 - i); // 10, 9, 8, ..., 1
+                break;
+        }
+    
+        // Populate the comparison array with the generated test case values
+        testArray.forEach(value => comparisonArray.push(value));
+    
+        // Update the display with the test case array
+        updateComparisonArrayDisplay();
+    });
 
     $('#addComparisionSortValue').click(function () {
         const inputValue = $('#comparisionArrayInput').val().trim();
