@@ -399,6 +399,7 @@ nav ul li a:active {
     display: flex;
     justify-content: space-between;
     gap: 20px;
+    width: 70vw;
 }
 
 .comparison-half {
@@ -652,6 +653,8 @@ button.read-more:hover {
         height: auto;
         /* Auto height */
     }
+    
+
 
     h2 {
         font-size: 36px;
@@ -675,8 +678,45 @@ button.read-more:hover {
         /* Use more width on small screens */
     }
 
+    .left{
+        margin-left: 10%;
+    }
+
     .code-card {
         margin-top: 15px;
         /* Adjust space above the card */
+    }
+}
+
+@media (max-width: 768px) {
+    .comparison-details {
+        margin-left: 13%;
+
+        flex-direction: column; /* Stack comparison halves vertically */
+        gap: 30px; /* Space between stacked sections */
+    }
+
+    .comparison-half {
+        margin-bottom: 20px; /* Add margin below each half */
+    }
+
+    .comparison-intro {
+        margin-bottom: 20px;
+    }
+
+    .array-display {
+        max-width: 100%; /* Ensure the array visualizations fit within the screen */
+    }
+}
+
+/* Responsive Design for Medium Screens */
+@media (max-width: 1024px) {
+    .comparison-details {
+        flex-direction: column; /* Stack vertically for mid-size screens too */
+        gap: 25px;
+    }
+
+    .comparison-half {
+        margin-bottom: 25px;
     }
 }

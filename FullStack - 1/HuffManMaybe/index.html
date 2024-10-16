@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Huffman Tree Visualization</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="input-container">
+        <h2>Enter Characters and Frequencies</h2>
+        <div id="input-fields">
+            <input type="text" id="char-input" placeholder="Character (e.g., a)" maxlength="1">
+            <input type="number" id="freq-input" placeholder="Frequency (e.g., 5)" min="1">
+            <button id="add-pair-button">Add Pair</button>
+        </div>
+        <ul id="char-freq-list"></ul>
+    </div>
+    <div id="tree-container"></div>
+    <button id="build-tree-button">Build Huffman Tree</button>
+    <script src="script.js"></script>
+</body>
+</html>

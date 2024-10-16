@@ -134,7 +134,7 @@
             });
         }
 
-        // Salary calculation with callback
+        
         function calculateSalarySlip(callback) {
             const basicSalary = parseFloat(document.getElementById("basic-pay").value);
 
@@ -159,7 +159,6 @@
 
             if (netPay < 0) netPay = 0;
 
-            // Invoke the callback with grossPay and netPay
             callback(grossPay, netPay);
         }
     </script>

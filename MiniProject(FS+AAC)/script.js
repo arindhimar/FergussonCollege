@@ -184,16 +184,24 @@ $(document).ready(function () {
     $('#addBubbleSortValue').click(function () {
         const inputValue = $('#arrayInput').val().trim();
 
-        if (inputValue !== '' && !isNaN(inputValue)) { // Ensure input is not empty and is a number
-            const number = Number(inputValue);
-            array.push(number);
-            updateArrayDisplay();
-            $('#arrayInput').val('');
-        } else {
-            // Show error message in the designated area (if needed)
-            $('#arrayInput').val('');
-        }
+        // Split the input by commas, spaces, or both (using a regular expression)
+        const values = inputValue.split(/[\s,]+/).map(val => val.trim());
+
+        values.forEach(value => {
+            // Ensure each value is a number and not empty
+            if (value !== '' && !isNaN(value)) {
+                const number = Number(value);
+                array.push(number); // Push valid numbers to the array
+            }
+        });
+
+        // Update the array display after all valid values are added
+        updateArrayDisplay();
+
+        // Clear the input field
+        $('#arrayInput').val('');
     });
+
 
     $('#insertionSortLanguage').change(function () {
         const language = $(this).val();
@@ -313,16 +321,24 @@ $(document).ready(function () {
     $('#addInsertionSortValue').click(function () {
         const inputValue = $('#insertionArrayInput').val().trim();
 
-        if (inputValue !== '' && !isNaN(inputValue)) { // Ensure input is not empty and is a number
-            const number = Number(inputValue);
-            insertionArray.push(number);
-            updateInsertionArrayDisplay();
-            $('#insertionArrayInput').val(''); // Clear the input field
-        } else {
-            // Optionally show error message in the designated area (if needed)
-            $('#insertionArrayInput').val('');
-        }
+        // Split the input by commas, spaces, or both (using a regular expression)
+        const values = inputValue.split(/[\s,]+/).map(val => val.trim());
+
+        values.forEach(value => {
+            // Ensure each value is a number and not empty
+            if (value !== '' && !isNaN(value)) {
+                const number = Number(value);
+                insertionArray.push(number); // Push valid numbers to the insertionArray
+            }
+        });
+
+        // Update the insertion array display after all valid values are added
+        updateInsertionArrayDisplay();
+
+        // Clear the input field
+        $('#insertionArrayInput').val('');
     });
+
 
     $("#startInsertionVisualization").click(async function () {
         $("#insertionSortDisplay").empty();
@@ -439,15 +455,25 @@ $(document).ready(function () {
 
     $('#addComparisionSortValue').click(function () {
         const inputValue = $('#comparisionArrayInput').val().trim();
-        if (inputValue !== '' && !isNaN(inputValue)) {
-            const number = Number(inputValue);
-            comparisonArray.push(number);
-            updateComparisonArrayDisplay();
-            $('#comparisionArrayInput').val('');
-        } else {
-            $('#comparisionArrayInput').val('');
-        }
+
+        // Split the input by commas, spaces, or both (using a regular expression)
+        const values = inputValue.split(/[\s,]+/).map(val => val.trim());
+
+        values.forEach(value => {
+            // Ensure each value is a number and not empty
+            if (value !== '' && !isNaN(value)) {
+                const number = Number(value);
+                comparisonArray.push(number); // Push valid numbers to the comparisonArray
+            }
+        });
+
+        // Update the comparison array display after all valid values are added
+        updateComparisonArrayDisplay();
+
+        // Clear the input field
+        $('#comparisionArrayInput').val('');
     });
+
 
     async function visualizeComparisonArray(arr, algorithm, index1, index2, key = null) {
         const displayId = algorithm === 'bubble' ? "comparisonBubbleSortDisplay" : "comparisonInsertionSortDisplay";
