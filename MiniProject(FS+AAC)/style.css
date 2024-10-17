@@ -81,6 +81,18 @@ nav ul li a:active {
     /* Slight scale down on click */
 }
 
+/* Active Navbar Link */
+nav ul li a.active {
+    color: #8EE4AF; /* Highlight active link */
+    background-color: #333; /* Optionally, add a background color */
+    border-radius: 5px;
+}
+
+nav ul li a.active::after {
+    width: 100%; /* Ensure underline expands fully */
+    left: 0; /* Align to the left */
+}
+
 /* Section Styling */
 .section {
     min-height: calc(100vh - 60px);

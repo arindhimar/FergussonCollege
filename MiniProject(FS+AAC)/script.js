@@ -1,4 +1,27 @@
 $(document).ready(function () {
+
+
+    $(window).scroll(function () {
+        var scrollPos = $(document).scrollTop();
+
+        // Loop through each section and check if it's in the viewport
+        $('nav ul li a').each(function () {
+            var currLink = $(this);
+            var sectionId = currLink.attr("href");
+
+            var section = $(sectionId);
+
+            // Check if this section is within view
+            if (section.position().top <= scrollPos && section.position().top + section.height() > scrollPos) {
+                $('nav ul li a').removeClass("active");
+                currLink.addClass("active");
+            } else {
+                currLink.removeClass("active");
+            }
+        });
+    });
+
+
     $('#bubbleSortLanguage').change(function () {
         const language = $(this).val();
         const codeDisplay = $('#bubbleSortCode');
@@ -519,31 +542,31 @@ $(document).ready(function () {
 
     $('#comparisonTestCaseSelect').change(function () {
         const selectedCase = $(this).val();
-    
+
         // Clear the current comparison array and display
         comparisonArray = [];
         $('#comparisionArrayInput').val(''); // Clear the input field
-    
+
         // Generate the appropriate test case array
         let testArray = [];
-    
+
         switch (selectedCase) {
             case 'best': // Best case: Already sorted array
                 testArray = Array.from({ length: 10 }, (_, i) => i + 1); // 1, 2, 3, ..., 10
                 break;
-    
+
             case 'average': // Average case: Random array
                 testArray = Array.from({ length: 10 }, () => Math.floor(Math.random() * 100)); // Random values between 0-99
                 break;
-    
+
             case 'worst': // Worst case: Reverse sorted array
                 testArray = Array.from({ length: 10 }, (_, i) => 10 - i); // 10, 9, 8, ..., 1
                 break;
         }
-    
+
         // Populate the comparison array with the generated test case values
         testArray.forEach(value => comparisonArray.push(value));
-    
+
         // Update the display with the test case array
         updateComparisonArrayDisplay();
     });
