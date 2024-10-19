@@ -1,0 +1,129 @@
+body {
+    font-family: Roboto, Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 20px;
+}
+
+.input-section, .visualization-section {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    padding: 20px;
+    margin: 10px;
+}
+
+.input-section {
+    flex: 1;
+    max-width: 300px;
+    background-color: #ffffff;
+}
+
+.visualization-section {
+    flex: 2;
+    min-width: 500px;
+    background-color: #ffffff;
+    text-align: center;
+}
+
+.items-outside {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px 0;
+    padding: 10px;
+    min-height: 100px;
+    border: 1px dashed gray;
+    background-color: #f9f9f9;
+}
+
+/* Sack Container */
+#sackContainer {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end; /* Align items to the bottom */
+    margin-top: 20px;
+    min-height: 300px; /* Adjust height to fit sack */
+}
+
+/* Sack */
+#sack {
+    width: 100px; /* Adjust sack size */
+    height: 150px; /* Adjust sack height */
+    background-image: url('path/to/sack-image.png'); /* Use sack graphic */
+    background-size: cover; /* Cover to fill sack */
+    background-repeat: no-repeat;
+    position: relative; /* Allow absolute positioning of items */
+}
+
+/* Items inside the sack */
+#itemsInSack {
+    position: absolute; /* Position items absolutely within the sack */
+    bottom: 10px; /* Adjust based on sack design */
+    left: 50%; /* Center it */
+    transform: translateX(-50%); /* Centering offset */
+    display: flex;
+    flex-direction: column; /* Stack items vertically */
+    align-items: center; /* Center items */
+}
+
+/* Style for individual items in the sack */
+.sack-item {
+    width: 40px; /* Width of the items inside the sack */
+    height: 40px; /* Height of the items inside the sack */
+    background-color: #4CAF50; /* Color of items */
+    border-radius: 50%; /* Make them circular */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 5px; /* Space between items */
+    transition: transform 0.5s ease; /* Transition for smooth animation */
+}
+
+
+
+.circle {
+    width: 50px;
+    height: 50px;
+    background-color: #4CAF50; /* Change colors for different items */
+    border-radius: 50%;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px;
+    transition: transform 0.5s ease;
+    cursor: grab; /* Indicate that items are draggable */
+}
+.circle:active {
+    cursor: grabbing; /* Change cursor when grabbing */
+}
+
+
+#knapsackSack {
+    margin-top: 0;
+    width: 100px; /* Adjust sack size */
+    height: 150px; /* Adjust sack height */
+    background-image: url('path/to/sack-image.png'); /* Replace with a valid sack graphic URL */
+    background-size: contain;
+    background-repeat: no-repeat;
+    transition: transform 0.5s ease;
+    position: relative; /* Allow absolute positioning of items */
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+th, td {
+    padding: 10px;
+    text-align: center;
+}

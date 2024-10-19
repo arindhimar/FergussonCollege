@@ -117,8 +117,8 @@ $(document).ready(function () {
     });
 
     $('.toggle-complexity').click(function () {
-        $(this).next('.complexity-list').slideToggle(); // Toggle the visibility of the complexity list
-        $(this).toggleClass('expanded'); // Rotate icon
+        $(this).next('.complexity-list').slideToggle(); 
+        $(this).toggleClass('expanded'); 
     });
 
 
@@ -530,6 +530,7 @@ $(document).ready(function () {
     function updateComparisonArrayDisplay() {
         $('#arrayComparisionDisplay').empty();
         const maxValue = Math.max(...comparisonArray, 1);
+        
         comparisonArray.forEach(value => {
             const heightPercentage = (value / maxValue) * 100;
             const box = $('<div></div>')
