@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .a{
+            width: 200px;
+            height: 200px;background-color: aquamarine;
+        }
+
+        .b{
+            background-color: beige;
+            width: 40px;
+            height: 40px;
+        }
+    </style>
+</head>
+<body>
+    <div class="b" id="db" ondragstart="setDrag(event)" draggable="true"></div>
+
+    <div class="a" id="da"  ondragover="getDrag(event)" ondrop="appendit(event)"></div>
+    <script>
+
+     function getDrag(ev){
+        ev.preventDefault();
+            }
+        function appendit(ev){
+        ev.preventDefault();
+            
+
+            let temp = ev.dataTransfer.getData("temp");
+            console.log(temp)
+            let draggedElement = document.getElementById(temp);
+            
+            ev.target.appendChild(draggedElement)
+        }
+
+        function setDrag(ev){
+            
+            ev.dataTransfer.setData("temp",ev.target.id);
+        }
+
+
+
+    </script>
+</body>
+</html>

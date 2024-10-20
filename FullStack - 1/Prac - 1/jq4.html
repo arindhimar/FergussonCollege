@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <button id="btn1">Click</button><p id="p1" style="display: none;">Single Click</p><br>
+    <button id="btn2">dblClick</button><p id="p2" style="display: none;">Double Click</p>
+
+    <script src="jquery.js"></script>
+    <script>
+        $(document).ready(function(){
+            $("#btn1").click(function(){
+                $("#p1").slideToggle();
+            })
+            $("#btn2").dblclick(function(){
+                $("#p2").slideToggle();
+                
+            })
+        })
+    </script>
+</body>
+</html>
