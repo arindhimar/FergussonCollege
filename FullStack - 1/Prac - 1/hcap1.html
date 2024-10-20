@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        details[open] summary::after {
+            content: " (Show Less)"; 
+        }
+
+        summary::after {
+            content: " (Show More)"; 
+        }
+    </style>
+</head>
+
+<body>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Price</th>
+            <th>ShowMore</th>
+        </tr>
+
+        <tr>
+            <td>1</td>
+            <td>A</td>
+            <td>
+                <details>
+                    <summary></summary>
+                    <p>Item 1</p>
+                </details>
+            </td>
+        </tr>
+
+        <tr>
+            <td>2</td>
+            <td>B</td>
+            <td>
+                <details>
+                    <summary></summary>
+                    <p>Item 2</p>
+                </details>
+            </td>
+        </tr>
+
+
+        <tr>
+            <td>3</td>
+            <td>C</td>
+            <td>
+                <details>
+                    <summary></summary>
+                    <p>Item 3</p>
+                </details>
+            </td>
+        </tr>
+
+
+    </table>
+</body>
+
+</html>

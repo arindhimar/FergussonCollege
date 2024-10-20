@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+</head>
+
+<body>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Price</th>
+            <th>ShowMore</th>
+        </tr>
+
+        <tr>
+            <td>1</td>
+            <td>A</td>
+            <td>
+                <details>
+                    <summary onclick="magicHere(this)">ShowMore</summary>
+                    <p>Item 1</p>
+                </details>
+            </td>
+        </tr>
+
+        <tr>
+            <td>2</td>
+            <td>B</td>
+            <td>
+                <details>
+                    <summary>ShowMore</summary>
+                    <p>Item 2</p>
+                </details>
+            </td>
+        </tr>
+
+
+        <tr>
+            <td>3</td>
+            <td>C</td>
+            <td>
+                <details>
+                    <summary>ShowMore</summary>
+                    <p>Item 3</p>
+                </details>
+            </td>
+        </tr>
+
+
+    </table>
+    <script src="jquery.js"></script>
+    <script>
+        function magicHere(e){
+            console.log(e.innerHTML)
+            if(e.innerHTML == "ShowLess"){
+                e.innerHTML = "ShowMore"
+            }
+            else{
+                e.innerHTML = "ShowLess"
+            }
+        }
+    </script>
+</body>
+
+</html>

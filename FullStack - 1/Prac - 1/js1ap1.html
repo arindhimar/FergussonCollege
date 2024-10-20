@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <table border="2">
+        <tr>
+            <td>Name</td>
+            <td><input type="text" id="txtName"></td>
+        </tr>
+        <tr>
+            <td>Basic</td>
+            <td><input type="number" id="txtBasic"></td>
+        </tr>
+        <tr>
+            <td>DA</td>
+            <td><input type="range" min="5" max="90" id="txtDA"></td>
+        </tr>
+        <tr>
+            <td>HRA</td>
+            <td><input type="range" min="5" max="90" id="txtHRA"></td>
+        </tr>
+        <tr>
+            <td>PF</td>
+            <td><input type="range" min="5" max="90" id="txtPF"></td>
+        </tr>
+        <tr>
+            <td>TAX</td>
+            <td><input type="range" min="5" max="90" id="txtTAX"></td>
+        </tr>
+        <tr>
+            <td>GrossPay</td>
+            <td>
+                <h4 id="grossPay"></h4>
+            </td>
+        </tr>
+        <tr>
+            <td>Deduction</td>
+            <td><input type="range" min="5" max="90" id="txtDeduction"></td>
+        </tr>
+        <tr>
+            <td>NetPay</td>
+            <td>
+                <h4 id="netPay"></h4>
+            </td>
+        </tr>
+        <tr align="center">
+            <td colspan="2"><input type="button" id="btnSubmit" value="Submit"></td>
+        </tr>
+
+    </table>
+    <script src="jquery.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#btnSubmit").on("click", function () {
+                //console.log("Asd")
+
+
+                let txtName = $("#txtName").val();
+                let nameRegex = /^[a-z]+$/;
+
+                let txtBasic = $("#txtBasic").val();
+                let basicRegex = /^[1-9]{1}[0-9]{3,}$/;
+
+//                console.log(basicRegex.test(txtBasic))
+
+                function showGrossAndNet(grossPay,netPay){
+                    $("#grossPay").html(grossPay)
+                    $("#netPay").html(netPay)
+
+                }
+
+                function calGross(temp) {
+                    let txtBasic = Number($("#txtBasic").val());
+                    let txtDA = Number($("#txtDA").val());
+                    let txtHRA = Number($("#txtHRA").val());
+                    let txtPF = Number($("#txtPF").val());
+                    let txtTAX = Number($("#txtTAX").val());
+                    
+                    let grossPay = txtBasic + (txtBasic*(txtDA/100)) + (txtBasic*(txtHRA/100)) + (txtBasic*(txtPF/100)) - (txtBasic*(txtTAX/100))
+
+
+                    let txtDeduction = Number($("#txtDeduction").val());
+
+                    let netPay = grossPay-(grossPay*(txtDeduction/100));
+
+                    temp(grossPay,netPay)
+
+                    //console.log("Asdasd")
+
+                }
+
+
+                if (nameRegex.test(txtName) && basicRegex.test(txtBasic)) {
+                    calGross(showGrossAndNet);
+                }
+                else {
+                    alert("Enter valid details!");
+                }
+
+
+            })
+        })
+    </script>
+</body>
+
+</html>

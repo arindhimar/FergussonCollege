@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        h2 {
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+            animation: q3 2s infinite ease;
+        }
+
+        @keyframes q3 {
+            0% {
+                color: blue;
+            }
+
+            50% {
+                color: aquamarine;
+            }
+
+            100% {
+                color: blue;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div>
+        <h2>Capital</h2>
+        <select id="capital">
+            <option value="None" disabled selected>None</option>
+            <option value="Gujarat">Gujarat</option>
+            <option value="Maharashtra">Maharashtra</option>
+        </select>
+        <p id="showHere"></p>
+    </div>
+    <script src="jquery.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("#capital").on("change", function () {
+                var temp = this.value
+                console.log(temp)
+                switch (temp) {
+                    case "Gujarat":
+                        $("#showHere").html("Gandhinagar")
+                        break;
+                    case "Maharashtra":
+                        $("#showHere").html("Mumbai")
+
+                        break;
+                    default:
+                        $("#showHere").html("")
+
+                        break;
+                }
+            })
+        })
+    </script>
+</body>
+
+</html>

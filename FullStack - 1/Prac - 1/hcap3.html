@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+</head>
+
+<body>
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Price</th>
+            <th>ShowMore</th>
+        </tr>
+
+        <tr>
+            <td>1</td>
+            <td>A</td>
+            <td>
+                <h5> > ShowMore</h5>
+                <p>Item 1</p>
+            </td>
+        </tr>
+
+        <tr>
+            <td>2</td>
+            <td>B</td>
+            <td>
+                <h5> > ShowMore</h5>
+                <p>Item 2</p>
+            </td>
+        </tr>
+
+        
+       
+
+    </table>
+    <script src="jquery.js"></script>
+    <script>
+        $(document).ready(function(){
+            $("p").hide();
+            $("h5").on("click",function(){
+                if($(this).html()==" &gt; ShowMore")
+                {
+                    $(this).html(" &gt; ShowLess")
+                }
+                else{
+                    $(this).html(" &gt; ShowMore")
+                }
+                //console.log($(this).siblings()[0])
+
+                let temp = $(this).siblings()[0];
+
+                $($(this).siblings()[0]).slideToggle();
+            })
+        })
+    </script>
+</body>
+
+</html>
