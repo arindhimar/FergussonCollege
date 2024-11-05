@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <input type="text" id="str" placeholder="Enter String" oninput="f()">
+    <p>num of vowels: <span id="count">0</span></p>
+</body>
+<script>
+    function f() {
+        var str = document.getElementById('str').value;
+        var count = 0;
+        var vowels = 'aeiouAEIOU';
+        for (let i = 0; i < str.length; i++) {
+            if (vowels.indexOf(str[i]) !== -1) {
+                count++;
+
+            }
+
+        }
+        document.getElementById('count').innerText = count;
+    } 
+</script>
+
+</html>

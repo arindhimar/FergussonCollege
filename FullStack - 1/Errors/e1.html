@@ -1,0 +1,41 @@
+<!DOCTYPE html> 
+<html lang="en"> 
+<head> 
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>Document</title> 
+</head> 
+<body> 
+    <div class="d"> 
+        <label for="num1">Number 1: </label> 
+        <input type="number" id="num1" placeholder="Enter first num."> 
+        <label for="num2">Number 2: </label> 
+        <input type="number" id="num2" placeholder="Enter second num."> 
+        <div > 
+            <button onclick="op('add')">add</button> 
+            <button onclick="op('sub')">sub</button> 
+ 
+        </div> 
+        <p id="result" >0</p> 
+    </div> 
+    <script> 
+        function op(tmep) 
+        { 
+            var n1=parseFloat(document.getElementById("num1").value); 
+            var n2=parseFloat(document.getElementById("num2").value); 
+            var result=0; 
+            console.log(result)
+            switch(tmep) 
+            { 
+                    case 'add': 
+                    result=n1+n2; 
+                    break; 
+                    case 'sub': 
+                    result=n1-n2; 
+                    break; 
+            } 
+            document.getElementById('result').innerHTML=result; 
+        } 
+    </script> 
+</body> 
+</html>

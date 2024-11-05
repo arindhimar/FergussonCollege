@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Validation</title>
+</head>
+
+<body>
+    <form onsubmit="return validation()">
+        <label for="name">Name:</label>
+        <input type="text" id="name" placeholder="Enter your name">
+        <br><br>
+        <label for="mail">Email:</label>
+        <input type="email" id="mail" placeholder="Enter your email">
+        <br><br>
+        <label for="phone">Phone:</label>
+        <input type="tel" id="tele" placeholder="Enter your phone number">
+        <br><br>
+        <button type="submit">Submit</button>
+    </form>
+
+    <script>
+        function validation() {
+            var name = document.getElementById("name").value;
+            var mail = document.getElementById("mail").value;
+            var num = document.getElementById("tele").value;
+            var errormsg = [];
+
+            
+            if (name === '') {
+                errormsg.push("Please enter your name.");
+            }
+
+            var emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+            if (mail === '') {
+                errormsg.push("Please enter your email.");
+            } else if (!emailRegex.test(mail)) {
+                errormsg.push("Please enter a valid email.");
+            }
+
+            var phoneRegex = /^[0-9]{10}$/;
+            if (num === '') {
+                errormsg.push("Please enter your phone number.");
+            } else if (!phoneRegex.test(num)) {
+                errormsg.push("Please enter a valid 10-digit phone number.");
+            }
+
+            if (errormsg.length > 0) {
+                alert(errormsg.join("\n"));
+                return false;
+            }
+
+            return true;
+        }
+    </script>
+</body>
+
+</html>
