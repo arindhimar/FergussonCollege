@@ -1,17 +1,17 @@
-// Main entry point: Initialize event handlers and UI behavior
 $(document).ready(function () {
 
 
-    // Highlight the active section link in the navigation menu while scrolling
     $(window).scroll(function () {
         var scrollPos = $(document).scrollTop();
 
+        // Loop through each section and check if it's in the viewport
         $('nav ul li a').each(function () {
             var currLink = $(this);
             var sectionId = currLink.attr("href");
 
             var section = $(sectionId);
 
+            // Check if this section is within view
             if (section.position().top <= scrollPos && section.position().top + section.height() > scrollPos) {
                 $('nav ul li a').removeClass("active");
                 currLink.addClass("active");
@@ -22,7 +22,6 @@ $(document).ready(function () {
     });
 
 
-    // Event handler: Update Bubble Sort code display based on selected programming language
     $('#bubbleSortLanguage').change(function () {
         const language = $(this).val();
         const codeDisplay = $('#bubbleSortCode');
@@ -67,6 +66,7 @@ $(document).ready(function () {
         codeDisplay.html(`<pre><code class="language-${language}">${code}</code></pre>`);
     });
 
+    // Similar code for Insertion Sort
     $('#insertionSortLanguage').change(function () {
         const language = $(this).val();
         const codeDisplay = $('#insertionSortCode');
@@ -116,7 +116,6 @@ $(document).ready(function () {
         codeDisplay.html(`<pre><code class="language-${language}">${code}</code></pre>`);
     });
 
-    // Toggle complexity details for sorting algorithms
     $('.toggle-complexity').click(function () {
         $(this).next('.complexity-list').slideToggle();
         $(this).toggleClass('expanded');
@@ -125,7 +124,8 @@ $(document).ready(function () {
 
     var array = [];
 
-    // Update and display the current array state for sorting visualizations
+    // Function to display the array in boxes
+    // Function to update the array display
     function updateArrayDisplay() {
         $('#arrayDisplay').empty();
 
@@ -141,7 +141,6 @@ $(document).ready(function () {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
-    // Visualize the array for bubble sort, highlighting elements being compared/swapped
     async function visualizeArray(arr, index1, index2, swapped = false) {
         $("#arrayDisplay1").empty(); // Clear the bubble sort display
 
@@ -149,11 +148,14 @@ $(document).ready(function () {
         const containerWidth = $("#arrayDisplay1").width(); // Get container width
         const totalElements = arr.length;
 
+        // Set a small gap between the boxes
         const gap = 2; // Adjust gap size (in pixels)
 
+        // Calculate box width, ensuring total width fits within the parent container
         const boxWidth = Math.floor((containerWidth - gap * (totalElements - 1)) / totalElements);
         const boxHeight = containerHeight; // Use full container height for each box
 
+        // Dynamically adjust if gaps make the boxes too large for the container
         if (boxWidth <= 0) {
             console.error("Container too small for the elements with gaps.");
             return; // Exit function early
@@ -175,6 +177,7 @@ $(document).ready(function () {
                 })
                 .text(value);
 
+            // Highlight the elements being compared
             if (index === index1 || index === index2) {
                 box.css('background-color', swapped ? '#ff6347' : '#f1c40f'); // Highlight comparison or swap
             }
@@ -182,6 +185,7 @@ $(document).ready(function () {
             $("#arrayDisplay1").append(box);
         });
 
+        // Adjust the last box to avoid extra margin
         $("#arrayDisplay1 .array-box:last-child").css('margin-right', '0');
 
         await sleep(500); // Adjust the delay as needed
@@ -201,53 +205,62 @@ $(document).ready(function () {
     }
 
 
-    // Perform Bubble Sort and visualize the process step by step
     async function bubbleSort() {
         let n = array.length;
         let bubbleSortArray = [...array];
 
         for (let i = 0; i < n - 1; i++) {
             for (let j = 0; j < n - i - 1; j++) {
+                // Visualize the comparison
                 await visualizeArray(bubbleSortArray, j, j + 1);
 
                 if (bubbleSortArray[j] > bubbleSortArray[j + 1]) {
+                    // Swap elements
                     let temp = bubbleSortArray[j];
                     bubbleSortArray[j] = bubbleSortArray[j + 1];
                     bubbleSortArray[j + 1] = temp;
 
+                    // Update visualization after swap
                     await visualizeArray(bubbleSortArray, j, j + 1, true);
                     await visualizeBubbleImportantValues(bubbleSortArray[j], bubbleSortArray[j + 1]);
                 }
             }
         }
+        // Final visualization when sorting is done
         await visualizeArray(bubbleSortArray, -1, -1, true);
     }
 
-    // Event handler: Add values to the Bubble Sort array based on user input
+    // Event listener for the 'Add' button and Enter key press
     $('#addBubbleSortValue').click(function () {
         const inputValue = $('#arrayInput').val().trim();
 
+        // Split the input by commas, spaces, or both (using a regular expression)
         const values = inputValue.split(/[\s,]+/).map(val => val.trim());
 
         values.forEach(value => {
+            // Ensure each value is a number and not empty
             if (value !== '' && !isNaN(value)) {
                 const number = Number(value);
                 array.push(number); // Push valid numbers to the array
             }
         });
 
+        // Update the array display after all valid values are added
         updateArrayDisplay();
 
+        // Clear the input field
         $('#arrayInput').val('');
     });
 
-    // Generate predefined test cases for Bubble Sort and update the visualization
+    // Event listener for the Test Case dropdown for Bubble Sort
     $('#bubbleTestCaseSelect').change(function () {
         const selectedCase = $(this).val();
 
+        // Clear the current array and display
         array = [];
         $('#arrayInput').val(''); // Clear the input field
 
+        // Generate the appropriate test case array
         let testArray = [];
 
         switch (selectedCase) {
@@ -264,8 +277,10 @@ $(document).ready(function () {
                 break;
         }
 
+        // Populate the array with the generated test case values
         testArray.forEach(value => array.push(value));
 
+        // Update the display with the test case array
         updateArrayDisplay();
     });
 
@@ -324,6 +339,7 @@ $(document).ready(function () {
 
 
 
+    // Function to update the insertion array display
     function updateInsertionArrayDisplay() {
         $('#arrayInsertionDisplay').empty();
 
@@ -374,12 +390,12 @@ $(document).ready(function () {
             $("#insertionSortDisplay").append(box);
         });
 
+        // Remove extra margin on the last box
         $("#insertionSortDisplay .array-box:last-child").css('margin-right', '0');
 
         await sleep(500); // Adjust delay as needed
     }
 
-    // Perform Insertion Sort and visualize the process step by step
     async function insertionSort() {
         let insertionSortArray = [...insertionArray];
 
@@ -387,26 +403,32 @@ $(document).ready(function () {
             let key = insertionSortArray[i];
             let j = i - 1;
 
+            // Visualize the current state
             await visualizeInsertionArray(insertionSortArray, i, j);
 
             while (j >= 0 && insertionSortArray[j] > key) {
                 insertionSortArray[j + 1] = insertionSortArray[j];
                 j--;
 
+                // Visualize the current state after each shift
                 await visualizeInsertionArray(insertionSortArray, i, j);
             }
             insertionSortArray[j + 1] = key;
 
+            // Final state visualization after inserting key
             await visualizeInsertionArray(insertionSortArray, -1, -1);
         }
     }
 
+    // Event listener for the Test Case dropdown
     $('#insertionTestCaseSelect').change(function () {
         const selectedCase = $(this).val();
 
+        // Clear the current insertion array and display
         insertionArray = [];
         $('#insertionArrayInput').val(''); // Clear the input field
 
+        // Generate the appropriate test case array
         let testArray = [];
 
         switch (selectedCase) {
@@ -423,27 +445,33 @@ $(document).ready(function () {
                 break;
         }
 
+        // Populate the insertion array with the generated test case values
         testArray.forEach(value => insertionArray.push(value));
 
+        // Update the display with the test case array
         updateInsertionArrayDisplay();
     });
 
 
-    // Event handler: Add values to the Insertion Sort array based on user input
+    // Event listener for the 'Add' button for Insertion Sort
     $('#addInsertionSortValue').click(function () {
         const inputValue = $('#insertionArrayInput').val().trim();
 
+        // Split the input by commas, spaces, or both (using a regular expression)
         const values = inputValue.split(/[\s,]+/).map(val => val.trim());
 
         values.forEach(value => {
+            // Ensure each value is a number and not empty
             if (value !== '' && !isNaN(value)) {
                 const number = Number(value);
                 insertionArray.push(number); // Push valid numbers to the insertionArray
             }
         });
 
+        // Update the insertion array display after all valid values are added
         updateInsertionArrayDisplay();
 
+        // Clear the input field
         $('#insertionArrayInput').val('');
     });
 
@@ -451,6 +479,7 @@ $(document).ready(function () {
         $("#insertionSortDisplay").empty();
         $("#insertionArrayDisplay").children().clone().appendTo("#insertionSortDisplay");
 
+        // Run the insertion sort visualization
         await insertionSort();
     });
 
@@ -460,6 +489,7 @@ $(document).ready(function () {
         $("#arrayDisplay").children().clone().appendTo("#arrayDisplay1");
         $("#arrayDisplay").children().clone().appendTo("#arrayDisplay2");
 
+        // Run both sorting algorithms simultaneously
         await Promise.all([bubbleSort()]);
     });
 
@@ -485,7 +515,6 @@ $(document).ready(function () {
 
 
 
-    // Perform Insertion Sort and visualize the process step by step
     async function insertionSort() {
         let insertionSortArray = [...insertionArray];
 
@@ -493,39 +522,45 @@ $(document).ready(function () {
             let key = insertionSortArray[i];
             let j = i - 1;
 
+            // Visualize the current state
             await visualizeInsertionArray(insertionSortArray, i, j);
 
             while (j >= 0 && insertionSortArray[j] > key) {
                 insertionSortArray[j + 1] = insertionSortArray[j];
                 j--;
 
+                // Visualize the current state after each shift
                 await visualizeInsertionArray(insertionSortArray, i, j);
             }
             insertionSortArray[j + 1] = key;
 
+            // Final state visualization after inserting key
             await visualizeInsertionArray(insertionSortArray, -1, -1);
         }
     }
 
-    // Perform Bubble Sort and visualize the process step by step
     async function bubbleSort() {
         let n = array.length;
         let bubbleSortArray = [...array];
 
         for (let i = 0; i < n - 1; i++) {
             for (let j = 0; j < n - i - 1; j++) {
+                // Visualize the comparison
                 await visualizeArray(bubbleSortArray, j, j + 1);
 
                 if (bubbleSortArray[j] > bubbleSortArray[j + 1]) {
+                    // Swap elements
                     let temp = bubbleSortArray[j];
                     bubbleSortArray[j] = bubbleSortArray[j + 1];
                     bubbleSortArray[j + 1] = temp;
 
+                    // Update visualization after swap
                     await visualizeArray(bubbleSortArray, j, j + 1, true);
                     await visualizeBubbleImportantValues(bubbleSortArray[j], bubbleSortArray[j + 1]);
                 }
             }
         }
+        // Final visualization when sorting is done
         await visualizeArray(bubbleSortArray, -1, -1, true);
     }
 
@@ -583,9 +618,11 @@ $(document).ready(function () {
     $('#comparisonTestCaseSelect').change(function () {
         const selectedCase = $(this).val();
 
+        // Clear the current comparison array and display
         comparisonArray = [];
         $('#comparisionArrayInput').val(''); // Clear the input field
 
+        // Generate the appropriate test case array
         let testArray = [];
 
         switch (selectedCase) {
@@ -602,25 +639,31 @@ $(document).ready(function () {
                 break;
         }
 
+        // Populate the comparison array with the generated test case values
         testArray.forEach(value => comparisonArray.push(value));
 
+        // Update the display with the test case array
         updateComparisonArrayDisplay();
     });
 
     $('#addComparisionSortValue').click(function () {
         const inputValue = $('#comparisionArrayInput').val().trim();
 
+        // Split the input by commas, spaces, or both (using a regular expression)
         const values = inputValue.split(/[\s,]+/).map(val => val.trim());
 
         values.forEach(value => {
+            // Ensure each value is a number and not empty
             if (value !== '' && !isNaN(value)) {
                 const number = Number(value);
                 comparisonArray.push(number); // Push valid numbers to the comparisonArray
             }
         });
 
+        // Update the comparison array display after all valid values are added
         updateComparisonArrayDisplay();
 
+        // Clear the input field
         $('#comparisionArrayInput').val('');
     });
 
@@ -713,6 +756,7 @@ $(document).ready(function () {
         $("#comparisonBubbleSortDisplay").empty();
         $("#comparisonInsertionSortDisplay").empty();
 
+        // Start both sorting algorithms simultaneously
         await Promise.all([
             comparisonBubbleSort(bubbleSortArray),
             comparisonInsertionSort(insertionSortArray)
