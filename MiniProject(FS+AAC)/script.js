@@ -150,22 +150,25 @@ $(document).ready(function () {
 
     // Visualize the array for bubble sort, highlighting elements being compared/swapped
     async function visualizeArray(arr, index1, index2, swapped = false) {
+        // Capture the current scroll position before updating
+        const scrollPosition = $("#arrayDisplay1").scrollLeft();
+    
         $("#arrayDisplay1").empty(); // Clear the bubble sort display
-
+    
         const containerHeight = $("#arrayDisplay1").height(); // Get container height
         const containerWidth = $("#arrayDisplay1").width(); // Get container width
         const totalElements = arr.length;
-
+    
         const gap = 2; // Adjust gap size (in pixels)
-
+    
         const boxWidth = Math.floor((containerWidth - gap * (totalElements - 1)) / totalElements);
         const boxHeight = containerHeight; // Use full container height for each box
-
+    
         if (boxWidth <= 0) {
             console.error("Container too small for the elements with gaps.");
             return; // Exit function early
         }
-
+    
         arr.forEach((value, index) => {
             const box = $('<div></div>')
                 .addClass('array-box')
@@ -181,20 +184,23 @@ $(document).ready(function () {
                     'font-weight': 'bold', // Emphasize the values
                 })
                 .text(value);
-
+    
             if (index === index1 || index === index2) {
                 box.css('background-color', swapped ? '#ff6347' : '#f1c40f'); // Highlight comparison or swap
             }
-
+    
             $("#arrayDisplay1").append(box);
         });
-
+    
+        // Remove the margin-right on the last item
         $("#arrayDisplay1 .array-box:last-child").css('margin-right', '0');
-
+    
+        // After updating the display, restore the scroll position
+        $("#arrayDisplay1").scrollLeft(scrollPosition);
+    
         await sleep(500); // Adjust the delay as needed
     }
-
-
+    
 
 
 
