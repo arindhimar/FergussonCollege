@@ -1,6 +1,8 @@
 * {
     margin: 0;
     padding: 0;
+    overflow-y: none;
+
     box-sizing: border-box;
 }
 
@@ -99,6 +101,7 @@ nav ul li a.active::after {
 }
 
 .info-container {
+
     background-color: rgba(30, 30, 30, 0.95);
     border-radius: 10px;
     padding: 30px;
@@ -166,8 +169,9 @@ nav ul li a.active::after {
     border: none;
     border-radius: 5px;
     padding: 10px;
-    color: #121212;
+    color: #ffffff;
     cursor: pointer;
+    width: 100%;
     transition: background-color 0.3s;
 }
 
@@ -303,7 +307,8 @@ nav ul li a.active::after {
     display: flex;
     justify-content: space-between;
     gap: 20px;
-    width: 70vw;
+    width: 80vw;
+    /* margin-left: -80px; */
 }
 
 .comparison-half {
@@ -459,6 +464,7 @@ button.read-more:hover {
     background-color: #1e1e1e;
     color: #fff;
     border: 1px solid #5cdb95;
+    text-align-last:center;
     border-radius: 5px;
     font-size: 16px;
     cursor: pointer;
@@ -519,44 +525,83 @@ button.read-more:hover {
 @media (min-width: 768px) {
     .section {
         flex-direction: row;
+        gap: 20px; /* Add spacing between columns */
     }
 
     .half {
         flex: 1;
         height: auto;
+        padding: 15px; /* Add consistent padding */
     }
-    
-
 
     h2 {
-        font-size: 36px;
+        font-size: 32px; /* Slightly smaller for tablets */
     }
 
+
+
     .info-container {
-        max-width: 600px;
-        height: auto;
+        max-width: 90%;
     }
 }
 
 @media (max-width: 767px) {
+    .section {
+        flex-direction: column; /* Stack content vertically */
+        padding: 20px; /* Add padding for smaller screens */
+    }
+
     .info-container {
-        padding: 15px;
-        max-width: 90%;
+        padding: 10px;
+        width: 100%;
     }
 
-    .left{
-        margin-left: 10%;
+    h2 {
+        font-size: 24px;
     }
 
-    .code-card {
-        margin-top: 15px;
+    .comparison-details {
+        flex-direction: column;
+        gap: 15px; /* Reduce gap to fit smaller screens */
+    }
+
+    nav ul li a{
+        font-size: 14px;
+    }
+
+    .array-display {
+        max-width: 100%;
+        flex-wrap: wrap; /* Allow array boxes to wrap for narrow widths */
     }
 }
 
-@media (max-width: 768px) {
-    .comparison-details {
-        margin-left: 13%;
 
+@media (max-width: 1200px) {
+    .info-container {
+        padding: 15px;
+        max-width: 100%;
+    }
+
+    .comparison-details {
+        flex-direction: column; /* Stack vertically */
+        gap: 25px; /* Consistent gap */
+    }
+
+    .comparison-half {
+        margin-bottom: 25px; /* Align margins */
+    }
+
+    .comparison-intro {
+        margin-bottom: 20px;
+    }
+
+    .array-display {
+        max-width: 100%; /* Ensure proper visualization fit */
+    }
+}
+
+@media (max-width: 1200px) {
+    .comparison-details {
         flex-direction: column; /* Stack comparison halves vertically */
         gap: 30px; /* Space between stacked sections */
     }
@@ -580,7 +625,96 @@ button.read-more:hover {
         gap: 25px;
     }
 
+
+
     .comparison-half {
         margin-bottom: 25px;
+    }
+}
+
+/* Intro Section Styles */
+#introSection {
+    background-color: #121212;
+    color: #e0e0e0;
+    padding: 40px 20px;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.intro-container {
+    max-width: 800px;
+    width: 100%;
+    padding: 20px;
+    background-color: rgba(30, 30, 30, 0.85);
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+    text-align: center;
+}
+
+.project-title {
+    font-size: 3rem;
+    color: #5cdb95;
+    margin-bottom: 20px;
+}
+
+.project-description {
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+.tech-stack {
+    font-size: 1.1rem;
+    margin-bottom: 30px;
+}
+
+.tech-stack h3 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    color: #8EE4AF;
+}
+
+.tech-stack ul {
+    list-style: none;
+    padding: 0;
+}
+
+.tech-stack li {
+    background-color: #2b2b2b;
+    margin: 5px 0;
+    padding: 5px;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.cta-btn {
+    background-color: #5cdb95;
+    color: #121212;
+    padding: 12px 25px;
+    font-size: 1.1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.cta-btn:hover {
+    background-color: #8EE4AF;
+}
+
+@media (max-width: 767px) {
+    .project-title {
+        font-size: 2rem;
+    }
+
+    .project-description {
+        font-size: 1rem;
+    }
+
+    .cta-btn {
+        font-size: 1rem;
     }
 }

@@ -14,18 +14,44 @@
     <!-- Navigation Bar -->
     <nav>
         <ul>
+            <li><a href="#introSection">Introduction </a></li>
             <li><a href="#bubbleSortSection">Bubble Sort</a></li>
             <li><a href="#insertionSortSection">Insertion Sort</a></li>
             <li><a href="#comparisonSection">Comparison</a></li>
         </ul>
     </nav>
 
+
+    <!-- Introduction Section -->
+    <section id="introSection" class="intro-section">
+        <div class="intro-container">
+            <h1 class="project-title">Sorting Algorithm Visualizations</h1>
+            <p class="project-description">
+                A dynamic, interactive tool designed to visually demonstrate how sorting algorithms work in real-time. 
+                It includes visualizations for Bubble Sort and Insertion Sort, allowing users to explore algorithm behavior and efficiency.
+            </p>
+            <div class="tech-stack">
+                <h3>Technologies Used:</h3>
+                <ul>
+                    <li>HTML</li>
+                    <li>CSS (Flexbox, Media Queries)</li>
+                    <li>JavaScript (jQuery, Async/Await)</li>
+                    <li>Responsive Design</li>
+                </ul>
+            </div>
+            <div class="intro-actions">
+                <button class="cta-btn" onclick="scrollToSection('bubbleSortSection')">Get Started</button>
+            </div>
+        </div>
+    </section>
+    
+
     <!-- Bubble Sort Section -->
 
     <div id="bubbleSortSection" class="section bubble-sort">
         <div class="half left">
             <div class="info-container">
-                <i class="info-icon" title="Bubble Sort is a simple sorting algorithm...">ℹ️</i>
+                <!-- <i class="info-icon" title="Bubble Sort is a simple sorting algorithm...">ℹ️</i>. -->
                 <h2>Bubble Sort</h2>
                 <p>Bubble Sort is a simple sorting algorithm that repeatedly steps through the list, compares adjacent
                     elements, and swaps them if they are in the wrong order. It is named for the way larger elements
@@ -126,7 +152,7 @@ def bubble_sort(arr):
     <div id="insertionSortSection" class="section insertion-sort">
         <div class="half left">
             <div class="info-container">
-                <i class="info-icon" title="Insertion Sort is an efficient sorting algorithm...">ℹ️</i>
+                <!-- <i class="info-icon" title="Insertion Sort is an efficient sorting algorithm...">ℹ️</i> -->
                 <h2>Insertion Sort</h2>
                 <p>Insertion Sort is an efficient sorting algorithm that builds the final sorted array one item at a
                     time. It is much less efficient on large lists than more advanced algorithms like quicksort or merge

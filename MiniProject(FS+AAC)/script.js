@@ -1,3 +1,10 @@
+function scrollToSection(sectionId) {
+    const section = document.getElementById(sectionId);
+    section.scrollIntoView({ behavior: 'smooth' });
+}
+
+
+
 // Main entry point: Initialize event handlers and UI behavior
 $(document).ready(function () {
 
