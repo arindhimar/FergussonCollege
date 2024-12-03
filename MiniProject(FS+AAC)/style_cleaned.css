@@ -70,13 +70,15 @@ nav ul li a:active {
 }
 
 nav ul li a.active {
-    color: #8EE4AF; 
+    color: #8EE4AF;
     border-radius: 5px;
 }
 
 nav ul li a.active::after {
-    width: 100%; /* Ensure underline expands fully */
-    left: 0; /* Align to the left */
+    width: 100%;
+    /* Ensure underline expands fully */
+    left: 0;
+    /* Align to the left */
 }
 
 .section {
@@ -200,22 +202,31 @@ nav ul li a.active::after {
 }
 
 .array-display {
-    display: flex; /* Arrange items in a row */
-    flex-wrap: wrap; /* Allow items to wrap to new lines */
-    justify-content: center; /* Center items horizontally */
-    align-items: flex-end; /* Align items to the bottom of the container */
+    display: flex;
+    /* Arrange items in a row */
+    flex-wrap: wrap;
+    /* Allow items to wrap to new lines */
+    justify-content: center;
+    /* Center items horizontally */
+    align-items: flex-end;
+    /* Align items to the bottom of the container */
     height: 200px;
     margin-top: 10px;
-    gap: 5px; /* Add spacing between boxes */
+    gap: 5px;
+    /* Add spacing between boxes */
 }
 
 .array-box {
-    flex: 1 1 calc(10% - 10px); /* Dynamic width: 10% of container minus gap */
-    max-width: 50px; /* Limit maximum width */
-    height: calc(50px - 50%); /* Adjust height based on container size */
+    flex: 1 1 calc(1% - 10px);
+    /* Dynamic width: 10% of container minus gap */
+    max-width: 60px;
+    /* Limit maximum width */
+    height: calc(50px - 50%);
+    /* Adjust height based on container size */
     background-color: #5cdb95;
     color: white;
-    font-size: 12px; /* Reduce font size for smaller boxes */
+    font-size: 12px;
+    /* Reduce font size for smaller boxes */
     display: flex;
     justify-content: center;
     align-items: flex-end;
@@ -463,7 +474,7 @@ button.read-more:hover {
     background-color: #1e1e1e;
     color: #fff;
     border: 1px solid #5cdb95;
-    text-align-last:center;
+    text-align-last: center;
     border-radius: 5px;
     font-size: 16px;
     cursor: pointer;
@@ -524,17 +535,20 @@ button.read-more:hover {
 @media (min-width: 768px) {
     .section {
         flex-direction: row;
-        gap: 20px; /* Add spacing between columns */
+        gap: 20px;
+        /* Add spacing between columns */
     }
 
     .half {
         flex: 1;
         height: auto;
-        padding: 15px; /* Add consistent padding */
+        padding: 15px;
+        /* Add consistent padding */
     }
 
     h2 {
-        font-size: 32px; /* Slightly smaller for tablets */
+        font-size: 32px;
+        /* Slightly smaller for tablets */
     }
 
 
@@ -546,8 +560,10 @@ button.read-more:hover {
 
 @media (max-width: 767px) {
     .section {
-        flex-direction: column; /* Stack content vertically */
-        padding: 20px; /* Add padding for smaller screens */
+        flex-direction: column;
+        /* Stack content vertically */
+        padding: 20px;
+        /* Add padding for smaller screens */
     }
 
     .info-container {
@@ -561,10 +577,11 @@ button.read-more:hover {
 
     .comparison-details {
         flex-direction: column;
-        gap: 15px; /* Reduce gap to fit smaller screens */
+        gap: 15px;
+        /* Reduce gap to fit smaller screens */
     }
 
-    nav ul li a{
+    nav ul li a {
         font-size: 14px;
     }
 
@@ -583,12 +600,15 @@ button.read-more:hover {
     }
 
     .comparison-details {
-        flex-direction: column; /* Stack vertically */
-        gap: 25px; /* Consistent gap */
+        flex-direction: column;
+        /* Stack vertically */
+        gap: 25px;
+        /* Consistent gap */
     }
 
     .comparison-half {
-        margin-bottom: 25px; /* Align margins */
+        margin-bottom: 25px;
+        /* Align margins */
     }
 
     .comparison-intro {
@@ -596,24 +616,34 @@ button.read-more:hover {
     }
 
     .array-display {
-        max-width: 100%; /* Ensure proper visualization fit */
+        max-width: 100%;
+        /* Ensure proper visualization fit */
     }
 }
 
 @media (max-width: 1200px) {
     .array-display {
-        display: flex; /* Arrange items in rows */
-        flex-wrap: wrap; /* Allow wrapping to new lines */
-        justify-content: center; /* Center items horizontally */
-        gap: 5px; /* Reduce spacing between items */
-        padding: 10px; /* Padding for better aesthetics */
+        display: flex;
+        /* Arrange items in rows */
+        flex-wrap: wrap;
+        /* Allow wrapping to new lines */
+        justify-content: center;
+        /* Center items horizontally */
+        gap: 5px;
+        /* Reduce spacing between items */
+        padding: 10px;
+        /* Padding for better aesthetics */
     }
 
     .array-box {
-        flex: 1 1 calc(1% - 10px); /* Dynamic width: 10% of container minus gap */
-        max-width: 60px; /* Limit maximum size of each bar */
-        height: 40px; /* Reduce height for smaller screens */
-        font-size: 12px; /* Reduce text size for smaller bars */
+        flex: 1 1 calc(1% - 100px);
+        /* Dynamic width: 10% of container minus gap */
+        max-width: 60px;
+        /* Limit maximum size of each bar */
+        height: calc(5px - 50%);
+        /* Adjust height based on container size */
+        font-size: 12px;
+        /* Reduce text size for smaller bars */
         text-align: center;
         display: flex;
         justify-content: center;
@@ -623,6 +653,7 @@ button.read-more:hover {
         border-radius: 4px;
     }
 }
+
 
 
 @media (max-width: 1024px) {
@@ -636,13 +667,13 @@ button.read-more:hover {
         nav ul {
             padding: 0 10px;
         }
-    
+
         nav ul li a {
             font-size: 12px;
             padding: 8px 10px;
         }
     }
-    
+
 
     .comparison-half {
         margin-bottom: 25px;

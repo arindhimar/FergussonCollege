@@ -635,20 +635,20 @@ $(document).ready(function () {
     async function visualizeComparisonArray(arr, algorithm, index1, index2, key = null) {
         const displayId = algorithm === 'bubble' ? "comparisonBubbleSortDisplay" : "comparisonInsertionSortDisplay";
         $(`#${displayId}`).empty(); // Clear the display container
-
+    
         const containerHeight = $(`#${displayId}`).height(); // Get container height
         const containerWidth = $(`#${displayId}`).width(); // Get container width
         const totalElements = arr.length;
-
+    
         const gap = 2; // Define gap size
         const boxWidth = Math.floor((containerWidth - gap * (totalElements - 1)) / totalElements);
         const boxHeight = containerHeight;
-
+    
         if (boxWidth <= 0) {
             console.error("Container too small for the elements with gaps.");
             return; // Exit if the container is too small
         }
-
+    
         arr.forEach((value, index) => {
             const box = $('<div></div>')
                 .addClass('array-box')
@@ -664,68 +664,110 @@ $(document).ready(function () {
                     'font-weight': 'bold',
                 })
                 .text(value);
-
+    
             if (index === index1 || index === index2) {
                 box.css('background-color', '#f1c40f'); // Highlight comparison
             }
-
+    
             $(`#${displayId}`).append(box);
         });
-
+    
         $(`#${displayId} .array-box:last-child`).css('margin-right', '0'); // Remove extra margin
-
+    
         if (algorithm === 'bubble') {
             $('#comparisonBubbleIntermediateValues').text(`Comparing: ${arr[index1]} and ${arr[index2]}`);
         } else {
             $('#comparisonInsertionIntermediateValues').text(`Key: ${key}, Comparing with: ${arr[index2]}`);
         }
-
+    
         await sleep(500); // Adjust delay as needed
     }
-
-
-
+    
     async function comparisonBubbleSort(arr) {
         let n = arr.length;
+        let swapCount = 0; // Variable to track swaps
+        const startTime = performance.now(); // Start the timer
+    
         for (let i = 0; i < n - 1; i++) {
             for (let j = 0; j < n - i - 1; j++) {
                 await visualizeComparisonArray(arr, 'bubble', j, j + 1);
                 if (arr[j] > arr[j + 1]) {
+                    // Swap elements
                     [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+                    swapCount++; // Increment swap count
                     await visualizeComparisonArray(arr, 'bubble', j, j + 1);
                 }
+                // Update the time and swap count continuously
+                updateBubbleSortStats(swapCount, performance.now() - startTime);
             }
         }
     }
-
+    
     async function comparisonInsertionSort(arr) {
+        let swapCount = 0; // Variable to track swaps
+        const startTime = performance.now(); // Start the timer
+    
         for (let i = 1; i < arr.length; i++) {
             let key = arr[i];
             let j = i - 1;
-            await visualizeComparisonArray(arr, 'insertion', i, j, key);
+    
+            // Ensure j is within bounds when calling visualizeComparisonArray
+            await visualizeComparisonArray(arr, 'insertion', i, j >= 0 ? j : 0, key);
+    
+            // Perform comparisons and shifts
             while (j >= 0 && arr[j] > key) {
-                arr[j + 1] = arr[j];
+                arr[j + 1] = arr[j]; // Shift the element
                 j--;
-                await visualizeComparisonArray(arr, 'insertion', i, j, key);
+                swapCount++; // Increment swap count for each shift
+                // Ensure j is within bounds when calling visualizeComparisonArray
+                await visualizeComparisonArray(arr, 'insertion', i, j >= 0 ? j : 0, key);
             }
+    
+            // Insert the key into its correct position
             arr[j + 1] = key;
+            // Ensure j + 1 is within bounds
             await visualizeComparisonArray(arr, 'insertion', i, j + 1, key);
+    
+            // Update the stats continuously
+            updateInsertionSortStats(swapCount, performance.now() - startTime);
         }
     }
-
+    
+    
+    // Function to update Bubble Sort stats
+    function updateBubbleSortStats(swapCount, timeElapsed) {
+        $('#comparisonBubbleSortTime').text(`Time Taken: ${(timeElapsed / 1000).toFixed(2)}s`);
+        $('#comparisonBubbleSortSwaps').text(`Total Swaps: ${swapCount}`);
+    }
+    
+    // Function to update Insertion Sort stats
+    function updateInsertionSortStats(swapCount, timeElapsed) {
+        $('#comparisonInsertionSortTime').text(`Time Taken: ${(timeElapsed / 1000).toFixed(2)}s`);
+        $('#comparisonInsertionSortSwaps').text(`Total Swaps: ${swapCount}`);
+    }
+    
     $("#startComparisionVisualization").click(async function () {
         const bubbleSortArray = [...comparisonArray];
         const insertionSortArray = [...comparisonArray];
-
+    
         $("#comparisonBubbleSortDisplay").empty();
         $("#comparisonInsertionSortDisplay").empty();
-
+    
+      
+        console.clear(); 
+    
+        // Initialize the display of initial stats
+        $('#comparisonBubbleSortTime').text("Time Taken: 0s");
+        $('#comparisonBubbleSortSwaps').text("Total Swaps: 0");
+        $('#comparisonInsertionSortTime').text("Time Taken: 0s");
+        $('#comparisonInsertionSortSwaps').text("Total Swaps: 0");
+    
         await Promise.all([
             comparisonBubbleSort(bubbleSortArray),
             comparisonInsertionSort(insertionSortArray)
         ]);
     });
-
+    
 
 
 });
