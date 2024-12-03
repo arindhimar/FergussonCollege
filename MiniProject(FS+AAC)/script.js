@@ -144,9 +144,7 @@ $(document).ready(function () {
         });
     }
 
-    function sleep(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
-    }
+ 
 
     // Visualize the array for bubble sort, highlighting elements being compared/swapped
     async function visualizeArray(arr, index1, index2, swapped = false) {
@@ -157,7 +155,7 @@ $(document).ready(function () {
     
         const containerHeight = $("#arrayDisplay1").height(); // Get container height
         const containerWidth = $("#arrayDisplay1").width(); // Get container width
-        const totalElements = arr.length;
+        const totalElements = arr.length ;
     
         const gap = 2; // Adjust gap size (in pixels)
     
