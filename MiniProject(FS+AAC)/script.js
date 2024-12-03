@@ -12,14 +12,15 @@ $(document).ready(function () {
     // Highlight the active section link in the navigation menu while scrolling
     $(window).scroll(function () {
         var scrollPos = $(document).scrollTop();
-
+        var offset = 500; // Adjust this value based on your layout
+    
         $('nav ul li a').each(function () {
             var currLink = $(this);
             var sectionId = currLink.attr("href");
-
             var section = $(sectionId);
-
-            if (section.position().top <= scrollPos && section.position().top + section.height() > scrollPos) {
+    
+            // Check if scroll position is within the section bounds (with offset)
+            if (section.position().top - offset <= scrollPos && section.position().top + section.height() - offset > scrollPos) {
                 $('nav ul li a').removeClass("active");
                 currLink.addClass("active");
             } else {
@@ -27,7 +28,7 @@ $(document).ready(function () {
             }
         });
     });
-
+    
 
     // Event handler: Update Bubble Sort code display based on selected programming language
     $('#bubbleSortLanguage').change(function () {
