@@ -762,7 +762,6 @@ $(document).ready(function () {
       
         console.clear(); 
     
-        // Initialize the display of initial stats
         $('#comparisonBubbleSortTime').text("Time Taken: 0s");
         $('#comparisonBubbleSortSwaps').text("Total Swaps: 0");
         $('#comparisonInsertionSortTime').text("Time Taken: 0s");

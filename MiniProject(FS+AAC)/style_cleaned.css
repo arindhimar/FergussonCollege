@@ -213,9 +213,9 @@ nav ul li a.active::after {
 }
 
 .array-box {
-    flex-basis: calc(5% - 10px);  /* Set a fixed width for the box relative to the container */
+    flex-basis: calc(9% - 10px);  /* Set a fixed width for the box relative to the container */
     max-width: 60px;  /* Limit the maximum width */
-    height: 50px;  /* Set a fixed height for each box */
+    height: 30px;  /* Set a fixed height for each box */
     background-color: #5cdb95;
     color: rgb(0, 0, 0);
     font-size: 12px;
