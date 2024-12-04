@@ -29,6 +29,8 @@ nav ul {
     list-style: none;
     display: flex;
     justify-content: center;
+    align-items: center;
+
 }
 
 nav ul li {
@@ -571,8 +573,14 @@ button.read-more:hover {
         gap: 15px;
     }
 
+    nav ul {
+        padding: 0 10px;
+    }
+
     nav ul li a {
-        font-size: 14px;
+        font-size: 12px;
+        padding: 0px 0px;
+
     }
 
     .array-display {
