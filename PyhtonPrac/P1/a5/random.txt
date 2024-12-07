@@ -1,0 +1,6 @@
+If your code is creating a file in a different directory than you expect, it could be due to the current working directory of your script. When you specify a filename without a path , Python will create or look for that file in the current working directory.
+
+Understanding Current Working Directory
+Current Working Directory: This is the directory from which your script is being executed. If you run your script from a different directory, Python will create the file in that directory instead of where your script is located.
+
+Check Current Working Directory: You can check the current working directory by adding the following line to your code
