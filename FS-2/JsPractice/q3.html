@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <input type="text" id="txtInput">
+
+    <p id="result"></p>
+
+    <script>
+
+        function toggleCase(ch) { if (ch >= 'A' && ch <= 'Z') return ch.toLowerCase(); return ch.toUpperCase(); }
+
+        document.getElementById("txtInput").addEventListener("input", function(){
+            let input = document.getElementById("txtInput").value;
+            let result = document.getElementById("result");
+            
+            let output = "";
+
+            let temp = input.split("");
+
+            temp.map((ch) => {
+                output += toggleCase(ch);
+            });
+
+            result.innerHTML = output;
+
+        });
+    </script>
+    
+
+</body>
+</html>

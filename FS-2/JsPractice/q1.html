@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <input type="text"  id="txtInput">
+
+    <button id="btn">Magic</button>
+
+    <script>
+        const input1 = [1,2,3,4,5];
+        const input2 = 1;
+        const input3 = "add";
+
+        console.log(input1.constructor === Array);
+        console.log(input2.constructor === Array);
+        console.log(input3.constructor === Array);
+
+        console.log(input1 instanceof Array);
+        console.log(input2 instanceof Array);
+        console.log(input3 instanceof Array);
+
+        console.log(Array.isArray(input1));
+        console.log(Array.isArray(input2));
+        console.log(Array.isArray(input3));
+
+
+
+
+        document.getElementById("btn").addEventListener("click", function(){
+            let input = document.getElementById("txtInput").value;
+
+            //length of the string\
+
+            if(input[0]=="[",input[input.length-1]=="]"){
+                console.log("Array");
+            }
+            else{
+                console.log("Not an Array");
+            }
+           
+        });
+
+        
+
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Tank Battle Math Game</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+        }
+        .game-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, #87CEEB 0%, #E0F6FF 100%);
+            overflow: hidden;
+        }
+        .cloud {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.8;
+            filter: blur(3px);
+            animation: float linear infinite;
+        }
+        @keyframes float {
+            0% { transform: translateX(100%); }
+            100% { transform: translateX(-100%); }
+        }
+        .tank {
+            position: absolute;
+            bottom: 50px;
+            width: 140px;
+            height: 100px;
+            transition: transform 0.3s;
+        }
+        .tank-body {
+            position: absolute;
+            bottom: 0;
+            width: 120px;
+            height: 60px;
+            background: linear-gradient(to bottom, #5D4037 0%, #3E2723 100%);
+            border-radius: 15px 15px 0 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        }
+        .tank-treads {
+            position: absolute;
+            bottom: 0;
+            width: 140px;
+            height: 30px;
+            background: repeating-linear-gradient(
+                90deg,
+                #212121,
+                #212121 10px,
+                #424242 10px,
+                #424242 20px
+            );
+            border-radius: 5px;
+            animation: moveTreads 1s linear infinite;
+        }
+        @keyframes moveTreads {
+            0% { background-position: 0 0; }
+            100% { background-position: 40px 0; }
+        }
+        .tank-turret {
+            position: absolute;
+            top: 15px;
+            left: 30px;
+            width: 60px;
+            height: 30px;
+            background: linear-gradient(to bottom, #795548 0%, #5D4037 100%);
+            border-radius: 50% 50% 0 0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        .tank-barrel {
+            position: absolute;
+            top: 25px;
+            width: 70px;
+            height: 12px;
+            background: linear-gradient(to bottom, #4E342E 0%, #3E2723 100%);
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s;
+        }
+        #tank1 {
+            left: 50px;
+        }
+        #tank2 {
+            right: 50px;
+            transform: scaleX(-1);
+        }
+        .bullet {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: radial-gradient(circle, #FFA000 0%, #FF6F00 100%);
+            border-radius: 50%;
+            display: none;
+            box-shadow: 0 0 10px #FFD54F;
+        }
+        .explosion {
+            position: absolute;
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle, #FFEB3B, #FFA000, #FF5722);
+            border-radius: 50%;
+            display: none;
+            animation: explode 0.5s forwards;
+            box-shadow: 0 0 20px #FF9800;
+        }
+        @keyframes explode {
+            0% { transform: scale(0); opacity: 1; }
+            50% { transform: scale(1.5); opacity: 1; }
+            100% { transform: scale(2); opacity: 0; }
+        }
+        .ground {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 50px;
+            background: linear-gradient(to bottom, #8D6E63 0%, #795548 100%);
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.2);
+        }
+        .health-bar {
+            position: absolute;
+            top: 20px;
+            width: 200px;
+            height: 20px;
+            background-color: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .health-bar-fill {
+            height: 100%;
+            background: linear-gradient(to right, #4CAF50, #8BC34A);
+            transition: width 0.3s;
+        }
+        #health1 {
+            left: 20px;
+        }
+        #health2 {
+            right: 20px;
+        }
+        .question-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s;
+        }
+        .question-container:hover {
+            transform: translate(-50%, -52%);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
+        }
+        .options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .option {
+            padding: 10px;
+            background: linear-gradient(to bottom, #4CAF50 0%, #45a049 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 16px;
+        }
+        .option:hover {
+            background: linear-gradient(to bottom, #45a049 0%, #4CAF50 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        .particle {
+            position: absolute;
+            background: #FFD54F;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <div id="tank1" class="tank">
+            <div class="tank-body"></div>
+            <div class="tank-treads"></div>
+            <div class="tank-turret"></div>
+            <div class="tank-barrel"></div>
+        </div>
+        <div id="tank2" class="tank">
+            <div class="tank-body"></div>
+            <div class="tank-treads"></div>
+            <div class="tank-turret"></div>
+            <div class="tank-barrel"></div>
+        </div>
+        <div id="bullet1" class="bullet"></div>
+        <div id="bullet2" class="bullet"></div>
+        <div id="explosion1" class="explosion"></div>
+        <div id="explosion2" class="explosion"></div>
+        <div class="ground"></div>
+        <div id="health1" class="health-bar"><div class="health-bar-fill"></div></div>
+        <div id="health2" class="health-bar"><div class="health-bar-fill"></div></div>
+        <div class="question-container">
+            <div id="question"></div>
+            <div class="options">
+                <button class="option" onclick="checkAnswer(this)"></button>
+                <button class="option" onclick="checkAnswer(this)"></button>
+                <button class="option" onclick="checkAnswer(this)"></button>
+                <button class="option" onclick="checkAnswer(this)"></button>
+            </div>
+            <div id="result"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentPlayer = 1;
+        let player1Health = 100;
+        let player2Health = 100;
+        let currentQuestion;
+
+        function generateClouds() {
+            const gameContainer = document.querySelector('.game-container');
+            for (let i = 0; i < 5; i++) {
+                const cloud = document.createElement('div');
+                cloud.classList.add('cloud');
+                cloud.style.top = ${Math.random() * 30}%;
+                cloud.style.left = ${Math.random() * 100}%;
+                cloud.style.width = ${50 + Math.random() * 100}px;
+                cloud.style.height = ${25 + Math.random() * 50}px;
+                cloud.style.animationDuration = ${20 + Math.random() * 40}s;
+                gameContainer.appendChild(cloud);
+            }
+        }
+
+        function generateQuestion() {
+            const operations = ['+', '-', '*'];
+            const operation = operations[Math.floor(Math.random() * operations.length)];
+            const num1 = Math.floor(Math.random() * 10) + 1;
+            const num2 = Math.floor(Math.random() * 10) + 1;
+            let answer;
+
+            switch (operation) {
+                case '+':
+                    answer = num1 + num2;
+                    break;
+                case '-':
+                    answer = num1 - num2;
+                    break;
+                case '*':
+                    answer = num1 * num2;
+                    break;
+            }
+
+            const options = [
+                answer.toString(),
+                (answer + Math.floor(Math.random() * 5) + 1).toString(),
+                (answer - Math.floor(Math.random() * 5) - 1).toString(),
+                (answer * 2).toString()
+            ];
+
+            return {
+                question: ${num1} ${operation} ${num2} = ?,
+                options: shuffleArray(options),
+                correctAnswer: answer.toString()
+            };
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function displayQuestion() {
+            currentQuestion = generateQuestion();
+            document.getElementById('question').textContent = Player ${currentPlayer}'s turn: ${currentQuestion.question};
+            const buttons = document.querySelectorAll('.option');
+            buttons.forEach((button, index) => {
+                button.textContent = currentQuestion.options[index];
+            });
+        }
+
+        function checkAnswer(button) {
+            if (button.textContent === currentQuestion.correctAnswer) {
+                document.getElementById('result').textContent = 'Correct!';
+                fireBullet();
+                playSound('correct');
+            } else {
+                document.getElementById('result').textContent = 'Incorrect!';
+                switchPlayer();
+                playSound('incorrect');
+            }
+
+            setTimeout(() => {
+                document.getElementById('result').textContent = '';
+                if (player1Health > 0 && player2Health > 0) {
+                    displayQuestion();
+                } else {
+                    endGame();
+                }
+            }, 1500);
+        }
+
+        function fireBullet() {
+            const bullet = document.getElementById(bullet${currentPlayer});
+            const tank = document.getElementById(tank${currentPlayer});
+            const targetTank = document.getElementById(tank${3 - currentPlayer});
+            
+            bullet.style.display = 'block';
+            bullet.style.left = currentPlayer === 1 ? '180px' : 'auto';
+            bullet.style.right = currentPlayer === 2 ? '180px' : 'auto';
+            bullet.style.bottom = '110px';
+
+            const distance = Math.abs(targetTank.offsetLeft - tank.offsetLeft) - 140;
+            const duration = distance / 500; // 500 pixels per second
+
+            bullet.style.transition = `${currentPlayer === 1 ? 'left' : 'right'} ${duration}s linear`;
+            setTimeout(() => {
+                bullet.style[currentPlayer === 1 ? 'left' : 'right'] = `${distance + 70}px`;
+            }, 50);
+
+            // Animate tank recoil
+            const barrel = tank.querySelector('.tank-barrel');
+            barrel.style.transform = 'translateX(-10px)';
+            setTimeout(() => {
+                barrel.style.transform = 'translateX(0)';
+            }, 100);
+
+            setTimeout(() => {
+                bullet.style.display = 'none';
+                showExplosion();
+                updateHealth();
+                playSound('explosion');
+            }, duration * 1000);
+        }
+
+        function showExplosion() {
+            const explosion = document.getElementById(explosion`${3 - currentPlayer}`);
+            explosion.style.display = 'block';
+            explosion.style.left = currentPlayer === 1 ? 'auto' : '105px';
+            explosion.style.right = currentPlayer === 2 ? 'auto' : '105px';
+            explosion.style.bottom = '105px';
+
+            createParticles(explosion.offsetLeft, explosion.offsetTop);
+
+            setTimeout(() => {
+                explosion.style.display = 'none';
+            }, 500);
+        }
+
+        function createParticles(x, y) {
+            for (let i = 0; i < 20; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                particle.style.left = `${x + 30}px`;
+                particle.style.top = `${y + 30}px`;
+                particle.style.width = `${Math.random() * 6 + 2}px`;
+                particle.style.height = particle.style.width;
+                
+                const angle = Math.random() * Math.PI * 2;
+                const speed = Math.random() * 50 + 50;
+                const vx = Math.cos(angle) * speed;
+                const vy = Math.sin(angle) * speed;
+                
+                document.body.appendChild(particle);
+                
+                let startTime = null;
+                function animateParticle(time) {
+                    if (!startTime) startTime = time;
+                    const elapsed = (time - startTime) / 1000;
+                    
+                    particle.style.left = `${x + 30 + vx * elapsed}px`;
+                    particle.style.top = `${y + 30 + vy * elapsed}px`;
+                    particle.style.opacity = 1 - elapsed / 1.5;
+                    
+                    if (elapsed < 1.5) {
+                        requestAnimationFrame(animateParticle);
+                    } else {
+                        document.body.removeChild(particle);
+                    }
+                }
+                requestAnimationFrame(animateParticle);
+            }
+        }
+
+        function updateHealth() {
+            if (currentPlayer === 1) {
+                player2Health -= 20;
+                document.querySelector('#health2 .health-bar-fill').style.width = `${player2Health}%`;
+            } else {
+                player1Health -= 20;
+                document.querySelector('#health1 .health-bar-fill').style.width = `${player1Health}%`;
+            }
+            switchPlayer();
+        }
+
+        function switchPlayer() {
+            currentPlayer = 3 - currentPlayer; // Switch between 1 and 2
+        }
+
+        function endGame() {
+            const winner = player1Health > 0 ? 1 : 2;
+            document.getElementById('question').textContent = `Game Over! Player ${winner} wins!`;
+            document.querySelector('.options').style.display = 'none';
+            playSound('gameover');
+        }
+
+        function playSound(soundType) {
+            const audio = new Audio();
+            switch (soundType) {
+                case 'correct':
+                    audio.src = 'https://example.com/correct.mp3';
+                    break;
+                case 'incorrect':
+                    audio.src = 'https://example.com/incorrect.mp3';
+                    break;
+                case 'explosion':
+                    audio.src = 'https://example.com/explosion.mp3';
+                    break;
+                case 'gameover':
+                    audio.src = 'https://example.com/gameover.mp3';
+                    break;
+            }
+            audio.play();
+        }
+
+        generateClouds();
+        displayQuestion();
+    </script>
+</body>
+</html>

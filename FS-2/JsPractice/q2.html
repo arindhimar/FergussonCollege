@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+
+    <input type="text"  placeholder="enter n" id="txtInput">
+
+    <button id="btn">Magic</button>
+
+    <div id="result">
+        
+    </div>
+
+    <script>
+
+        function fun(n=0){
+            return {
+                firstElement:input1[0],
+                nElements:input1.slice(0,n),
+            }
+        }
+
+        const input1 = [1,2,3,4,5];
+        document.getElementById("btn").addEventListener("click", function(){
+            let input = document.getElementById("txtInput").value;
+
+            
+            if(input.length>0 && !isNaN(input)){
+                console.log(fun(input));
+                document.getElementById("result").innerHTML = JSON.stringify(fun(input));
+            }
+            else{
+                console.log(fun());
+                document.getElementById("result").innerHTML = JSON.stringify(fun(input));
+            }
+            
+           
+        });
+
+        
+
+
+    </script>
+
+    
+</body>
+</html>
