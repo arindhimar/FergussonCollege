@@ -1,0 +1,3 @@
+SIde effects
+destructuring
+use effect without cleanup/with cleanup , along with the diff when we use normal , arrow function inside it
