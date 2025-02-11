@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sorting Visualization</title>
+    <link rel="stylesheet" href="style_cleaned.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+
+<body>
+    <!-- Navigation Bar -->
+    <nav>
+        <ul>
+            <li><a href="#introSection">Introduction</a></li>
+            <li><a href="#bubbleSortSection">Bubble Sort</a></li>
+            <li><a href="#insertionSortSection">Insertion Sort</a></li>
+            <li><a href="#comparisonSection">Comparison</a></li>
+        </ul>
+    </nav>
+
+
+    <!-- Introduction Section -->
+    <section id="introSection" class="intro-section">
+        <div class="intro-container">
+            <h1 class="project-title">Sorting Algorithm Visualizations</h1>
+            <p class="project-description">
+                Step-by-step visualization of Bubble Sort and Insertion Sort behavior and efficiency,Real-time comparison of sorting time for various input conditions,Interactive input options: custom or predefined test cases.
+            </p>
+            <div class="tech-stack">
+                <h3>Skills and Technologies : </h3>
+                <ul>
+                    <li>HTML , CSS (Flexbox, Media Queries)</li>
+                    <li>JavaScript (jQuery, Async/Await)</li>
+                    <li>Responsive Design</li>
+                </ul>
+            </div>
+
+            <div class="intro-actions">
+                <button class="cta-btn" onclick="scrollToSection('bubbleSortSection')">Get Started</button>
+            </div>
+        </div>
+    </section>
+    
+
+    <!-- Bubble Sort Section -->
+
+    <div id="bubbleSortSection" class="section bubble-sort">
+        <div class="half left">
+            <div class="info-container">
+                <i class="info-icon" title="Bubble Sort is a simple sorting algorithm..." onclick="window.open('https://youtu.be/LaV3-gXfg_Y')">ℹ️</i>.
+                <h2>Bubble Sort</h2>
+                <p>Bubble Sort is a simple sorting algorithm that repeatedly steps through the list, compares adjacent
+                    elements, and swaps them if they are in the wrong order. It is named for the way larger elements
+                    "bubble" to the top of the list.</p>
+
+                <!-- Complexity Analysis with Toggle -->
+                <div class="complexity-container">
+                    <h3 class="toggle-complexity">Complexity Analysis <span class="toggle-icon">➕</span></h3>
+                    <ul class="complexity-list">
+                        <li><strong>Best Case:</strong> O(n²)</li>
+                        <li><strong>Average Case:</strong> O(n²)</li>
+                        <li><strong>Worst Case:</strong> O(n²)</li>
+                        <li><strong>Space Complexity:</strong> O(1)</li>
+                    </ul>
+                </div>
+
+                <!-- Code Section -->
+                <div class="code-card">
+                    <h3>Select Language:</h3>
+                    <select id="bubbleSortLanguage" class="language-select">
+                        <option value="python">Python</option>
+                        <option value="javascript">JavaScript</option>
+                        <option value="cpp">C++</option>
+                    </select>
+                    <div id="bubbleSortCode" class="code-display">
+                        <pre><code class="language-python">
+def bubble_sort(arr):
+    n = len(arr)
+    for i in range(n):
+        for j in range(0, n-i-1):
+            if arr[j] > arr[j+1]:
+                arr[j], arr[j+1] = arr[j+1], arr[j]
+    return arr
+                    </code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="half right">
+            <div class="partition">
+                <div class="input">
+                    <!-- Dropdown for selecting test case
+                    <div class="test-case-dropdown">
+                        <label for="bubbleTestCaseSelect">Select Bubble Sort Test Case:</label>
+                        <select id="bubbleTestCaseSelect" class="test-case-select">
+                            <option value="none">-- Select Test Case --</option>
+                            <option value="best">Best Case</option>
+                            <option value="average">Average Case</option>
+                            <option value="worst">Worst Case</option>
+                        </select>
+                    </div> -->
+
+                    <!-- Dropdown for selecting test case -->
+                    <label for="bubbleTestCaseSelect">Select Test Case:</label>
+                    <select id="bubbleTestCaseSelect" class="test-case-select">
+                        <option value="none">-- Select Test Case --</option>
+                        <option value="best">Best Case</option>
+                        <option value="average">Average Case</option>
+                        <option value="worst">Worst Case</option>
+                    </select>
+                    <br><br>
+
+                    <input type="text" id="arrayInput"
+                        placeholder="Enter numbers one by one, for multiple (separate the values using ',' or ' ')">
+                    <br>
+                    <input type="button" value="Add" id="addBubbleSortValue">
+                </div>
+
+                <h3 class="array-label">Input Array:</h3>
+                <div id="arrayDisplay" class="array-display"></div>
+
+                <div class="startboth">
+                    <input type="button" value="Visualize" id="startBubbleVisualization">
+                </div>
+
+                <!-- Sorting visualizations -->
+                <div class="sorting-container">
+                    <!-- Bubble Sort Visualization -->
+                    <div class="bubble-sort-card" id="bubbleSort">
+                        <div class="card-header">
+                            <h3>Bubble Sort Visualization</h3>
+                        </div>
+                        <div class="card-body">
+                            <h4>Swapped Values:</h4>
+                            <div id="bubbleSortImportant" class="important-value"></div>
+                            <div id="arrayDisplay1" class="array-display"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Insertion Sort Section -->
+    <div id="insertionSortSection" class="section insertion-sort">
+        <div class="half left">
+            <div class="info-container">
+                <i class="info-icon" title="Insertion Sort is an efficient sorting algorithm..." onclick="window.open('https://youtu.be/HGk_ypEuS24?t=1903')">ℹ️</i>
+                <h2>Insertion Sort</h2>
+                <p>Insertion Sort is an efficient sorting algorithm that builds the final sorted array one item at a
+                    time. It is much less efficient on large lists than more advanced algorithms like quicksort or merge
+                    sort.</p>
+
+                <!-- Complexity Analysis with Toggle -->
+                <div class="complexity-container">
+                    <h3 class="toggle-complexity">Complexity Analysis <span class="toggle-icon">➕</span></h3>
+                    <ul class="complexity-list">
+                        <li><strong>Best Case:</strong> O(n)</li>
+                        <li><strong>Average Case:</strong> O(n²)</li>
+                        <li><strong>Worst Case:</strong> O(n²)</li>
+                        <li><strong>Space Complexity:</strong> O(1)</li>
+                    </ul>
+                </div>
+
+                <!-- Code Section -->
+                <div class="code-card">
+                    <h3>Select Language:</h3>
+                    <select id="insertionSortLanguage" class="language-select">
+                        <option value="python">Python</option>
+                        <option value="javascript">JavaScript</option>
+                        <option value="cpp">C++</option>
+                    </select>
+                    <div id="insertionSortCode" class="code-display">
+                        <pre><code class="language-python">
+    def insertion_sort(arr):
+        for i in range(1, len(arr)):
+            key = arr[i]
+            j = i - 1
+            while j >= 0 and key < arr[j]:
+                arr[j + 1] = arr[j]
+                j -= 1
+            arr[j + 1] = key
+        return arr
+                        </code></pre>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="half right" style="background-color: #2b2b2b;">
+            <div class="partition">
+                <div class="input">
+                    <!-- Dropdown for selecting test case -->
+                    <label for="insertionTestCaseSelect">Select Test Case:</label>
+                    <select id="insertionTestCaseSelect" class="test-case-select">
+                        <option value="none">-- Select Test Case --</option>
+                        <option value="best">Best Case</option>
+                        <option value="average">Average Case</option>
+                        <option value="worst">Worst Case</option>
+                    </select>
+                    <br><br>
+                    <input type="text" id="insertionArrayInput"
+                        placeholder="Enter numbers one by one for multiple (separate the values using ',' or ' ')">
+                    <br>
+                    <input type="button" value="Add" id="addInsertionSortValue">
+                </div>
+
+                <h3 class="array-label">Input Array:</h3>
+                <div id="arrayInsertionDisplay" class="array-display"></div>
+
+                <div class="startboth">
+                    <input type="button" value="Visualize" id="startInsertionVisualization">
+                </div>
+
+                <!-- Sorting visualizations -->
+                <div class="sorting-container">
+                    <div class="bubble-sort-card" id="insertionSort">
+                        <div class="card-header">
+                            <h3>Insertion Sort Visualization</h3>
+                        </div>
+                        <div class="card-body">
+                            <h4>Current State:</h4>
+                            <div id="insertionSortDisplay" class="array-display"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Comparison Section -->
+    <div id="comparisonSection" class="section comparison">
+        <div class="comparison-container">
+            <div class="comparison-intro">
+                <h2>Bubble Sort & Insertion Sort Comparison</h2>
+                <p>Here you can analyze the performance of both algorithms in various scenarios.</p>
+
+
+                <!-- <label for="comparisonTestCaseSelect">Select Test Case:</label>
+                    <select id="comparisonTestCaseSelect" class="test-case-select">
+                        <option value="none">-- Select Test Case --</option>
+                        <option value="best">Best Case</option>
+                        <option value="average">Average Case</option>
+                        <option value="worst">Worst Case</option>
+                    </select> -->
+
+                <div class="input">
+                    <!-- Dropdown for selecting test case -->
+                    <label for="comparisonTestCaseSelect">Select Test Case:</label>
+                    <select id="comparisonTestCaseSelect" class="test-case-select">
+                        <option value="none">-- Select Test Case --</option>
+                        <option value="best">Best Case</option>
+                        <option value="average">Average Case</option>
+                        <option value="worst">Worst Case</option>
+                    </select>
+                    <br><br>
+                    <input type="text" id="comparisionArrayInput"
+                        placeholder="Enter numbers one by one for multiple (separate the values using ',' or ' ')">
+                    <br>
+                    <input type="button" value="Add" id="addComparisionSortValue">
+                </div>
+
+                <div class="startboth">
+                    <input type="button" value="Visualize" id="startComparisionVisualization">
+                </div>
+
+                <h3 class="array-label">Input Array:</h3>
+                <div id="arrayComparisionDisplay" class="array-display"></div>
+            </div>
+
+            <div class="comparison-details">
+                <div class="comparison-half bubble-sort-comparison">
+                    <h3>Bubble Sort</h3>
+                    <div class="sorting-container">
+                        <div class="bubble-sort-card" id="comparisonBubbleSort">
+                            <div class="card-header">
+                                <h3>Bubble Sort Visualization</h3>
+                            </div>
+                            <div class="card-body">
+                                <h4>Intermediate Values:</h4>
+                                <div id="comparisonBubbleIntermediateValues" class="intermediate-value"></div>
+                                <div id="comparisonBubbleSortDisplay" class="array-display"></div>
+                                <!-- Add the following divs for time and swap count -->
+                                 <br>
+                                <div id="comparisonBubbleSortTime">Time Taken: 0s</div>
+                                <div id="comparisonBubbleSortSwaps">Total Swaps: 0</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="comparison-half insertion-sort-comparison">
+                    <h3>Insertion Sort</h3>
+                    <div class="sorting-container">
+                        <div class="bubble-sort-card" id="comparisonInsertionSort">
+                            <div class="card-header">
+                                <h3>Insertion Sort Visualization</h3>
+                            </div>
+                            <div class="card-body">
+                                <h4>Intermediate Values:</h4>
+                                <div id="comparisonInsertionIntermediateValues" class="intermediate-value"></div>
+                                <div id="comparisonInsertionSortDisplay" class="array-display"></div>
+                                <!-- Add the following divs for time and swap count -->
+                                <br>
+
+                                <div id="comparisonInsertionSortTime">Time Taken: 0s</div>
+                                <div id="comparisonInsertionSortSwaps">Total Swaps: 0</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
