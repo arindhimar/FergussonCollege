@@ -1,121 +1,254 @@
 import re
 
+# Define token types
+TOKEN_TYPES = {
+    "KEYWORD": r"\b(SELECT|FROM|WHERE|INSERT|INTO|VALUES|UPDATE|SET|DELETE|ORDER BY|GROUP BY|HAVING|AND|OR|NOT|NULL|IN|LIKE|DISTINCT|AS)\b",
+    "AGGREGATE": r"\b(COUNT|SUM|AVG|MIN|MAX)\b",  # Aggregate functions
+    "IDENTIFIER": r"[a-zA-Z_][a-zA-Z0-9_]*",
+    "SYMBOL": r"[(),=<>;*!=]",  
+    "VALUE": r"'[^']*'|\d+"  
+}
+
+
 class SQLParser:
     def __init__(self, query):
-        self.query = query.strip()
+        self.original_query = query.strip()
         self.tokens = self.tokenize(query)
-        self.current_token_index = 0
+        self.index = 0
 
-    def tokenize(self, query):
-        pattern = r'([(),;*])|([<>!=]=?)|\b(SELECT|FROM|WHERE|INSERT INTO|VALUES|UPDATE|SET|DELETE FROM|CREATE TABLE|ALTER TABLE|DROP TABLE|TRUNCATE TABLE|ADD COLUMN|RENAME COLUMN|CHANGE COLUMN|MODIFY COLUMN|AND|OR|NOT|NULL|IN|LIKE|COUNT|SUM|AVG|MIN|MAX)\b'
-        tokens = [token for token in re.split(pattern, query, flags=re.IGNORECASE) if token and token.strip()]
-        return [token.upper() if token.upper() in {'SELECT', 'FROM', 'WHERE', 'INSERT INTO', 'VALUES', 'UPDATE', 'SET', 'DELETE FROM', 'CREATE TABLE', 'ALTER TABLE', 'DROP TABLE', 'TRUNCATE TABLE', 'ADD COLUMN', 'RENAME COLUMN', 'CHANGE COLUMN', 'MODIFY COLUMN', 'AND', 'OR', 'NOT', 'NULL', 'IN', 'LIKE', 'COUNT', 'SUM', 'AVG', 'MIN', 'MAX'} else token for token in tokens]
-    
-    def match(self, expected):
-        if self.current_token_index < len(self.tokens) and self.tokens[self.current_token_index] == expected:
-            self.current_token_index += 1
-            return True
-        return False
-    
-    def expect(self, expected):
-        if not self.match(expected):
-            raise SyntaxError(f"Expected '{expected}' but found '{self.tokens[self.current_token_index]}'")
-    
+    def tokenize(self, sql):
+        sql = re.sub(r"\s+", " ", sql.strip())
+        sql = sql.upper()  # Convert to uppercase for case insensitivity
+        tokens = []
+        pattern = "|".join(f"(?P<{key}>{value})" for key, value in TOKEN_TYPES.items())
+
+        for match in re.finditer(pattern, sql):
+            token_type = match.lastgroup
+            value = match.group().strip()
+            tokens.append((token_type, value))
+
+        tokens.append(("END", ""))  # End of token list
+        return tokens
+
     def parse_select(self):
-        self.expect('SELECT')
-        if self.match('COUNT') or self.match('SUM') or self.match('AVG') or self.match('MIN') or self.match('MAX'):
-            self.expect('(')
-            self.expect(self.tokens[self.current_token_index])  # Expect column name
-            self.expect(')')
-        else:
-            self.expect('*')  # Can be extended to handle column lists
-        self.expect('FROM')
-        self.expect(self.tokens[self.current_token_index])  # Expect table name
-        if self.match('WHERE'):
-            self.expect(self.tokens[self.current_token_index])  # Expect column name
-            self.expect('=')  # Expect comparison operator
-            self.expect(self.tokens[self.current_token_index])  # Expect value
-        if self.match(';'):
-            return "Valid SELECT syntax!"
-        raise SyntaxError(f"Unexpected token: '{self.tokens[self.current_token_index]}'")
+        """Parses and validates a SELECT statement, handling aggregate functions, WHERE, ORDER BY, and GROUP BY."""
+
+        if not self.match("KEYWORD", "SELECT"):
+            return "Syntax Error: Expected 'SELECT' keyword!"
+
+        expect_column = True  # Expecting either a column name or aggregate function
+        has_aggregate = False  # Track if an aggregate function is used
+
+        while expect_column:
+            # Handle Aggregate Functions (COUNT, SUM, AVG, MIN, MAX)
+            if self.match("AGGREGATE"):
+                has_aggregate = True  # Mark aggregate function usage
+                if not self.match("SYMBOL", "("):
+                    return "Syntax Error: Expected '(' after aggregate function!"
+                if not self.match("IDENTIFIER") and not self.match("SYMBOL", "*"):
+                    return "Syntax Error: Expected column name or '*' inside aggregate function!"
+                if not self.match("SYMBOL", ")"):
+                    return "Syntax Error: Expected ')' after column name in aggregate function!"
+
+            # Handle Regular Columns
+            elif not self.match("IDENTIFIER") and not self.match("SYMBOL", "*"):
+                return "Syntax Error: Expected column names, '*' or aggregate function after 'SELECT'!"
+
+            # Check for additional columns (comma-separated)
+            if self.match("SYMBOL", ","):
+                expect_column = True  # Another column/aggregate expected after ','
+            else:
+                expect_column = False  # No more columns
+
+        # Ensure FROM clause is present **after column selection**
+        if not self.match("KEYWORD", "FROM"):
+            return "Syntax Error: Expected 'FROM' keyword after column selection!"
+
+        if not self.match("IDENTIFIER"):
+            return "Syntax Error: Missing table name after 'FROM'!"
+
+        # Handle optional WHERE clause
+        if self.match("KEYWORD", "WHERE"):
+            while True:
+                if not self.match("IDENTIFIER"):
+                    return "Syntax Error: Expected column name after 'WHERE'!"
+                if not (self.match("SYMBOL", "=") or self.match("SYMBOL", "<") or self.match("SYMBOL", ">") or self.match("SYMBOL", "!=")):
+                    return "Syntax Error: Expected comparison operator (=, <, >, !=) in WHERE clause!"
+                if not self.match("VALUE"):
+                    return "Syntax Error: Missing value after comparison operator in WHERE clause!"
+
+                # Handle multiple conditions (AND, OR)
+                if not self.match("KEYWORD", "AND") and not self.match("KEYWORD", "OR"):
+                    break  # Stop processing WHERE clause if no AND/OR is found
+
+        # Handle optional GROUP BY clause
+        if self.match("KEYWORD", "GROUP"):
+            if not self.match("KEYWORD", "BY"):
+                return "Syntax Error: Expected 'BY' after 'GROUP'!"
+            if not self.match("IDENTIFIER"):
+                return "Syntax Error: Expected column name after 'GROUP BY'!"
+
+        # Handle optional ORDER BY clause
+        if self.match("KEYWORD", "ORDER"):
+            if not self.match("KEYWORD", "BY"):
+                return "Syntax Error: Expected 'BY' after 'ORDER'!"
+            if not self.match("IDENTIFIER"):
+                return "Syntax Error: Expected column name after 'ORDER BY'!"
+
+            # Optional ASC/DESC sorting
+            if self.match("KEYWORD", "ASC") or self.match("KEYWORD", "DESC"):
+                pass
+
+        # ✅ **Fix: Now check for the semicolon properly at the end**
+        if not self.match("SYMBOL", ";"):
+            return "Syntax Error: Query must end with ';'!"
+
+        return "Valid SELECT syntax!"
+
     
     def parse_insert(self):
-        self.expect('INSERT INTO')
-        self.expect(self.tokens[self.current_token_index])  # Expect table name
-        self.expect('VALUES')
-        self.expect('(')
-        self.expect(self.tokens[self.current_token_index])  # Expect values
-        self.expect(')')
-        if self.match(';'):
-            return "Valid INSERT syntax!"
-        raise SyntaxError(f"Unexpected token: '{self.tokens[self.current_token_index]}'")
-    
-    def parse_update(self):
-        self.expect('UPDATE')
-        self.expect(self.tokens[self.current_token_index])  # Expect table name
-        self.expect('SET')
-        self.expect(self.tokens[self.current_token_index])  # Expect column name
-        self.expect('=')  # Ensure assignment operator is present
-        self.expect(self.tokens[self.current_token_index])  # Expect value after '='
-        if self.match('WHERE'):
-            self.expect(self.tokens[self.current_token_index])  # Expect column name
-            self.expect('=')  # Expect comparison operator
-            self.expect(self.tokens[self.current_token_index])  # Expect value
-        if self.match(';'):
-            return "Valid UPDATE syntax!"
-        raise SyntaxError(f"Unexpected token: '{self.tokens[self.current_token_index]}'")
-    
-    def parse_delete(self):
-        self.expect('DELETE FROM')
-        self.expect(self.tokens[self.current_token_index])  # Expect table name
-        if self.match('WHERE'):
-            self.expect(self.tokens[self.current_token_index])  # Expect column name
-            self.expect('=')  # Expect comparison operator
-            self.expect(self.tokens[self.current_token_index])  # Expect value
-        if self.match(';'):
-            return "Valid DELETE syntax!"
-        raise SyntaxError(f"Unexpected token: '{self.tokens[self.current_token_index]}'")
-    
-    def parse_ddl(self):
-        ddl_type = self.tokens[0]
-        self.expect(ddl_type)  # CREATE TABLE, ALTER TABLE, DROP TABLE, etc.
-        self.expect(self.tokens[self.current_token_index])  # Expect table name
-        if ddl_type == 'ALTER TABLE':
-            self.expect('ADD COLUMN')
-            self.expect(self.tokens[self.current_token_index])  # Expect column name
-        if self.match(';'):
-            return f"Valid {ddl_type} syntax!"
-        raise SyntaxError(f"Unexpected token: '{self.tokens[self.current_token_index]}'")
-    
-    def parse(self):
-        try:
-            first_token = self.tokens[0].upper()
-            if first_token == 'SELECT':
-                return self.parse_select()
-            elif first_token == 'INSERT INTO':
-                return self.parse_insert()
-            elif first_token == 'UPDATE':
-                return self.parse_update()
-            elif first_token == 'DELETE FROM':
-                return self.parse_delete()
-            elif first_token in {'CREATE TABLE', 'ALTER TABLE', 'DROP TABLE', 'TRUNCATE TABLE'}:
-                return self.parse_ddl()
-            else:
-                return "Invalid or unsupported SQL statement!"
-        except SyntaxError as e:
-            return f"Syntax Error: {str(e)}"
+        if not self.match("KEYWORD", "INSERT"):
+            return "Syntax Error: Expected 'INSERT' keyword!"
 
-if __name__ == "__main__":
-    queries = [
-        "SELECT COUNT(*) FROM users;",
-        "SELECT SUM(price) FROM products;",
-        "SELECT AVG(age) FROM customers;",
-        "SELECT MIN(salary) FROM employees;",
-        "SELECT MAX(score) FROM exams;",
-        "DELETE FROM orders WHERE order_id = 10;",
-        "UPDATE users SET last_login WHERE id=42;"  # Now should correctly detect missing assignment
-    ]
-    
-    for query in queries:
-        parser = SQLParser(query)
-        print(parser.parse())
+        if not self.match("KEYWORD", "INTO"):
+            return "Syntax Error: Expected 'INTO' after 'INSERT'!"
+
+        if not self.match("IDENTIFIER"):
+            return "Syntax Error: Missing table name after 'INSERT INTO'!"
+
+        # Optional column list (INSERT INTO table (col1, col2) VALUES (...))
+        column_count = 0
+        if self.match("SYMBOL", "("):
+            while self.match("IDENTIFIER"):
+                column_count += 1  # Count columns
+                if not self.match("SYMBOL", ","):  # If no comma, break loop
+                    break
+            if not self.match("SYMBOL", ")"):
+                return "Syntax Error: Expected ')' after column names!"
+
+        # Ensure VALUES keyword is present
+        if not self.match("KEYWORD", "VALUES"):
+            return "Syntax Error: Expected 'VALUES' keyword!"
+
+        # Handle values inside parentheses
+        if not self.match("SYMBOL", "("):
+            return "Syntax Error: Expected '(' before values!"
+
+        value_count = 0
+        while self.match("VALUE"):
+            value_count += 1  # Count values
+            if not self.match("SYMBOL", ","):  # If no comma, break loop
+                break
+
+        if not self.match("SYMBOL", ")"):
+            return "Syntax Error: Expected ')' after values!"
+
+        # Ensure column count matches value count (if columns are explicitly mentioned)
+        if column_count > 0 and column_count != value_count:
+            return f"Syntax Error: Expected {column_count} values, but found {value_count}!"
+
+        # Ensure query ends with semicolon
+        if not self.match("SYMBOL", ";"):
+            return "Syntax Error: Query must end with ';'!"
+
+        return "Valid INSERT syntax!"
+
+
+    def parse_update(self):
+        if not self.match("KEYWORD", "UPDATE"):
+            return "Syntax Error: Expected 'UPDATE' keyword!"
+
+        if not self.match("IDENTIFIER"):
+            return "Syntax Error: Missing table name after 'UPDATE'!"
+
+        if not self.match("KEYWORD", "SET"):
+            return "Syntax Error: Expected 'SET' keyword!"
+
+        # Ensure at least one column assignment exists (column = value)
+        has_assignment = False
+        while self.match("IDENTIFIER"):
+            if not self.match("SYMBOL", "="):
+                return "Syntax Error: Expected '=' in SET clause!"
+
+            if not self.match("VALUE"):
+                return "Syntax Error: Missing value assignment in SET clause!"
+
+            has_assignment = True  # At least one valid assignment found
+
+            if not self.match("SYMBOL", ","):  # If no comma, break loop
+                break
+
+        if not has_assignment:
+            return "Syntax Error: SET clause must have at least one 'column = value' pair!"
+
+        # Handle optional WHERE clause
+        if self.match("KEYWORD", "WHERE"):
+            if not self.match("IDENTIFIER"):
+                return "Syntax Error: Expected column name after 'WHERE'!"
+            
+            if not (self.match("SYMBOL", "=") or self.match("SYMBOL", "<") or self.match("SYMBOL", ">") or self.match("SYMBOL", "!=")):
+                return "Syntax Error: Expected comparison operator (=, <, >, !=) in WHERE clause!"
+            
+            if not self.match("VALUE"):
+                return "Syntax Error: Missing value after comparison operator in WHERE clause!"
+
+        if not self.match("SYMBOL", ";"):
+            return "Syntax Error: Query must end with ';'!"
+
+        return "Valid"
+
+    def parse_delete(self):
+        if not self.match("KEYWORD", "DELETE"):
+            return "Syntax Error: Expected 'DELETE' keyword!"
+
+        if not self.match("KEYWORD", "FROM"):
+            return "Syntax Error: Expected 'FROM' after 'DELETE'!"
+
+        if not self.match("IDENTIFIER"):
+            return "Syntax Error: Missing table name after 'FROM'!"
+
+        # Handle optional WHERE clause
+        if self.match("KEYWORD", "WHERE"):
+            if not self.match("IDENTIFIER"):
+                return "Syntax Error: Expected column name after 'WHERE'!"
+
+            if not (self.match("SYMBOL", "=") or self.match("SYMBOL", "<") or self.match("SYMBOL", ">") or self.match("SYMBOL", "!=")):
+                return "Syntax Error: Expected comparison operator (=, <, >, !=) in WHERE clause!"
+
+            if not self.match("VALUE"):
+                return "Syntax Error: Missing value after comparison operator in WHERE clause!"
+
+        # Ensure query ends with a semicolon
+        if not self.match("SYMBOL", ";"):
+            return "Syntax Error: Query must end with ';'!"
+
+        return "Valid DELETE syntax!"
+
+    def match(self, expected_type, expected_value=None):
+        if self.index < len(self.tokens):
+            token_type, token_value = self.tokens[self.index]
+            if token_type == expected_type and (expected_value is None or token_value == expected_value):
+                self.index += 1
+                return token_value
+        return None
+
+    def parse(self):
+        first_token = self.tokens[0][1]
+        if first_token == "SELECT":
+            return self.parse_select()
+        elif first_token == "INSERT":
+            return self.parse_insert()
+        elif first_token == "UPDATE":
+            return self.parse_update()
+        elif first_token == "DELETE":
+            return self.parse_delete()
+        return "Unsupported"
+
+while True:
+    query = input("Enter a SQL query (or 'exit' to quit): ")
+    if query.lower() == "exit":
+        break
+
+    parser = SQLParser(query)
+    result = parser.parse()
+    print(result)
