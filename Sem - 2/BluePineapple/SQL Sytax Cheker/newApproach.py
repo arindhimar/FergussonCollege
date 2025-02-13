@@ -265,19 +265,30 @@ class SQLParser:
         return "Valid CREATE TABLE syntax!"
 
     def parse_alter(self):
-        """Parses an ALTER TABLE statement, ensuring proper syntax."""
+        """Parses and validates an ALTER TABLE statement."""
         if not self.query.endswith(";"):
             return "Syntax Error: Query must end with ';'!"
 
-        pattern = r"ALTER TABLE\s+(?P<table>\w+)\s+(?P<action>.+?)\s*;"
-        match = re.match(pattern, self.query)
+        match = re.match(
+            r"ALTER TABLE\s+(\w+)\s+(ADD|MODIFY)\s+(\w+)\s+(\w+)"
+            r"(\(\d+(?:,\d+)?\))?"  # Fix: Support for (10,2)
+            r"(\s*(?:PRIMARY KEY|NOT NULL|UNIQUE)*)?\s*;",
+            self.query,
+            re.IGNORECASE
+        )
 
         if not match:
-            return "Syntax Error: Invalid ALTER TABLE statement!"
+            return "Syntax Error: Invalid ALTER TABLE statement! Expected: `ALTER TABLE <table> ADD/MODIFY <column> <type>;`"
+
+        table_name, action, column_name, data_type, size, constraints = match.groups()
+        valid_data_types = {"INT", "VARCHAR", "TEXT", "DECIMAL", "FLOAT", "BOOLEAN", "DATE", "CHAR"}
+
+        if data_type.upper() not in valid_data_types:
+            return f"Syntax Error: Invalid data type `{data_type}` in ALTER TABLE statement!"
 
         self.valid = True
         return "Valid ALTER TABLE syntax!"
-
+    
     def parse_drop(self):
         """Parses a DROP TABLE statement."""
         if not self.query.endswith(";"):
