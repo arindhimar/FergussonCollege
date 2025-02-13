@@ -19,15 +19,18 @@ class SQLParser:
         table_name = match.group(1)
         columns_def = match.group(2)
 
-        print(columns_def)
-        # ✅ Improved regex to correctly extract columns while keeping `DECIMAL(10,2)` intact
+        #  Improved regex to correctly extract column definitions while keeping `DECIMAL(10,2)` intact
         column_pattern = re.compile(
-            r"(\w+\s+\w+(?:\(\d+(?:,\d+)?\))?(?:\s+PRIMARY KEY|\s+NOT NULL|\s+UNIQUE)?)"
+            r"\s*(\w+)\s+"                # Column name
+            r"(\w+)"                      # Data type
+            r"(\(\d+(?:,\d+)?\))?"         # (size) or (precision, scale)
+            r"(\s*(?:PRIMARY KEY|NOT NULL|UNIQUE|DEFAULT\s+\S+|AUTO_INCREMENT)*)?\s*$",
+            re.IGNORECASE
         )
-        columns = column_pattern.findall(columns_def)
-        
-        print(columns)
 
+        # **🔧 Fix:** Use regex to properly split columns while handling `DECIMAL(10,2)`
+        columns = re.findall(r"\s*\w+\s+\w+(?:\(\d+(?:,\d+)?\))?(?:\s+(?:PRIMARY KEY|NOT NULL|UNIQUE|DEFAULT\s+\S+|AUTO_INCREMENT)*)?", columns_def)
+        
         if not columns:
             return "Syntax Error: No valid column definitions found!"
 
@@ -35,16 +38,7 @@ class SQLParser:
         primary_key_defined = False
 
         for col in columns:
-            # Extract column name, data type, size, and constraints
-            col_match = re.match(
-                r"^(\w+)\s+"                 # Column name
-                r"(\w+)"                     # Data type
-                r"(\(\d+(?:,\d+)?\))?"        # (size) or (precision, scale)
-                r"(\s*(?:PRIMARY KEY|NOT NULL|UNIQUE|DEFAULT\s+\S+|AUTO_INCREMENT)*)?$",
-                col,
-                re.IGNORECASE
-            )
-
+            col_match = column_pattern.match(col)
             if not col_match:
                 return f"Syntax Error: Invalid column definition `{col}`!"
 
@@ -106,7 +100,10 @@ def check_syntax(query):
 
 # Interactive CLI for testing queries
 while True:
-    query = input("Enter a SQL query (or 'exit' to quit): ")
+    query = input("Enter a SQL query (or 'exit' to quit): ").strip()
+    if not query:
+        continue  # Ignore empty inputs
+
     if query.lower() == "exit":
         break
 
