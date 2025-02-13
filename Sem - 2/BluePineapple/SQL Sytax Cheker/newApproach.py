@@ -7,7 +7,6 @@ class SQLParser:
         self.valid = False  # Track if query is valid
 
 
-
     def parse_select(self):
         """Parses a SELECT statement, handling WHERE, GROUP BY, ORDER BY, UNION, INTERSECT, and operators."""
 
@@ -46,42 +45,103 @@ class SQLParser:
 
         # Validate WHERE clause (BETWEEN, IN, NOT IN, LIKE)
         if clauses["where"]:
-            conditions = re.split(r"\s+AND\s+|\s+OR\s+", clauses["where"])
+            #  Match full BETWEEN condition first
+            between_match = re.search(
+                r"(\w+)\s+BETWEEN\s+(['\"]?[\w\s]+['\"]?)\s+AND\s+(['\"]?[\w\s]+['\"]?)", 
+                clauses["where"]
+            )
+
+            if between_match:
+                column, val1, val2 = between_match.groups()
+                print("Matched BETWEEN:", column, val1, val2)  # Debug print
+
+                #  Remove surrounding quotes for validation
+                val1_clean = val1.strip("'\"")
+                val2_clean = val2.strip("'\"")
+
+                #  Check if both values are **numbers**
+                is_val1_numeric = val1_clean.replace(".", "", 1).isdigit()
+                is_val2_numeric = val2_clean.replace(".", "", 1).isdigit()
+
+                #  Check if both values are **strings** (non-numeric literals)
+                is_val1_text = bool(re.match(r"^[A-Za-z\s]+$", val1_clean))
+                is_val2_text = bool(re.match(r"^[A-Za-z\s]+$", val2_clean))
+
+                #  Ensure both are either numbers **or** both are text
+                if (is_val1_numeric and is_val2_numeric) or (is_val1_text and is_val2_text):
+                    pass  #  Valid BETWEEN condition
+                else:
+                    return f"Syntax Error: BETWEEN values `{val1}` and `{val2}` must be of the same type (either both numbers or both text)."
+
+                #  Remove the matched BETWEEN condition from WHERE
+                clauses["where"] = re.sub(
+                    r"\w+\s+BETWEEN\s+['\"]?[\w\s]+['\"]?\s+AND\s+['\"]?[\w\s]+['\"]?", "", clauses["where"]
+                ).strip()
+
+            #  Now split WHERE conditions (without affecting BETWEEN)
+            conditions = re.split(r"\s+AND\s+|\s+OR\s+", clauses["where"]) if clauses["where"] else []
+            
             for condition in conditions:
                 condition = condition.strip()
+                print("Checking condition:", condition)
 
-                #  Properly validate BETWEEN
-                if "BETWEEN" in condition:
-                    between_match = re.match(r"(\w+)\s+BETWEEN\s+(['\"]?\w+['\"]?)\s+AND\s+(['\"]?\w+['\"]?)", condition)
-                    if between_match:
-                        print("MKC idhr aana ")
-                        column, val1, val2 = between_match.groups()
-                        
-                        if not (val1.replace("'", "").replace('"', "").replace(".", "", 1).isdigit() and 
-                                val2.replace("'", "").replace('"', "").replace(".", "", 1).isdigit()):
-                            return f"Syntax Error: Invalid BETWEEN values! `{val1}` and `{val2}` must be numbers."
-                    else:
-                        return "Syntax Error: Invalid BETWEEN syntax! Expected format: column BETWEEN value1 AND value2"
+                #  Handle IN and NOT IN
+                if " IN " in condition or " NOT IN " in condition:
+                    in_match = re.match(r"(\w+)\s+(NOT IN|IN)\s*\(\s*([^)]+)\s*\)", condition)
+                    if in_match:
+                        column, operator, values = in_match.groups()
+                        values_list = [v.strip() for v in values.split(",")]
+                        if not all(v.replace(".", "", 1).isdigit() or v.startswith("'") for v in values_list):
+                            return f"Syntax Error: Invalid {operator} values! Expected numbers or quoted strings."
 
+                #  Handle LIKE
+                if " LIKE " in condition:
+                    like_match = re.match(r"(\w+)\s+LIKE\s+'(.+)'", condition)
+                    if not like_match:
+                        return "Syntax Error: Invalid LIKE syntax! Expected: column LIKE 'pattern'"
 
-                #  Properly validate IN and NOT IN
-                in_match = re.match(r"(\w+)\s+(NOT IN|IN)\s*\(\s*([^)]+)\s*\)", condition)
-                if in_match:
-                    column, operator, values = in_match.groups()
-                    values_list = [v.strip() for v in values.split(",")]
-                    if not all(v.replace(".", "", 1).isdigit() or v.startswith("'") for v in values_list):
-                        return f"Syntax Error: Invalid {operator} values! Expected numbers or quoted strings."
+                    conditions = clauses["where"].strip().split(" AND ")
 
-                #   Prevent invalid `NOT IN` syntax
-                elif " NOT IN " in condition or " IN " in condition:
-                    return "Syntax Error: Invalid IN/NOT IN syntax! Expected: column IN (value1, value2, ...)"
+                    for condition in conditions:
+                        condition = condition.strip()
 
-                #  Properly validate LIKE
-                like_match = re.match(r"(\w+)\s+LIKE\s+'(.+)'", condition)
-                if " LIKE " in condition and not like_match:
-                    return "Syntax Error: Invalid LIKE syntax! Expected: column LIKE 'pattern'"
+                        print("Checking condition:", condition)
+                        if "BETWEEN" in condition:
+                            between_match = re.match(
+                                r"(\w+)\s+BETWEEN\s+(['\"]?\w+['\"]?)\s+AND\s+(['\"]?\w+['\"]?)$", 
+                                condition
+                            )
+                            print("Between match:", between_match)
+                            if between_match:
+                                column, val1, val2 = between_match.groups()
+                                print("Matched BETWEEN:", column, val1, val2)
 
-        # Validate ORDER BY
+                                # Remove quotes and check if both are numbers
+                                val1_clean = val1.replace("'", "").replace('"', "")
+                                val2_clean = val2.replace("'", "").replace('"', "")
+
+                                if not (val1_clean.replace(".", "", 1).isdigit() and val2_clean.replace(".", "", 1).isdigit()):
+                                    return f"Syntax Error: Invalid BETWEEN values! `{val1}` and `{val2}` must be numbers."
+                                continue
+                            else:
+                                return "Syntax Error: Invalid BETWEEN syntax! Expected: column BETWEEN value1 AND value2"
+
+                        #  Now handle IN, NOT IN, LIKE, etc.
+                        if " IN " in condition or " NOT IN " in condition:
+                            in_match = re.match(r"(\w+)\s+(NOT IN|IN)\s*\(\s*([^)]+)\s*\)", condition)
+                            if in_match:
+                                column, operator, values = in_match.groups()
+                                values_list = [v.strip() for v in values.split(",")]
+                                if not all(v.replace(".", "", 1).isdigit() or v.startswith("'") for v in values_list):
+                                    return f"Syntax Error: Invalid {operator} values! Expected numbers or quoted strings."
+
+                        #  LIKE validation
+                        if " LIKE " in condition:
+                            like_match = re.match(r"(\w+)\s+LIKE\s+'(.+)'", condition)
+                            if not like_match:
+                                return "Syntax Error: Invalid LIKE syntax! Expected: column LIKE 'pattern'"
+
+        #  Validate ORDER BY
         if clauses["order_by"]:
             order_parts = clauses["order_by"].strip().split()
             if len(order_parts) > 2:
@@ -91,7 +151,9 @@ class SQLParser:
 
         self.valid = True
         return "Valid SELECT syntax!"
+
     
+ 
     def parse_insert(self):
         """Parses an INSERT statement, ensuring correct structure and data validation."""
         if not self.query.endswith(";"):
@@ -135,29 +197,59 @@ class SQLParser:
         if not self.query.endswith(";"):
             return "Syntax Error: Query must end with ';'!"
 
-        pattern = r"UPDATE\s+(?P<table>\w+)\s+SET\s+(?P<set>.+?)(?:\s+WHERE\s+(?P<where>.+?))?\s*;"
-        match = re.match(pattern, self.query)
+        pattern = re.compile(r"""
+            ^UPDATE\s+(?P<table>\w+)\s+                   # UPDATE table_name
+            SET\s+(?P<set>(?:\w+\s*=\s*(?:\'.*?\'|\d+)\s*,\s*)*   # SET column=value, column=value, ...
+            \w+\s*=\s*(?:\'.*?\'|\d+))                    # Last column=value (no trailing comma)
+            (?:\s+WHERE\s+(?P<where>(?:\w+\s*=\s*(?:\'.*?\'|\d+)\s*(?:AND\s+)?)*) )?  # Optional WHERE condition
+            \s*;$                                         # Ensure query ends with a semicolon
+        """, re.VERBOSE | re.IGNORECASE)
 
+        match = pattern.match(self.query)
         if not match:
             return "Syntax Error: Invalid UPDATE statement!"
 
+        clauses = match.groupdict()
+
+        # Ensure WHERE clause is valid
+        if clauses["where"]:
+            where_conditions = [w.strip() for w in clauses["where"].split(" AND ")]
+            for condition in where_conditions:
+                if "=" not in condition:
+                    return f"Syntax Error: Invalid condition in WHERE clause: `{condition}` (Expected: column = value)"
+
         self.valid = True
         return "Valid UPDATE syntax!"
+
+
 
     def parse_delete(self):
         """Parses a DELETE statement, ensuring FROM is present and optionally WHERE."""
         if not self.query.endswith(";"):
             return "Syntax Error: Query must end with ';'!"
 
-        pattern = r"DELETE FROM\s+(?P<table>\w+)(?:\s+WHERE\s+(?P<where>.+?))?\s*;"
-        match = re.match(pattern, self.query)
+        pattern = re.compile(r"""
+            ^DELETE\s+FROM\s+(?P<table>\w+)\s*            # DELETE FROM table_name
+            (?:WHERE\s+(?P<where>\w+\s*=\s*(?:\'.*?\'|\d+)))?  # Optional WHERE clause with column=value
+            \s*;$                                         # Ensure query ends with a semicolon
+        """, re.VERBOSE | re.IGNORECASE)
 
+        match = pattern.match(self.query)
         if not match:
             return "Syntax Error: Invalid DELETE statement!"
+
+        clauses = match.groupdict()
+
+        # Ensure WHERE clause is valid
+        if clauses["where"]:
+            if "=" not in clauses["where"]:
+                return f"Syntax Error: Invalid condition in WHERE clause: `{clauses['where']}` (Expected: column = value)"
 
         self.valid = True
         return "Valid DELETE syntax!"
 
+
+    
     def parse_create(self):
         """Parses a CREATE TABLE statement."""
         if not self.query.endswith(";"):
