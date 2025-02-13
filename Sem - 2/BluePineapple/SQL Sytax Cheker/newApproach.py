@@ -59,18 +59,42 @@ class SQLParser:
         return "Valid SELECT syntax!"
 
     def parse_insert(self):
-        """Parses an INSERT statement, ensuring correct structure."""
+        """Parses an INSERT statement, ensuring correct structure and data validation."""
         if not self.query.endswith(";"):
             return "Syntax Error: Query must end with ';'!"
 
+        # Extract INSERT INTO structure
         pattern = r"INSERT INTO\s+(?P<table>\w+)\s*(?:\((?P<columns>.+?)\))?\s+VALUES\s*\((?P<values>.+?)\)\s*;"
         match = re.match(pattern, self.query)
 
         if not match:
             return "Syntax Error: Invalid INSERT statement!"
 
+        clauses = match.groupdict()
+        table = clauses["table"]
+        columns = clauses["columns"]
+        values = clauses["values"]
+
+        # Split columns and values
+        column_list = [col.strip() for col in columns.split(",")] if columns else []
+        value_list = [val.strip() for val in values.split(",")]
+
+        # ✅ Ensure column count matches value count
+        if column_list and len(column_list) != len(value_list):
+            return f"Syntax Error: Expected {len(column_list)} values, but found {len(value_list)}!"
+
+        # ✅ Validate data types (basic check: numbers should not be enclosed in quotes)
+        for val in value_list:
+            if re.match(r"^\d+$", val):  # Integer check
+                continue  # Valid number
+            elif re.match(r"^'.*'$", val):  # Strings should be enclosed in single quotes
+                continue  # Valid string
+            else:
+                return f"Syntax Error: Invalid value format: {val}"
+
         self.valid = True
         return "Valid INSERT syntax!"
+
 
     def parse_update(self):
         """Parses an UPDATE statement, ensuring it has SET and optionally WHERE."""
@@ -181,14 +205,11 @@ def check_syntax(query):
     parser = SQLParser(query)
     return parser.parse()
 
-# ✅ **Test Cases**
-queries = [
-    "SELECT name, age FROM users WHERE age BETWEEN 18 AND 25;",
-    "SELECT * FROM employees WHERE department IN ('HR', 'IT', 'Finance');",
-    "SELECT name FROM users WHERE email LIKE '%@gmail.com%';",
-    "SELECT name FROM users UNION SELECT name FROM archived_users;",
-    "SELECT department, COUNT(*) FROM employees GROUP BY department HAVING COUNT(*) > 5;",
-]
 
-for q in queries:
-    print(f"Query: {q}\nResult: {check_syntax(q)}\n")
+while True:
+    query = input("Enter a SQL query (or 'exit' to quit): ")
+    if query.lower() == "exit":
+        break
+
+    result = check_syntax(query)
+    print(result)
