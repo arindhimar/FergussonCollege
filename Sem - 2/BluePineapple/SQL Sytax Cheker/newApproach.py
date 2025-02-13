@@ -138,5 +138,3 @@ while True:
     parser = SQLParser(query)
     result = parser.parse()
     print(result)
-    if parser.valid:
-        break
