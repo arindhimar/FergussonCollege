@@ -1,4 +1,5 @@
 import re
+from browser import document
 
 class SQLParser:
     def __init__(self, query):
@@ -7,18 +8,9 @@ class SQLParser:
         self.valid = False  # Track if query is valid
 
     def parse_select(self):
-        """Parses a SELECT statement, handling WHERE, GROUP BY, ORDER BY, UNION, INTERSECT."""
+        """Parses a SELECT statement, including aggregate functions, WHERE, GROUP BY, ORDER BY."""
         if not self.query.endswith(";"):
             return "Syntax Error: Query must end with ';'!"
-
-        # Support for UNION & INTERSECT
-        if " UNION " in self.query or " INTERSECT " in self.query:
-            queries = re.split(r" UNION | INTERSECT ", self.query)
-            for sub_query in queries:
-                if "SELECT" not in sub_query:
-                    return "Syntax Error: UNION/INTERSECT must be between SELECT statements!"
-                if "FROM" not in sub_query:
-                    return "Syntax Error: Missing 'FROM' in UNION/INTERSECT queries!"
 
         # Extract clauses using regex
         pattern = (
@@ -35,26 +27,6 @@ class SQLParser:
         if not match:
             return "Syntax Error: Invalid SELECT statement structure!"
 
-        clauses = match.groupdict()
-
-        # Validate required parts
-        if not clauses["select"] or not clauses["from"]:
-            return "Syntax Error: SELECT and FROM are required!"
-
-        # Support for WHERE with IN, NOT IN, BETWEEN, LIKE
-        if clauses["where"]:
-            where_conditions = clauses["where"].split(" AND ")
-            for condition in where_conditions:
-                if " IN (" in condition or " NOT IN (" in condition:
-                    if not re.match(r"\w+\s+(NOT IN|IN)\s+\(.*\)", condition):
-                        return "Syntax Error: Invalid IN/NOT IN syntax!"
-                elif " BETWEEN " in condition:
-                    if not re.match(r"\w+\s+BETWEEN\s+\S+\s+AND\s+\S+", condition):
-                        return "Syntax Error: Invalid BETWEEN syntax!"
-                elif " LIKE " in condition:
-                    if not re.match(r"\w+\s+LIKE\s+'.*'", condition):
-                        return "Syntax Error: Invalid LIKE syntax!"
-
         self.valid = True
         return "Valid SELECT syntax!"
 
@@ -63,7 +35,7 @@ class SQLParser:
         if not self.query.endswith(";"):
             return "Syntax Error: Query must end with ';'!"
 
-        pattern = r"INSERT INTO\s+(?P<table>\w+)\s*(?:\((?P<columns>.+?)\))?\s+VALUES\s*\((?P<values>.+?)\)\s*;"
+        pattern = r"INSERT INTO\s+(?P<table>\w+)\s*(?:$$(?P<columns>.+?)$$)?\s+VALUES\s*$$(?P<values>.+?)$$\s*;"
         match = re.match(pattern, self.query)
 
         if not match:
@@ -105,7 +77,7 @@ class SQLParser:
         if not self.query.endswith(";"):
             return "Syntax Error: Query must end with ';'!"
 
-        pattern = r"CREATE TABLE\s+(?P<table>\w+)\s*\((?P<columns>.+?)\)\s*;"
+        pattern = r"CREATE TABLE\s+(?P<table>\w+)\s*$$(?P<columns>.+?)$$\s*;"
         match = re.match(pattern, self.query)
 
         if not match:
@@ -181,14 +153,3 @@ def check_syntax(query):
     parser = SQLParser(query)
     return parser.parse()
 
-# ✅ **Test Cases**
-queries = [
-    "SELECT name, age FROM users WHERE age BETWEEN 18 AND 25;",
-    "SELECT * FROM employees WHERE department IN ('HR', 'IT', 'Finance');",
-    "SELECT name FROM users WHERE email LIKE '%@gmail.com%';",
-    "SELECT name FROM users UNION SELECT name FROM archived_users;",
-    "SELECT department, COUNT(*) FROM employees GROUP BY department HAVING COUNT(*) > 5;",
-]
-
-for q in queries:
-    print(f"Query: {q}\nResult: {check_syntax(q)}\n")
