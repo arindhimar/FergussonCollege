@@ -1,0 +1,19 @@
+Good Morning Everyone!!
+
+Myself Blah blah!!
+
+Now coming to the problem statement the task that was given to us was to create an SQL query checker!!
+
+Here onwards we will be disussing the approach we've chosen and how we got to it 
+
+So initially we got the idea of solving the problem with the help of tokenization https://www.toptensoftware.com/blog/how-to-write-a-compiler-2-tokenization/
+where we were basically diving all the things in operators , identifiers and keywords
+
+But due to some issues we were not able to get the accuracy that we wanted and instead the code was getting messier , hence we tried using a different , I assigned the current task to be continued and started working on a new idea , that was to do it just by using regular expression 
+
+What we were doing in this approach is that assume that we have a query in a form , we were just trying to keep the keywords constant and replacing the columns and other stuff with regular expressions wherever possible
+
+We've tried implementing a total of 8 commands which consists of 4 dml(select , insert , update , delete ) 4 ddl(create , alter , drop , truncate)
+
+As we have learned so far in this campuss connect that before writing we must be clear with the flow of the program that what we are supposed to do so we've created flow diagrams of the functions that we've implemented in the program and my team here will be explaining that to you!!
+

@@ -248,6 +248,8 @@ class SQLParser:
                     return f"Syntax Error: Invalid condition '{condition}'"
 
         return "Valid UPDATE syntax"
+
+
     def parse_delete(self):
         """Parses a DELETE statement with comprehensive value quoting validation."""
         if not self.query.endswith(";"):
@@ -300,6 +302,7 @@ class SQLParser:
                             )
 
         return "Valid DELETE syntax!"
+    
     
     def extract_columns(self, query):
         """Extracts columns from a CREATE TABLE statement and validates syntax."""
@@ -403,34 +406,94 @@ class SQLParser:
         return self.validate_column_types(columns)  # Validate extracted columns
 
     def parse_alter(self):
-        """Parses and validates an ALTER TABLE statement."""
-        if not self.query.endswith(";"):
-            return "Syntax Error: Query must end with ';'!"
+        """Parses and validates ALTER TABLE statements with detailed error messages."""
+        # Initial validation
+        if not self.query.endswith(';'):
+            return "Syntax Error: Missing semicolon (;) at end. Did you forget to add ';'?"
 
-        match = re.match(
-            r"ALTER TABLE\s+(\w+)\s+(ADD|MODIFY)\s+(\w+)\s+(\w+)"
-            r"(\(\d+(?:,\d+)?\))?"  
-            r"(\s*(?:PRIMARY KEY|NOT NULL|UNIQUE)*)?\s*;",
-            self.query,
-            re.IGNORECASE
+        # Enhanced regex pattern
+        pattern = re.compile(
+            r"(?i)^ALTER\s+TABLE\s+"
+            r"(?P<table>\w+)\s+"
+            r"(?P<action>ADD|MODIFY|DROP)\s+"
+            r"(?:(COLUMN\s+)?)"
+            r"(?P<column>\w+)\s*"
+            r"(?P<type>(?:INT|VARCHAR|CHAR|DECIMAL|FLOAT|BOOLEAN|DATE|TEXT)(?:\(\d+(?:,\d+)?\))?)?"
+            r"(?:\s+(?P<constraints>.*?))?\s*;?$"
         )
 
+        match = pattern.search(self.query)
         if not match:
-            return "Syntax Error: Invalid ALTER TABLE statement! Expected: ALTER TABLE <table> ADD/MODIFY <column> <type>;"
+            return ("Syntax Error: Invalid ALTER TABLE format. Common issues:\n"
+                    "- Missing ADD/MODIFY/DROP keyword\n"
+                    "- Incorrect column or table name format\n"
+                    "- Missing column data type for ADD/MODIFY\n"
+                    "Valid format: ALTER TABLE <table> <ADD|MODIFY|DROP> <column> [type] [constraints];")
 
-        table_name, action, column_name, data_type, size, constraints = match.groups()
-        valid_data_types = {"INT", "VARCHAR", "TEXT", "DECIMAL", "FLOAT", "BOOLEAN", "DATE", "CHAR"}
-        # print(column_name)
-        if column_name in SQL_KEYWORDS or table_name in SQL_KEYWORDS:
-            return f"Syntax Error: '{table_name}' is a reserved SQL keyword and cannot be used as a table name!"
+        groups = match.groupdict()
+        table_name = groups['table'].upper()
+        action = groups['action'].upper()
+        column_name = groups['column'].upper()
+        data_type = (groups['type'] or '').upper()
+        constraints = (groups['constraints'] or '').upper()
 
-        if data_type.upper() not in valid_data_types:
-            return f"Syntax Error: Invalid data type {data_type} in ALTER TABLE statement!"
+        # Validate names against SQL keywords
+        for name, type_ in [(table_name, 'Table'), (column_name, 'Column')]:
+            if name in SQL_KEYWORDS:
+                return (f"{type_} Error: '{name}' is a reserved SQL keyword.\n"
+                        "Solution: Use a non-reserved name or check for typos.")
+
+        # Data type validation
+        type_pattern = re.match(r"^(\w+)(?:\((\d+(?:,\d+)?)\))?$", data_type)
+        base_type = type_pattern.group(1) if type_pattern else None
+        size = type_pattern.group(2) if type_pattern else None
+        valid_types = {"INT", "VARCHAR", "CHAR", "DECIMAL", "FLOAT", "BOOLEAN", "DATE", "TEXT"}
+
+        if action != 'DROP' and not base_type:
+            return ("Data Type Error: Missing column data type.\n"
+                    "Example: ALTER TABLE table_name ADD column_name VARCHAR(255)")
+
+        if base_type and base_type not in valid_types:
+            return (f"Data Type Error: Invalid type '{base_type}'.\n"
+                    f"Valid types: {', '.join(sorted(valid_types))}\n"
+                    "Check for typos (e.g., 'VARCHAR' not 'VARCHR')")
+
+        # Size validation
+        size_required = {'VARCHAR', 'CHAR', 'DECIMAL'}
+        size_disallowed = {'INT', 'BOOLEAN', 'DATE', 'TEXT'}
         
+        if base_type in size_required and not size:
+            return (f"Size Error: {base_type} requires size specification.\n"
+                    f"Example: {base_type}(255) or {base_type}(10,2) for DECIMAL")
+                    
+        if base_type in size_disallowed and size:
+            return (f"Size Error: {base_type} cannot have size specification.\n"
+                    f"Remove parentheses: {base_type} instead of {base_type}(...)")
 
-        self.valid = True
+        # Constraint validation
+        valid_constraints = {'PRIMARY KEY', 'NOT NULL', 'UNIQUE', 'DEFAULT'}
+        if constraints:
+            found_constraints = set(re.split(r'\s+', constraints.strip()))
+            invalid = found_constraints - valid_constraints
+            
+            if invalid:
+                return (f"Constraint Error: Invalid constraint(s) {', '.join(invalid)}.\n"
+                        f"Allowed constraints: {', '.join(sorted(valid_constraints))}")
+
+            if 'PRIMARY KEY' in found_constraints and action == 'MODIFY':
+                return ("Constraint Error: Can't add PRIMARY KEY with MODIFY.\n"
+                        "Solution: Use ADD instead or add PRIMARY KEY separately")
+
+        # Operation-specific validation
+        if action == 'ADD' and not data_type:
+            return ("Operation Error: ADD requires data type specification.\n"
+                    "Format: ALTER TABLE <table> ADD <column> <type> [constraints]")
+
+        if action == 'DROP' and data_type:
+            return ("Operation Error: DROP shouldn't specify data type.\n"
+                    "Correct format: ALTER TABLE <table> DROP <column>")
+
         return "Valid ALTER TABLE syntax!"
-    
     def parse_drop(self):
         """Parses a DROP TABLE statement."""
         if not self.query.endswith(";"):
@@ -455,29 +518,51 @@ class SQLParser:
         return "Valid DROP TABLE syntax!"
 
     def parse_truncate(self):
-        """Parses a TRUNCATE TABLE statement."""
+        """Parses and validates a TRUNCATE TABLE statement with detailed error handling."""
+        # Check for terminating semicolon
         if not self.query.endswith(";"):
-            return "Syntax Error: Query must end with ';'!"
+            return ("Syntax Error: Missing semicolon at end of statement.\n"
+                    "→ Did you forget to add ';' at the end?")
 
-        pattern = r"TRUNCATE TABLE\s+(?P<table>\w+)\s*;"
-        
-        match = re.match(pattern, self.query)
-        
-        print(match)
-        
+        # Case-insensitive pattern with flexible spacing
+        pattern = re.compile(
+            r"^\s*TRUNCATE\s+TABLE\s+(?P<table>\w+)\s*;\s*$",
+            re.IGNORECASE
+        )
+        match = pattern.match(self.query)
+
         if not match:
-            return "Syntax Error: Invalid TRUNCATE TABLE statement!"
-        
-        table = match.group("table") if match else None
-        
+            # Check for common TRUNCATE mistakes
+            alt_match = re.match(
+                r"^\s*TRUNCATE\s+(?!TABLE)(?P<table>\w+)\s*;\s*$",
+                self.query,
+                re.IGNORECASE
+            )
+            if alt_match:
+                return ("Syntax Error: Missing TABLE keyword.\n"
+                        "→ Did you mean: TRUNCATE TABLE {}; ?".format(alt_match.group("table")))
+            
+            return ("Syntax Error: Invalid TRUNCATE format.\n"
+                    "→ Valid format: TRUNCATE TABLE table_name;")
+
+        table = match.group("table").upper()
+
+        # Validate table name
         if table in SQL_KEYWORDS:
-            return f"Syntax Error: `{table}` is a reserved SQL keyword and cannot be used as a table name!"
-        
+            return ("Reserved Keyword Error: '{}' is an SQL reserved word.\n"
+                    "→ Choose a different table name (e.g., 'customers' instead of 'CUSTOMER')"
+                    .format(table))
+
+        # Validate table name format
+        if not re.match(r"^[A-Za-z_]\w*$", table):
+            return ("Invalid Table Name: '{}'.\n"
+                    "→ Table names must:\n"
+                    "  - Start with a letter or underscore\n"
+                    "  - Contain only letters, numbers, and underscores"
+                    .format(table))
 
         self.valid = True
         return "Valid TRUNCATE TABLE syntax!"
-    
-
 
 
     def parse(self):
