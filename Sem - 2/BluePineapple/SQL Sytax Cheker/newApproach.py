@@ -250,19 +250,98 @@ class SQLParser:
 
 
     
-    def parse_create(self):
-        """Parses a CREATE TABLE statement."""
-        if not self.query.endswith(";"):
-            return "Syntax Error: Query must end with ';'!"
+    # def parse_create(self):
+        # """Parses a CREATE TABLE statement."""
+        # if not self.query.endswith(";"):
+        #     return "Syntax Error: Query must end with ';'!"
 
-        pattern = r"CREATE TABLE\s+(?P<table>\w+)\s*\((?P<columns>.+?)\)\s*;"
-        match = re.match(pattern, self.query)
+        # pattern = r"CREATE TABLE\s+(?P<table>\w+)\s*\((?P<columns>.+?)\)\s*;"
+        # match = re.match(pattern, self.query)
 
+        # if not match:
+        #     return "Syntax Error: Invalid CREATE TABLE statement!"
+
+        # self.valid = True
+        # return "Valid CREATE TABLE syntax!"
+
+
+
+    
+    def extract_columns(self, query):
+        """Extracts columns from a CREATE TABLE statement and checks for missing names or data types."""
+        match = re.match(r"CREATE TABLE\s+(\w+)\s*\((.+)\)\s*;", query, re.IGNORECASE)
         if not match:
-            return "Syntax Error: Invalid CREATE TABLE statement!"
+            return "Syntax Error: Invalid CREATE TABLE statement!", None
 
-        self.valid = True
+        table_name = match.group(1)
+        columns_def = match.group(2).strip()
+
+        # **Fix: Extract columns correctly, preserving `DECIMAL(10,2)`**
+        column_list = []
+        current_col = ""
+        open_paren = 0  # Track parentheses depth
+
+        for char in columns_def:
+            if char == "," and open_paren == 0:
+                column_list.append(current_col.strip())
+                current_col = ""
+            else:
+                current_col += char
+                if char == "(":
+                    open_paren += 1
+                elif char == ")":
+                    open_paren -= 1
+
+        if current_col.strip():
+            column_list.append(current_col.strip())
+
+        print("Extracted Columns:", column_list)  # Debug print
+
+        if not column_list:
+            return "Syntax Error: No valid column definitions found!", None
+
+        # **Check for missing column names or data types**
+        for col in column_list:
+            parts = col.split()  # Split by spaces
+            if len(parts) < 2:
+                return f"Syntax Error: Column `{col}` is missing a data type!", None
+            if parts[0].upper() in {"INT", "VARCHAR", "TEXT", "DECIMAL", "FLOAT", "BOOLEAN", "DATE", "CHAR"}:
+                return f"Syntax Error: Column `{col}` is missing a name!", None
+
+        return "Valid column extraction!", column_list
+
+    def validate_column_types(self, columns):
+        """Validates the data types of extracted columns."""
+        valid_data_types = {"INT", "VARCHAR", "TEXT", "DECIMAL", "FLOAT", "BOOLEAN", "DATE", "CHAR"}
+        primary_key_defined = False
+
+        for col in columns:
+            parts = col.split()
+            column_name, data_type = parts[:2]  # Extract column name and data type
+
+            if "(" in data_type:  # Handle `DECIMAL(10,2)` or similar
+                data_type_match = re.match(r"(\w+)\(\d+(?:,\d+)?\)", data_type)
+                if data_type_match:
+                    data_type = data_type_match.group(1)
+
+            if data_type.upper() not in valid_data_types:
+                return f"Syntax Error: Invalid data type `{data_type}` in `{col}`!"
+
+            if "PRIMARY KEY" in col:
+                if primary_key_defined:
+                    return "Syntax Error: Multiple PRIMARY KEY constraints found!"
+                primary_key_defined = True
+
         return "Valid CREATE TABLE syntax!"
+
+    def parse_create(self):
+        """Handles extraction first, then validates column types."""
+        column_check, columns = self.extract_columns(self.query)
+        if column_check != "Valid column extraction!":
+            return column_check  # Return error if columns are missing data types or names
+
+        return self.validate_column_types(columns)  # Validate extracted columns
+
 
     def parse_alter(self):
         """Parses and validates an ALTER TABLE statement."""
@@ -271,20 +350,20 @@ class SQLParser:
 
         match = re.match(
             r"ALTER TABLE\s+(\w+)\s+(ADD|MODIFY)\s+(\w+)\s+(\w+)"
-            r"(\(\d+(?:,\d+)?\))?"  # Fix: Support for (10,2)
+            r"(\(\d+(?:,\d+)?\))?"  # Support for (size) and (precision, scale)
             r"(\s*(?:PRIMARY KEY|NOT NULL|UNIQUE)*)?\s*;",
             self.query,
             re.IGNORECASE
         )
 
         if not match:
-            return "Syntax Error: Invalid ALTER TABLE statement! Expected: `ALTER TABLE <table> ADD/MODIFY <column> <type>;`"
+            return "Syntax Error: Invalid ALTER TABLE statement! Expected: ALTER TABLE <table> ADD/MODIFY <column> <type>;"
 
         table_name, action, column_name, data_type, size, constraints = match.groups()
         valid_data_types = {"INT", "VARCHAR", "TEXT", "DECIMAL", "FLOAT", "BOOLEAN", "DATE", "CHAR"}
 
         if data_type.upper() not in valid_data_types:
-            return f"Syntax Error: Invalid data type `{data_type}` in ALTER TABLE statement!"
+            return f"Syntax Error: Invalid data type {data_type} in ALTER TABLE statement!"
 
         self.valid = True
         return "Valid ALTER TABLE syntax!"
@@ -316,6 +395,8 @@ class SQLParser:
 
         self.valid = True
         return "Valid TRUNCATE TABLE syntax!"
+    
+    
 
     def parse(self):
         """Determines SQL statement type and validates it."""

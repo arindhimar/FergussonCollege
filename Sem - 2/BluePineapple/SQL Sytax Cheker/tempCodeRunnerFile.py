@@ -1,4 +1,3 @@
-import re
 
 def extract_columns(query):
     """Extracts columns from a CREATE TABLE statement and checks for missing names or data types."""
@@ -77,15 +76,3 @@ def check_syntax(query):
 
     return validate_column_types(columns)  # Validate extracted columns
 
-
-# Interactive CLI for testing queries
-while True:
-    query = input("Enter a SQL query (or 'exit' to quit): ").strip()
-    if not query:
-        continue  # Ignore empty inputs
-
-    if query.lower() == "exit":
-        break
-
-    result = check_syntax(query)
-    print(result)
