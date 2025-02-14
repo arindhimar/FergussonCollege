@@ -240,64 +240,56 @@ class SQLParser:
         self.valid = True
         return "Valid UPDATE syntax!"
 
-
-
     def parse_delete(self):
-        """Parses a DELETE statement, ensuring correct syntax, parentheses tracking, and proper IN clause validation."""
-        
+        """Parses a DELETE statement with comprehensive value quoting validation."""
         if not self.query.endswith(";"):
             return "Syntax Error: Query must end with ';'!"
 
         pattern = re.compile(r"""
-            ^DELETE\s+FROM\s+(?P<table>\w+)\s*            # DELETE FROM table_name
-            (?:WHERE\s+(?P<where>.+))?                    # Optional WHERE clause
-            \s*;$                                         # Ensure query ends with a semicolon
-        """, re.VERBOSE | re.IGNORECASE)
+            ^DELETE\s+FROM\s+(?P<table>\w+)\s*
+            (?:\s+WHERE\s+(?P<where>.+?))?
+            \s*;$
+        """, re.VERBOSE | re.IGNORECASE | re.DOTALL)
 
         match = pattern.match(self.query)
         if not match:
-            return "Syntax Error: Invalid DELETE statement!"
+            return "Syntax Error: Invalid DELETE statement structure. Example: DELETE FROM table [WHERE condition];"
 
         clauses = match.groupdict()
         table_name = clauses["table"]
-        where_clause = clauses["where"]
+        where_clause = clauses["where"] or ""
 
-        # ✅ Ensure the table name is valid
+        # Validate table name
         if table_name.upper() in SQL_KEYWORDS:
-            return f"Syntax Error: `{table_name}` is a reserved SQL keyword and cannot be used as a table name!"
+            return f"Syntax Error: '{table_name}' is a reserved SQL keyword!"
 
-        # ✅ Validate WHERE clause (if present)
         if where_clause:
-            conditions = re.split(r"\s+AND\s+|\s+OR\s+", where_clause.strip())
+            conditions = re.split(r"\s+(?:AND|OR)\s+", where_clause, flags=re.IGNORECASE)
+            
             for condition in conditions:
-                condition = condition.strip()
+                # Check for double quotes first
+                if '"' in condition:
+                    return ("Syntax Error: Double quotes (\") are not allowed for string values\n"
+                            "→ Use single quotes (') instead: WHERE name IN ('Alice', 'Bob')")
 
-                # Ensure condition follows the pattern: column operator value
-                if not re.match(r"^\w+\s*(=|!=|<|>|<=|>=|LIKE|IN|NOT IN)\s*.+$", condition, re.IGNORECASE):
-                    return f"Syntax Error: Invalid condition `{condition}` in WHERE clause! Expected format: `column operator value`."
-
-                # ✅ Ensure column name is valid
-                column_name = condition.split()[0]
-                if column_name.upper() in SQL_KEYWORDS:
-                    return f"Syntax Error: `{column_name}` is a reserved SQL keyword and cannot be used as a column name!"
-                
-                                
-                if " IN " in condition or " NOT IN " in condition:
-                    in_match = re.match(r"(\w+)\s+(NOT IN|IN)\s*\((.+)\)", condition, re.IGNORECASE)
-                    if in_match:
-                        column, operator, values = in_match.groups()
-
-                        # ✅ Track Parentheses Balance
-                        open_parens = values.count("(")
-                        close_parens = values.count(")")
-                        print("Open Parens:", open_parens, "Close Parens:", close_parens)
-                        if open_parens != close_parens:
-                            return "Syntax Error: Mismatched parentheses in IN clause!"
-
-                        # ✅ Ensure values inside IN () are properly formatted
-                        values_list = re.findall(r"'[^']*'|\d+(\.\d+)?", values)  # Capture quoted strings or numbers
-                        if not values_list:
-                            return f"Syntax Error: Invalid {operator} values! Expected numbers or quoted strings."
+                # Enhanced condition validation
+                if not re.match(r"""
+                    (^\w+\s+(?:IS\s+(?:NOT\s+)?NULL)$) |  # NULL checks
+                    (^\w+\s*                               # Column name
+                    (=|!=|<|>|<=|>=|LIKE|IN)\s*            # Operator
+                    (                                      # Value(s)
+                        '(?:[^']|'')*'|                    # Proper quoted string
+                        \d+(?:\.\d+)?|                     # Numbers
+                        \((?:'[^']*'|\d+\s*,?\s*)+\)       # IN list with valid values
+                    )$)
+                """, condition, re.IGNORECASE | re.VERBOSE | re.X):
+                    return (f"Syntax Error: Invalid condition '{condition}'\n"
+                            "Valid formats:\n"
+                            "- column = 'value'\n"
+                            "- column IS [NOT] NULL\n"
+                            "- column IN (value1, value2)(string not supported)\n"
+                            "- column LIKE 'pattern%'\n"
+                            )
 
         return "Valid DELETE syntax!"
     
@@ -417,6 +409,7 @@ class SQLParser:
 
         if data_type.upper() not in valid_data_types:
             return f"Syntax Error: Invalid data type {data_type} in ALTER TABLE statement!"
+        
 
         self.valid = True
         return "Valid ALTER TABLE syntax!"
