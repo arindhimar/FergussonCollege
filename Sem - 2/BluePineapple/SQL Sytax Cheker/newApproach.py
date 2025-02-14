@@ -78,12 +78,23 @@ class SQLParser:
                     r"\w+\s+BETWEEN\s+['\"]?[\w\s]+['\"]?\s+AND\s+['\"]?[\w\s]+['\"]?", "", clauses["where"]
                 ).strip()
 
-            #  Now split WHERE conditions (without affecting BETWEEN)
-            conditions = re.split(r"\s+AND\s+|\s+OR\s+", clauses["where"]) if clauses["where"] else []
+            # #  Now split WHERE conditions (without affecting BETWEEN)
+            # conditions = re.split(r"\s+AND\s+|\s+OR\s+", clauses["where"]) if clauses["where"] else []
             
+            # for condition in conditions:
+            #     condition = condition.strip()
+            #     print("Checking condition:", condition)
+            
+            conditions = re.split(r"\s+AND\s+|\s+OR\s+", clauses["where"]) if clauses["where"] else []
             for condition in conditions:
                 condition = condition.strip()
                 print("Checking condition:", condition)
+
+                # Ensure condition follows the pattern: column operator value
+                condition_match = re.match(r"(\w+)\s*(=|!=|<|>|<=|>=|LIKE|BETWEEN|IN|NOT IN)\s*(.+)", condition, re.IGNORECASE)
+                if not condition_match:
+                    return f"Syntax Error: Invalid condition `{condition}` in WHERE clause! Expected format: `column operator value`."
+
 
                 #  Handle IN and NOT IN
                 if " IN " in condition or " NOT IN " in condition:
@@ -105,7 +116,8 @@ class SQLParser:
                     for condition in conditions:
                         condition = condition.strip()
 
-                        print("Checking condition:", condition)
+                        print("Checking condition 2:", condition)
+                        
                         if "BETWEEN" in condition:
                             between_match = re.match(
                                 r"(\w+)\s+BETWEEN\s+(['\"]?\w+['\"]?)\s+AND\s+(['\"]?\w+['\"]?)$", 
@@ -193,33 +205,63 @@ class SQLParser:
 
 
     def parse_update(self):
-        """Parses an UPDATE statement, ensuring it has SET and optionally WHERE."""
+        """Parses an UPDATE statement, ensuring correct structure for SET and WHERE clauses."""
+        
         if not self.query.endswith(";"):
             return "Syntax Error: Query must end with ';'!"
 
+        # Match UPDATE structure
         pattern = re.compile(r"""
-            ^UPDATE\s+(?P<table>\w+)\s+                   # UPDATE table_name
-            SET\s+(?P<set>(?:\w+\s*=\s*(?:\'.*?\'|\d+)\s*,\s*)*   # SET column=value, column=value, ...
-            \w+\s*=\s*(?:\'.*?\'|\d+))                    # Last column=value (no trailing comma)
-            (?:\s+WHERE\s+(?P<where>(?:\w+\s*=\s*(?:\'.*?\'|\d+)\s*(?:AND\s+)?)*) )?  # Optional WHERE condition
-            \s*;$                                         # Ensure query ends with a semicolon
-        """, re.VERBOSE | re.IGNORECASE)
+            ^UPDATE\s+(?P<table>\w+)\s+            # UPDATE table_name
+            SET\s+(?P<set_clause>.+?)              # SET column=value assignments
+            (?:\s+WHERE\s+(?P<where_clause>.+?))?  # Optional WHERE condition
+            \s*;$                                  # Ensure query ends with semicolon
+        """, re.IGNORECASE | re.VERBOSE)
 
         match = pattern.match(self.query)
         if not match:
             return "Syntax Error: Invalid UPDATE statement!"
 
         clauses = match.groupdict()
+        table_name = clauses["table"]
+        set_clause = clauses["set_clause"].strip()
+        where_clause = clauses["where_clause"].strip() if clauses["where_clause"] else None
 
-        # Ensure WHERE clause is valid
-        if clauses["where"]:
-            where_conditions = [w.strip() for w in clauses["where"].split(" AND ")]
-            for condition in where_conditions:
-                if "=" not in condition:
-                    return f"Syntax Error: Invalid condition in WHERE clause: `{condition}` (Expected: column = value)"
+        # Validate SET clause
+        set_assignments = set_clause.split(",")
+        for assignment in set_assignments:
+            assignment = assignment.strip()
+
+            if not re.match(r"""
+                ^\w+\s*=\s*                           # column =
+                (?:'.*?'|\d+|NULL|                    # 'string', number, NULL
+                \w+\s*[\+\-\*/]\s*\d+|\w+\s*[\+\-\*/]\s*\w+)$ # col = col + val, col = col * col
+            """, assignment, re.IGNORECASE | re.VERBOSE):
+                return f"Syntax Error: Invalid assignment `{assignment}` in SET clause! Expected format: `column = value`."
+
+        # Validate WHERE clause (if exists)
+        if where_clause:
+            conditions = re.split(r"\s+(AND|OR)\s+", where_clause)
+            for condition in conditions:
+                condition = condition.strip()
+
+                if condition.upper() in ("AND", "OR"):
+                    continue  # Skip AND/OR operators
+
+                # Allow `IS NULL` and `IS NOT NULL`
+                if re.match(r"^\w+\s+IS\s+(NULL|NOT NULL)$", condition, re.IGNORECASE):
+                    continue  # Valid IS NULL / IS NOT NULL condition
+                print("Checking condition: new", condition)
+                if not re.match(r"""
+                    ^\w+\s*                           # column
+                    (?:=|!=|<|>|<=|>=|LIKE|IN|BETWEEN)\s*
+                    (?:'.*?'|\d+|\(\s*\d+(?:,\s*\d+)*\s*\)|\w+\s+AND\s+\w+)?$  # Values, IN lists, and BETWEEN
+                """, condition, re.IGNORECASE | re.VERBOSE):
+                    return f"Syntax Error: Invalid condition `{condition}` in WHERE clause! Expected format: `column operator value`."
 
         self.valid = True
         return "Valid UPDATE syntax!"
+
 
 
 
