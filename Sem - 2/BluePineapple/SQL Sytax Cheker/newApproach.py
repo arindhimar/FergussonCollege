@@ -357,33 +357,46 @@ class SQLParser:
         return "Valid column extraction!", column_list
 
     def validate_column_types(self, columns):
-        """Validates column data types and constraints in CREATE TABLE."""
+        """Validates column names, data types, and ensures proper constraints."""
+        
+        # ✅ List of Reserved SQL Keywords (MySQL Standard)
+        sql_keywords = {
+            "SELECT", "FROM", "WHERE", "TABLE", "CREATE", "DROP", "ALTER", "INSERT", "UPDATE", "DELETE",
+            "INTO", "VALUES", "SET", "JOIN", "ORDER", "BY", "GROUP", "HAVING", "DISTINCT", "AND", "OR",
+            "NOT", "IN", "BETWEEN", "LIKE", "AS", "PRIMARY", "KEY", "FOREIGN", "NULL", "DEFAULT",
+            "CHECK", "INDEX", "REFERENCES", "INT", "VARCHAR", "TEXT", "DECIMAL", "FLOAT", "BOOLEAN",
+            "DATE", "CHAR"
+        }
+
         valid_data_types = {"INT", "VARCHAR", "TEXT", "DECIMAL", "FLOAT", "BOOLEAN", "DATE", "CHAR"}
         primary_key_defined = False
 
         for col in columns:
-            parts = re.split(r"\s+", col, maxsplit=2)
+            parts = re.split(r"\s+", col, maxsplit=2)  # Preserve `VARCHAR(255)`
 
-            column_name = parts[0]
-            data_type = parts[1] if len(parts) > 1 else ""
+            if len(parts) < 2:
+                return f"Syntax Error: Column `{col}` is missing a data type!"
 
-            # **Fix: Handle `VARCHAR(50)` properly**
-            if data_type.upper() == "VARCHAR" or "(" in data_type:
-                data_type_match = re.match(r"(\w+)\(\d+\)", data_type)
-                if not data_type_match:
-                    return f"Syntax Error: `{col}` has an invalid type! Use `VARCHAR(n)`."
+            column_name, data_type = parts[:2]
+
+            # ✅ Ensure the column name is NOT a SQL keyword
+            if column_name.upper() in sql_keywords:
+                return f"Syntax Error: `{column_name}` is a reserved SQL keyword and cannot be used as a column name!"
+
+            if "(" in data_type:  # Handle `DECIMAL(10,2)` or similar
+                data_type_match = re.match(r"(\w+)\(\d+(?:,\d+)?\)", data_type)
+                if data_type_match:
+                    data_type = data_type_match.group(1)
 
             if data_type.upper() not in valid_data_types:
                 return f"Syntax Error: Invalid data type `{data_type}` in `{col}`!"
 
-            # **Detect PRIMARY KEY**
-            if re.search(r"\bPRIMARY\s+KEY\b", col, re.IGNORECASE):
+            if re.search(r"\bPRIMARY\s+KEY\b", col, re.IGNORECASE):  # Improved PRIMARY KEY detection
                 if primary_key_defined:
                     return "Syntax Error: Multiple PRIMARY KEY constraints found!"
                 primary_key_defined = True
 
         return "Valid CREATE TABLE syntax!"
-    
     def parse_create(self):
         """Parses a CREATE TABLE statement and validates columns."""
         result = self.extract_columns(self.query)
