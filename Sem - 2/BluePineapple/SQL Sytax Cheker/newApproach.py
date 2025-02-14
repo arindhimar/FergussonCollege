@@ -97,126 +97,126 @@ class SQLParser:
         return "Valid SELECT syntax!"
 
     # def parse_select(self):
-        """Parses a SELECT statement, handling WHERE, GROUP BY, ORDER BY, UNION, INTERSECT, and operators."""
+        # """Parses a SELECT statement, handling WHERE, GROUP BY, ORDER BY, UNION, INTERSECT, and operators."""
 
-        if not self.query.endswith(";"):
-            return "Syntax Error: Query must end with ';'!"
+        # if not self.query.endswith(";"):
+        #     return "Syntax Error: Query must end with ';'!"
 
-        # Support for UNION & INTERSECT
-        if " UNION " in self.query or " INTERSECT " in self.query:
-            sub_queries = re.split(r"\s+UNION\s+|\s+INTERSECT\s+", self.query)
-            for sub_query in sub_queries:
-                if not sub_query.strip().startswith("SELECT"):
-                    return "Syntax Error: UNION/INTERSECT must be between valid SELECT statements!"
-                if "FROM" not in sub_query:
-                    return "Syntax Error: Missing 'FROM' in UNION/INTERSECT queries!"
+        # # Support for UNION & INTERSECT
+        # if " UNION " in self.query or " INTERSECT " in self.query:
+        #     sub_queries = re.split(r"\s+UNION\s+|\s+INTERSECT\s+", self.query)
+        #     for sub_query in sub_queries:
+        #         if not sub_query.strip().startswith("SELECT"):
+        #             return "Syntax Error: UNION/INTERSECT must be between valid SELECT statements!"
+        #         if "FROM" not in sub_query:
+        #             return "Syntax Error: Missing 'FROM' in UNION/INTERSECT queries!"
 
-        # Extract clauses using regex
-        pattern = (
-            r"SELECT\s+(?P<select>.+?)\s+"
-            r"FROM\s+(?P<from>\w+)"
-            r"(?:\s+WHERE\s+(?P<where>.+?))?"
-            r"(?:\s+GROUP BY\s+(?P<group_by>.+?))?"
-            r"(?:\s+HAVING\s+(?P<having>.+?))?"
-            r"(?:\s+ORDER BY\s+(?P<order_by>.+?))?"
-            r"\s*;"
-        )
-        match = re.match(pattern, self.query, re.IGNORECASE)
+        # # Extract clauses using regex
+        # pattern = (
+        #     r"SELECT\s+(?P<select>.+?)\s+"
+        #     r"FROM\s+(?P<from>\w+)"
+        #     r"(?:\s+WHERE\s+(?P<where>.+?))?"
+        #     r"(?:\s+GROUP BY\s+(?P<group_by>.+?))?"
+        #     r"(?:\s+HAVING\s+(?P<having>.+?))?"
+        #     r"(?:\s+ORDER BY\s+(?P<order_by>.+?))?"
+        #     r"\s*;"
+        # )
+        # match = re.match(pattern, self.query, re.IGNORECASE)
 
-        print("Match:", match)  
+        # print("Match:", match)  
         
-        if not match:
-            return "Syntax Error: Invalid SELECT statement structure!"
+        # if not match:
+        #     return "Syntax Error: Invalid SELECT statement structure!"
 
-        clauses = match.groupdict()
+        # clauses = match.groupdict()
 
-        # Validate SELECT & FROM
-        if not clauses["select"] or not clauses["from"]:
-            return "Syntax Error: SELECT and FROM are required!"
+        # # Validate SELECT & FROM
+        # if not clauses["select"] or not clauses["from"]:
+        #     return "Syntax Error: SELECT and FROM are required!"
         
-        if clauses["select"].strip() == ",":
-            return "Syntax Error: No columns selected after SELECT!"
+        # if clauses["select"].strip() == ",":
+        #     return "Syntax Error: No columns selected after SELECT!"
 
-        # Validate WHERE clause (BETWEEN, IN, NOT IN, LIKE)
-        if clauses["where"]:
-            conditions = re.split(r"\s+AND\s+|\s+OR\s+", clauses["where"]) if clauses["where"] else []
-            for condition in conditions:
-                condition = condition.strip()
-                print("Checking condition:", condition)
+        # # Validate WHERE clause (BETWEEN, IN, NOT IN, LIKE)
+        # if clauses["where"]:
+        #     conditions = re.split(r"\s+AND\s+|\s+OR\s+", clauses["where"]) if clauses["where"] else []
+        #     for condition in conditions:
+        #         condition = condition.strip()
+        #         print("Checking condition:", condition)
 
-                # Ensure condition follows the pattern: column operator value
-                condition_match = re.match(r"(\w+)\s*(=|!=|<|>|<=|>=|LIKE|BETWEEN|IN|NOT IN)\s*(.+)", condition, re.IGNORECASE)
-                if not condition_match:
-                    return f"Syntax Error: Invalid condition `{condition}` in WHERE clause! Expected format: `column operator value`."
+        #         # Ensure condition follows the pattern: column operator value
+        #         condition_match = re.match(r"(\w+)\s*(=|!=|<|>|<=|>=|LIKE|BETWEEN|IN|NOT IN)\s*(.+)", condition, re.IGNORECASE)
+        #         if not condition_match:
+        #             return f"Syntax Error: Invalid condition `{condition}` in WHERE clause! Expected format: `column operator value`."
 
 
-                #  Handle IN and NOT IN
-                if " IN " in condition or " NOT IN " in condition:
-                    in_match = re.match(r"(\w+)\s+(NOT IN|IN)\s*\(\s*([^)]+)\s*\)", condition)
-                    if in_match:
-                        column, operator, values = in_match.groups()
-                        values_list = [v.strip() for v in values.split(",")]
-                        if not all(v.replace(".", "", 1).isdigit() or v.startswith("'") for v in values_list):
-                            return f"Syntax Error: Invalid {operator} values! Expected numbers or quoted strings."
+        #         #  Handle IN and NOT IN
+        #         if " IN " in condition or " NOT IN " in condition:
+        #             in_match = re.match(r"(\w+)\s+(NOT IN|IN)\s*\(\s*([^)]+)\s*\)", condition)
+        #             if in_match:
+        #                 column, operator, values = in_match.groups()
+        #                 values_list = [v.strip() for v in values.split(",")]
+        #                 if not all(v.replace(".", "", 1).isdigit() or v.startswith("'") for v in values_list):
+        #                     return f"Syntax Error: Invalid {operator} values! Expected numbers or quoted strings."
 
-                #  Handle LIKE
-                if " LIKE " in condition:
-                    like_match = re.match(r"(\w+)\s+LIKE\s+'(.+)'", condition)
-                    if not like_match:
-                        return "Syntax Error: Invalid LIKE syntax! Expected: column LIKE 'pattern'"
+        #         #  Handle LIKE
+        #         if " LIKE " in condition:
+        #             like_match = re.match(r"(\w+)\s+LIKE\s+'(.+)'", condition)
+        #             if not like_match:
+        #                 return "Syntax Error: Invalid LIKE syntax! Expected: column LIKE 'pattern'"
 
-                    conditions = clauses["where"].strip().split(" AND ")
+        #             conditions = clauses["where"].strip().split(" AND ")
 
-                    for condition in conditions:
-                        condition = condition.strip()
+        #             for condition in conditions:
+        #                 condition = condition.strip()
 
-                        print("Checking condition 2:", condition)
+        #                 print("Checking condition 2:", condition)
                         
-                        if "BETWEEN" in condition:
-                            between_match = re.match(
-                                r"(\w+)\s+BETWEEN\s+(['\"]?\w+['\"]?)\s+AND\s+(['\"]?\w+['\"]?)$", 
-                                condition
-                            )
-                            print("Between match:", between_match)
-                            if between_match:
-                                column, val1, val2 = between_match.groups()
-                                print("Matched BETWEEN:", column, val1, val2)
+        #                 if "BETWEEN" in condition:
+        #                     between_match = re.match(
+        #                         r"(\w+)\s+BETWEEN\s+(['\"]?\w+['\"]?)\s+AND\s+(['\"]?\w+['\"]?)$", 
+        #                         condition
+        #                     )
+        #                     print("Between match:", between_match)
+        #                     if between_match:
+        #                         column, val1, val2 = between_match.groups()
+        #                         print("Matched BETWEEN:", column, val1, val2)
 
-                                # Remove quotes and check if both are numbers
-                                val1_clean = val1.replace("'", "").replace('"', "")
-                                val2_clean = val2.replace("'", "").replace('"', "")
+        #                         # Remove quotes and check if both are numbers
+        #                         val1_clean = val1.replace("'", "").replace('"', "")
+        #                         val2_clean = val2.replace("'", "").replace('"', "")
 
-                                if not (val1_clean.replace(".", "", 1).isdigit() and val2_clean.replace(".", "", 1).isdigit()):
-                                    return f"Syntax Error: Invalid BETWEEN values! `{val1}` and `{val2}` must be numbers."
-                                continue
-                            else:
-                                return "Syntax Error: Invalid BETWEEN syntax! Expected: column BETWEEN value1 AND value2"
+        #                         if not (val1_clean.replace(".", "", 1).isdigit() and val2_clean.replace(".", "", 1).isdigit()):
+        #                             return f"Syntax Error: Invalid BETWEEN values! `{val1}` and `{val2}` must be numbers."
+        #                         continue
+        #                     else:
+        #                         return "Syntax Error: Invalid BETWEEN syntax! Expected: column BETWEEN value1 AND value2"
 
-                        #  Now handle IN, NOT IN, LIKE, etc.
-                        if " IN " in condition or " NOT IN " in condition:
-                            in_match = re.match(r"(\w+)\s+(NOT IN|IN)\s*\(\s*([^)]+)\s*\)", condition)
-                            if in_match:
-                                column, operator, values = in_match.groups()
-                                values_list = [v.strip() for v in values.split(",")]
-                                if not all(v.replace(".", "", 1).isdigit() or v.startswith("'") for v in values_list):
-                                    return f"Syntax Error: Invalid {operator} values! Expected numbers or quoted strings."
+        #                 #  Now handle IN, NOT IN, LIKE, etc.
+        #                 if " IN " in condition or " NOT IN " in condition:
+        #                     in_match = re.match(r"(\w+)\s+(NOT IN|IN)\s*\(\s*([^)]+)\s*\)", condition)
+        #                     if in_match:
+        #                         column, operator, values = in_match.groups()
+        #                         values_list = [v.strip() for v in values.split(",")]
+        #                         if not all(v.replace(".", "", 1).isdigit() or v.startswith("'") for v in values_list):
+        #                             return f"Syntax Error: Invalid {operator} values! Expected numbers or quoted strings."
 
-                        #  LIKE validation
-                        if " LIKE " in condition:
-                            like_match = re.match(r"(\w+)\s+LIKE\s+'(.+)'", condition)
-                            if not like_match:
-                                return "Syntax Error: Invalid LIKE syntax! Expected: column LIKE 'pattern'"
+        #                 #  LIKE validation
+        #                 if " LIKE " in condition:
+        #                     like_match = re.match(r"(\w+)\s+LIKE\s+'(.+)'", condition)
+        #                     if not like_match:
+        #                         return "Syntax Error: Invalid LIKE syntax! Expected: column LIKE 'pattern'"
 
-        #  Validate ORDER BY
-        if clauses["order_by"]:
-            order_parts = clauses["order_by"].strip().split()
-            if len(order_parts) > 2:
-                return "Syntax Error: ORDER BY must be followed by a column and optionally ASC or DESC!"
-            if len(order_parts) == 2 and order_parts[1] not in ["ASC", "DESC"]:
-                return f"Syntax Error: Invalid sorting order '{order_parts[1]}'! Use ASC or DESC."
+        # #  Validate ORDER BY
+        # if clauses["order_by"]:
+        #     order_parts = clauses["order_by"].strip().split()
+        #     if len(order_parts) > 2:
+        #         return "Syntax Error: ORDER BY must be followed by a column and optionally ASC or DESC!"
+        #     if len(order_parts) == 2 and order_parts[1] not in ["ASC", "DESC"]:
+        #         return f"Syntax Error: Invalid sorting order '{order_parts[1]}'! Use ASC or DESC."
 
-        self.valid = True
-        return "Valid SELECT syntax!"
+        # self.valid = True
+        # return "Valid SELECT syntax!"
 
    
    
@@ -229,6 +229,10 @@ class SQLParser:
         # Correct regex to avoid duplicate INTO and ensure proper format
         pattern = r"^INSERT\s+INTO\s+(\w+)\s*(?:\(([^)]+)\))?\s+VALUES\s*\((.+)\)\s*;$"
         match = re.match(pattern, self.query, re.IGNORECASE)
+        
+        
+        
+        #insert into table_name (col1, col2, col3) values (val1, val2, val3);
 
         if not match:
             return "Syntax Error: Invalid INSERT statement!"
@@ -238,7 +242,11 @@ class SQLParser:
         # Ensure table name is present
         if not table:
             return "Syntax Error: Missing table name in INSERT INTO statement!"
+        
+        if table in SQL_KEYWORDS:
+            return f"Syntax Error: `{table}` is a reserved SQL keyword and cannot be used as a table name
 
+        
         # Split columns safely
         column_list = [col.strip().upper() for col in columns.split(",")] if columns else []
 
