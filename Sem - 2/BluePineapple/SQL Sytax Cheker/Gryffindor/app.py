@@ -1,12 +1,9 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from check_syntax import SQLParser
-
-app = Flask(__name__)
-CORS(app)
-
-
 import re
+app = Flask(__name__)
+
+CORS(app)
 
 SQL_KEYWORDS = {
     "SELECT", "FROM", "WHERE", "TABLE", "CREATE", "DROP", "ALTER", "INSERT", "UPDATE", "DELETE",
@@ -470,36 +467,71 @@ class SQLParser:
     
     
 
-    def parse(self):
-        """Determines SQL statement type and validates it."""
-        first_word = self.query.split()[0]
-        
-        if first_word == "SELECT":
-            return self.parse_select()
-        elif first_word == "INSERT":
-            return self.parse_insert()
-        elif first_word == "UPDATE":
-            return self.parse_update()
-        elif first_word == "DELETE":
-            return self.parse_delete()
-        elif first_word == "CREATE":
-            return self.parse_create()
-        elif first_word == "ALTER":
-            return self.parse_alter()
-        elif first_word == "DROP":
-            return self.parse_drop()
-        elif first_word == "TRUNCATE":
-            return self.parse_truncate()
-        return "Syntax Error: Unsupported SQL statement!"
 
+
+
+
+
+
+
+
+
+    def parse(self):
+        """Determine SQL statement type and validate it"""
+        try:
+            if not self.query:
+                return {"valid": False, "message": "Empty query provided"}
+
+            first_word = self.query.split()[0]
+            parsers = {
+                'SELECT': self.parse_select,
+                'INSERT': self.parse_insert,
+                'UPDATE': self.parse_update,
+                'DELETE': self.parse_delete,
+                'CREATE': self.parse_create,
+                'ALTER': self.parse_alter,
+                'DROP': self.parse_drop,
+                'TRUNCATE': self.parse_truncate
+            }
+            
+            if first_word not in parsers:
+                return {"valid": False, "message": "Unsupported SQL statement type"}
+            
+            result = parsers[first_word]()
+            return {"valid": "error" not in result.lower(), "message": result}
+            
+        except Exception as e:
+            return {"valid": False, "message": f"Validation error: {str(e)}"}
+
+def check_syntax(query):
+        try:
+            parser = SQLParser(query)
+            return parser.parse()
+        except Exception as e:
+            return f"Error: {str(e)}"
 
 @app.route('/', methods=['POST'])
-def hello_name():
-    data = request.get_json()
-    print(data)
-    result = check_syntax(data)
-    return jsonify(result)
+def validate_sql():
+    try:
+        data = request.get_json()
+        if not data or 'query' not in data:
+            return jsonify({"valid": False, "message": "No query provided"}), 400
+        
+        query = data['query'].strip()
+        if not query:
+            return jsonify({"valid": False, "message": "Empty query provided"}), 400
+        
+        parser = SQLParser(query)
+        result = parser.parse()
+        return jsonify(result), 200
+        
+    except Exception as e:
+        return jsonify({
+            "valid": False,
+            "message": f"Server error: {str(e)}"
+        }), 500
+
+
 
 if __name__ == '__main__':
-
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)

@@ -132,17 +132,25 @@ document.addEventListener("DOMContentLoaded", () => {
   })
 
   function displayResult(result) {
+    const isValid = result.valid;
+    const message = result.message;
+    
     resultDiv.innerHTML = `
-            <div class="${result.isValid ? "success" : "error"}">
-                <i class="fas ${result.isValid ? "fa-check-circle" : "fa-exclamation-circle"}"></i>
-                ${result.message}
-            </div>
-        `
-  }
+        <div class="${isValid ? "success" : "error"}">
+            <i class="fas ${isValid ? "fa-check-circle" : "fa-exclamation-circle"}"></i>
+            ${message}
+        </div>
+    `;
+}
 
   function addToHistory(query, result) {
     const history = JSON.parse(localStorage.getItem("queryHistory")) || []
-    history.unshift({ query, result })
+    history.unshift({ 
+        query, 
+        result: result.message,
+        valid: result.valid,
+        timestamp: new Date().toISOString()
+    })
     if (history.length > 10) history.pop()
     localStorage.setItem("queryHistory", JSON.stringify(history))
     updateHistoryList()
