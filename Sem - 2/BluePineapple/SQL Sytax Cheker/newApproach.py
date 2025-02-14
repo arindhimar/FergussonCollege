@@ -42,6 +42,8 @@ class SQLParser:
         )
         match = re.match(pattern, self.query, re.IGNORECASE)
 
+        print("Match:", match)  
+        
         if not match:
             return "Syntax Error: Invalid SELECT statement structure!"
 
@@ -50,6 +52,9 @@ class SQLParser:
         # Validate SELECT & FROM
         if not clauses["select"] or not clauses["from"]:
             return "Syntax Error: SELECT and FROM are required!"
+        
+        if clauses["select"].strip() == ",":
+            return "Syntax Error: No columns selected after SELECT!"
 
         # Validate WHERE clause (BETWEEN, IN, NOT IN, LIKE)
         if clauses["where"]:
