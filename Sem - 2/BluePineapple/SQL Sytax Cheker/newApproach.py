@@ -280,8 +280,8 @@ class SQLParser:
                 column_name = condition.split()[0]
                 if column_name.upper() in SQL_KEYWORDS:
                     return f"Syntax Error: `{column_name}` is a reserved SQL keyword and cannot be used as a column name!"
-
-                # ✅ Handle IN and NOT IN clauses properly
+                
+                                
                 if " IN " in condition or " NOT IN " in condition:
                     in_match = re.match(r"(\w+)\s+(NOT IN|IN)\s*\((.+)\)", condition, re.IGNORECASE)
                     if in_match:
@@ -451,6 +451,13 @@ class SQLParser:
 
         pattern = r"TRUNCATE TABLE\s+(?P<table>\w+)\s*;"
         match = re.match(pattern, self.query)
+        
+        table = match.group("table") if match else None
+        
+        if table in SQL_KEYWORDS:
+            return f"Syntax Error: `{table}` is a reserved SQL keyword and cannot be used as a table name!"
+        
+        print ("Table:", table)
 
         if not match:
             return "Syntax Error: Invalid TRUNCATE TABLE statement!"
