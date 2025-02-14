@@ -218,34 +218,35 @@ class SQLParser:
         self.valid = True
         return "Valid SELECT syntax!"
 
-        
-
+   
+   
     def parse_insert(self):
         """Parses an INSERT statement and validates syntax."""
-
-        self.query = self.query.strip()  # Ensure no leading/trailing spaces
+        
         if not self.query.endswith(";"):
             return "Syntax Error: Query must end with ';'!"
 
         # Correct regex to avoid duplicate INTO and ensure proper format
-        pattern = r"^INSERT\s+INTO\s+(\w+)\s*(?:\(([^)]+)\))?\s+VALUES\s*\(([^)]+)\)\s*;$"
+        pattern = r"^INSERT\s+INTO\s+(\w+)\s*(?:\(([^)]+)\))?\s+VALUES\s*\((.+)\)\s*;$"
         match = re.match(pattern, self.query, re.IGNORECASE)
 
         if not match:
             return "Syntax Error: Invalid INSERT statement!"
 
         table, columns, values = match.groups()
-        
-        if table in SQL_KEYWORDS:
-            return f"Syntax Error: `{table}` is a reserved SQL keyword and cannot be used as a table name!"
 
         # Ensure table name is present
         if not table:
             return "Syntax Error: Missing table name in INSERT INTO statement!"
 
-        # Split columns and values properly
-        column_list = [col.strip() for col in columns.split(",")] if columns else []
-        value_list = [val.strip() for val in values.split(",")]
+        # Split columns safely
+        column_list = [col.strip().upper() for col in columns.split(",")] if columns else []
+
+        # **Fixed:** Use `_split_values_correctly` to correctly parse values
+        value_list = self._split_values_correctly(values)
+
+        print("Column List:", column_list)  # Debugging output
+        print("Value List:", value_list)  # Debugging output
 
         # Ensure column count matches value count
         if column_list and len(column_list) != len(value_list):
@@ -253,7 +254,7 @@ class SQLParser:
 
         # Validate values (numbers should not be in quotes, strings should be quoted)
         for val in value_list:
-            if re.match(r"^\d+$", val):  # Integer check
+            if re.match(r"^\d+(\.\d+)?$", val):  # Integer or float check
                 continue  # Valid number
             elif re.match(r"^'.*'$", val):  # Ensure string values are enclosed in single quotes
                 continue  # Valid string
@@ -261,6 +262,73 @@ class SQLParser:
                 return f"Syntax Error: Invalid value format `{val}`! Strings must be in single quotes."
 
         return "Valid INSERT syntax!"
+
+    def _split_values_correctly(self, values):
+        """
+        Splits values while correctly handling commas inside quoted strings.
+        Example: "1, 'Table, Chair', 299.99" -> ['1', "'Table, Chair'", '299.99']
+        """
+        parts = []
+        current = ""
+        in_quotes = False
+
+        for char in values:
+            if char == "'" and (not current or current[-1] != "\\"):  # Handle single quotes
+                in_quotes = not in_quotes
+            if char == "," and not in_quotes:  # Only split on commas outside quotes
+                parts.append(current.strip())
+                current = ""
+            else:
+                current += char
+
+        if current.strip():
+            parts.append(current.strip())
+
+        return parts     
+
+    # def parse_insert(self):
+    #     """Parses an INSERT statement and validates syntax."""
+
+    #     self.query = self.query.strip()  # Ensure no leading/trailing spaces
+    #     if not self.query.endswith(";"):
+    #         return "Syntax Error: Query must end with ';'!"
+
+    #     # Correct regex to avoid duplicate INTO and ensure proper format
+    #     pattern = r"^INSERT\s+INTO\s+(\w+)\s*(?:\(([^)]+)\))?\s+VALUES\s*\(([^)]+)\)\s*;$"
+    #     match = re.match(pattern, self.query, re.IGNORECASE)
+
+    #     if not match:
+    #         return "Syntax Error: Invalid INSERT statement!"
+
+    #     table, columns, values = match.groups()
+        
+    #     if table in SQL_KEYWORDS:
+    #         return f"Syntax Error: `{table}` is a reserved SQL keyword and cannot be used as a table name!"
+
+    #     # Ensure table name is present
+    #     if not table:
+    #         return "Syntax Error: Missing table name in INSERT INTO statement!"
+
+    #     # Split columns and values properly
+    #     column_list = [col.strip() for col in columns.split(",")] if columns else []
+    #     print("Column List:", column_list)
+    #     value_list = [val.strip() for val in values.split(",")]
+    #     print("Value List:", value_list)
+
+    #     # Ensure column count matches value count
+    #     if column_list and len(column_list) != len(value_list):
+    #         return f"Syntax Error: Expected {len(column_list)} values, but found {len(value_list)}!"
+
+    #     # Validate values (numbers should not be in quotes, strings should be quoted)
+    #     for val in value_list:
+    #         if re.match(r"^\d+$", val):  # Integer check
+    #             continue  # Valid number
+    #         elif re.match(r"^'.*'$", val):  # Ensure string values are enclosed in single quotes
+    #             continue  # Valid string
+    #         else:
+    #             return f"Syntax Error: Invalid value format `{val}`! Strings must be in single quotes."
+
+    #     return "Valid INSERT syntax!"
 
     def parse_update(self):
         """Parses an UPDATE statement, ensuring correct structure for SET and WHERE clauses."""
