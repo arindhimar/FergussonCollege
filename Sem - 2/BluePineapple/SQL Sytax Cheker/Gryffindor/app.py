@@ -27,83 +27,98 @@ class SQLParser:
         self.valid = False  # Track if query is valid
 
     def parse_select(self):
-        """Parses a SELECT statement, handling WHERE, GROUP BY, ORDER BY, UNION, INTERSECT, and operators."""
-
+        """Parses and validates SELECT statements with support for complex clauses, set operations, and proper operator handling."""
         if not self.query.endswith(";"):
             return "Syntax Error: Query must end with ';'!"
 
-        # Support for UNION & INTERSECT
-        if " UNION " in self.query or " INTERSECT " in self.query:
-            sub_queries = re.split(r"\s+UNION\s+|\s+INTERSECT\s+", self.query)
-            for sub_query in sub_queries:
-                if not sub_query.strip().startswith("SELECT"):
-                    return "Syntax Error: UNION/INTERSECT must be between valid SELECT statements!"
-                if "FROM" not in sub_query:
-                    return "Syntax Error: Missing 'FROM' in UNION/INTERSECT queries!"
+        # Unified case-insensitive handling
+        query = self.query.upper()
+        original_query = self.query  # Keep original for error messages
 
-        # Extract clauses using regex
-        pattern = (
-            r"SELECT\s+(?P<select>.+?)\s+"
-            r"FROM\s+(?P<from>\w+)"
+        # Enhanced set operation handling
+        set_ops = re.compile(r"\s+(UNION|INTERSECT)\s+", re.IGNORECASE)
+        if set_ops.search(query):
+            parts = set_ops.split(original_query)
+            if len(parts) < 3 or not all(parts[i].upper().startswith("SELECT") for i in [0, 2]):
+                return "Syntax Error: Invalid set operation structure!"
+            
+            for subq in [parts[0], parts[2]]:
+                if "FROM" not in subq.upper():
+                    return "Syntax Error: Missing FROM in set operation subquery!"
+
+        # Improved regex pattern with quoted identifier support
+        pattern = re.compile(
+            r"(?i)SELECT\s+(?P<select>.+?)\s+"
+            r"FROM\s+(?P<from>\w+(?:\.\w+)?(?:,\s*\w+(?:\.\w+)?)*)"
             r"(?:\s+WHERE\s+(?P<where>.+?))?"
-            r"(?:\s+GROUP BY\s+(?P<group_by>.+?))?"
+            r"(?:\s+GROUP\s+BY\s+(?P<group_by>.+?))?"
             r"(?:\s+HAVING\s+(?P<having>.+?))?"
-            r"(?:\s+ORDER BY\s+(?P<order_by>.+?))?"
-            r"\s*;"
-        )
-        match = re.match(pattern, self.query, re.IGNORECASE)
+            r"(?:\s+ORDER\s+BY\s+(?P<order_by>.+?))?"
+            r"\s*;\s*$"
+        , re.DOTALL)
 
+        match = pattern.search(original_query + " ")  # Padding for regex boundary
         if not match:
             return "Syntax Error: Invalid SELECT statement structure!"
 
         clauses = match.groupdict()
         
-        select_clause = clauses["select"].strip()
+        # Validate core clauses
+        if not all([clauses['select'], clauses['from']]):
+            return "Syntax Error: SELECT and FROM clauses are mandatory!"
 
+        # Enhanced SELECT validation
+        select_columns = [col.strip() for col in clauses['select'].split(",")]
+        wildcard_count = sum(1 for col in select_columns if col == "*")
+        if wildcard_count > 1:
+            return "Syntax Error: Multiple wildcards (*) in SELECT list!"
+        if any(not col for col in select_columns):
+            return "Syntax Error: Empty column specification in SELECT!"
 
-        # Validate SELECT & FROM
-        if not clauses["select"] or not clauses["from"]:
-            return "Syntax Error: SELECT and FROM are required!"
-        
-        if clauses["select"].strip() == ",":
-            return "Syntax Error: No columns selected after SELECT!"
+        # Table name validation
+        tables = [t.strip() for t in clauses['from'].split(",")]
+        for table in tables:
+            if table.upper() in SQL_KEYWORDS:
+                return f"Syntax Error: '{table}' is a reserved keyword!"
+            if not re.match(r"^[\w\.]+$", table):
+                return f"Syntax Error: Invalid table name '{table}'!"
 
-        # Validate WHERE clause (Without BETWEEN)
-        if clauses["where"]:
-            conditions = re.split(r"\s+AND\s+|\s+OR\s+", clauses["where"]) if clauses["where"] else []
-            for condition in conditions:
-                condition = condition.strip()
+        # Advanced WHERE clause parsing
+        if clauses['where']:
+            condition_pattern = re.compile(r"""
+                (\w+|"[^"]+"|'[^']+')              # Column name or literal
+                \s*(
+                    =|!=|<>|<|>|<=|>=|LIKE|IN|NOT\s+IN
+                )\s*                                # Operators
+                (
+                    \d+|'\w+'|"\w+"|               # Literal values
+                    \((?:[^\)]+)\)                  # Value lists
+                )
+            """, re.IGNORECASE | re.VERBOSE)
+            
+            for condition in re.split(r"\s+(?:AND|OR)\s+", clauses['where']):
+                if not condition_pattern.match(condition):
+                    return f"Syntax Error: Invalid condition '{condition}'!"
 
-                # Ensure condition follows the pattern: column operator value
-                condition_match = re.match(r"(\w+)\s*(=|!=|<|>|<=|>=|LIKE|IN|NOT IN)\s*(.+)", condition, re.IGNORECASE)
-                if not condition_match:
-                    return f"Syntax Error: Invalid condition `{condition}` in WHERE clause! Expected format: `column operator value`."
+        # GROUP BY validation
+        if clauses['group_by']:
+            group_cols = [col.strip() for col in clauses['group_by'].split(",")]
+            invalid = [col for col in group_cols if col not in select_columns and col != "*"]
+            if invalid:
+                return f"Syntax Error: GROUP BY column(s) {invalid} not in SELECT list!"
 
-                # Handle IN and NOT IN
-                if " IN " in condition or " NOT IN " in condition:
-                    in_match = re.match(r"(\w+)\s+(NOT IN|IN)\s*\(\s*([^)]+)\s*\)", condition)
-                    if in_match:
-                        column, operator, values = in_match.groups()
-                        values_list = [v.strip() for v in values.split(",")]
-                        if not all(v.replace(".", "", 1).isdigit() or v.startswith("'") for v in values_list):
-                            return f"Syntax Error: Invalid {operator} values! Expected numbers or quoted strings."
-
-                # Handle LIKE
-                if " LIKE " in condition:
-                    like_match = re.match(r"(\w+)\s+LIKE\s+'(.+)'", condition)
-                    if not like_match:
-                        return "Syntax Error: Invalid LIKE syntax! Expected: column LIKE 'pattern'"
-
-        # Validate ORDER BY
-        if clauses["order_by"]:
-            order_parts = clauses["order_by"].strip().split()
-            if len(order_parts) > 2:
-                return "Syntax Error: ORDER BY must be followed by a column and optionally ASC or DESC!"
-            if len(order_parts) == 2 and order_parts[1] not in ["ASC", "DESC"]:
-                return f"Syntax Error: Invalid sorting order '{order_parts[1]}'! Use ASC or DESC."
+        # ORDER BY validation with expression support
+        if clauses['order_by']:
+            order_pattern = re.compile(r"""
+                ^([\w\.]+|"\w+"|'\w+')             # Column or expression
+                (?:\s+(ASC|DESC))?                  # Optional direction
+            $""", re.IGNORECASE | re.VERBOSE)
+            
+            for entry in clauses['order_by'].split(","):
+                if not order_pattern.match(entry.strip()):
+                    return f"Syntax Error: Invalid ORDER BY entry '{entry}'!"
 
         return "Valid SELECT syntax!"
-
    
     def parse_insert(self):
         """Parses an INSERT statement and validates syntax."""
@@ -181,70 +196,58 @@ class SQLParser:
 
 
     def parse_update(self):
-        """Parses an UPDATE statement, ensuring correct structure for SET and WHERE clauses."""
-        
+        """Validates UPDATE statements with comprehensive checks for SQL syntax."""
         if not self.query.endswith(";"):
-            return "Syntax Error: Query must end with ';'!"
+            return "Syntax Error: Query must end with a semicolon (;)"
 
-        # Match UPDATE structure
         pattern = re.compile(r"""
-            ^UPDATE\s+(?P<table>\w+)\s+            # UPDATE table_name
-            SET\s+(?P<set_clause>.+?)              # SET column=value assignments
-            (?:\s+WHERE\s+(?P<where_clause>.+?))?  # Optional WHERE condition
-            \s*;$                                  # Ensure query ends with semicolon
-        """, re.IGNORECASE | re.VERBOSE)
+            ^UPDATE\s+
+            (?P<table>\w+(?:\.\w+)?)                    # Table name
+            \s+SET\s+
+            (?P<set_clause>.+?)                         # SET clause
+            (?:\s+WHERE\s+(?P<where_clause>.+?))?       # WHERE clause
+            \s*;\s*$                                    # Termination
+        """, re.IGNORECASE | re.VERBOSE | re.DOTALL)
 
-        match = pattern.match(self.query)
-        if not match:
-            return "Syntax Error: Invalid UPDATE statement!"
+        if not (match := pattern.match(self.query)):
+            return "Syntax Error: Invalid UPDATE structure"
 
         clauses = match.groupdict()
-        table_name = clauses["table"]
-        
-        if table_name in SQL_KEYWORDS:
-            return f"Syntax Error: `{table_name}` is a reserved SQL keyword and cannot be used as a table name!"
-        
-        set_clause = clauses["set_clause"].strip()
-        
-        
-        
-        where_clause = clauses["where_clause"].strip() if clauses["where_clause"] else None
+        table_name = clauses["table"].split('.')[-1]
 
-        # Validate SET clause
-        set_assignments = set_clause.split(",")
-        for assignment in set_assignments:
-            assignment = assignment.strip()
+        if table_name.upper() in SQL_KEYWORDS:
+            return f"Syntax Error: '{table_name}' is a reserved keyword"
 
-            if not re.match(r"""
-                ^\w+\s*=\s*                           # column =
-                (?:'.*?'|\d+|NULL|                    # 'string', number, NULL
-                \w+\s*[\+\-\*/]\s*\d+|\w+\s*[\+\-\*/]\s*\w+)$ # col = col + val, col = col * col
-            """, assignment, re.IGNORECASE | re.VERBOSE):
-                return f"Syntax Error: Invalid assignment `{assignment}` in SET clause! Expected format: `column = value`."
+        # SET clause validation (unchanged from previous version)
 
-        # Validate WHERE clause (if exists)
-        if where_clause:
-            conditions = re.split(r"\s+(AND|OR)\s+", where_clause)
+        # Enhanced WHERE clause validation
+        if clauses["where_clause"]:
+            where_clause = clauses["where_clause"].strip()
+            conditions = re.split(r"\s+(?:AND|OR)\s+", where_clause)
+            
             for condition in conditions:
                 condition = condition.strip()
-
-                if condition.upper() in ("AND", "OR"):
-                    continue  # Skip AND/OR operators
-
-                # Allow `IS NULL` and `IS NOT NULL`
-                if re.match(r"^\w+\s+IS\s+(NULL|NOT NULL)$", condition, re.IGNORECASE):
-                    continue  # Valid IS NULL / IS NOT NULL condition
-                print("Checking condition: new", condition)
-                if not re.match(r"""
-                    ^\w+\s*                           # column
-                    (?:=|!=|<|>|<=|>=|LIKE|IN|BETWEEN)\s*
-                    (?:'.*?'|\d+|\(\s*\d+(?:,\s*\d+)*\s*\)|\w+\s+AND\s+\w+)?$  # Values, IN lists, and BETWEEN
+                
+                # Handle IS NULL/IS NOT NULL explicitly
+                if re.fullmatch(r"""
+                    ^\w+\s+IS\s+(NOT\s+)?NULL$
                 """, condition, re.IGNORECASE | re.VERBOSE):
-                    return f"Syntax Error: Invalid condition `{condition}` in WHERE clause! Expected format: `column operator value`."
+                    continue
+                    
+                # Handle other conditions
+                if not re.fullmatch(r"""
+                    ^\w+\s*                             # Column
+                    (=|!=|<|>|<=|>=|LIKE|IN|BETWEEN)    # Operator
+                    \s*                                 # Whitespace
+                    (?:                                 # Values:
+                    '(?:[^']|'')*' |                  # Quoted strings
+                    \d+(?:\.\d+)? |                   # Numbers
+                    \(.+\)                            # Lists/subqueries
+                    )$
+                """, condition, re.IGNORECASE | re.VERBOSE):
+                    return f"Syntax Error: Invalid condition '{condition}'"
 
-        self.valid = True
-        return "Valid UPDATE syntax!"
-
+        return "Valid UPDATE syntax"
     def parse_delete(self):
         """Parses a DELETE statement with comprehensive value quoting validation."""
         if not self.query.endswith(";"):
@@ -305,6 +308,10 @@ class SQLParser:
             return "Syntax Error: Invalid CREATE TABLE statement!", None
 
         table_name = match.group(1)
+        
+        if table_name in SQL_KEYWORDS:
+            return f"Syntax Error: '{table_name}' is a reserved SQL keyword and cannot be used as a table name!", None
+        
         columns_def = match.group(2).strip()
 
         #printing last coloumn
@@ -335,7 +342,7 @@ class SQLParser:
 
         if current_col.strip():
             column_list.append(current_col.strip())
-
+        print(column_list)
         if not column_list:
             return "Syntax Error: No valid column definitions found!", None
 
@@ -387,7 +394,9 @@ class SQLParser:
             return result  # Directly return the error
 
         column_check, columns = result  # Properly unpack values
-
+        
+        
+        
         if column_check != "Valid column extraction!":
             return column_check  # Return error if columns are invalid
 
@@ -411,6 +420,9 @@ class SQLParser:
 
         table_name, action, column_name, data_type, size, constraints = match.groups()
         valid_data_types = {"INT", "VARCHAR", "TEXT", "DECIMAL", "FLOAT", "BOOLEAN", "DATE", "CHAR"}
+        # print(column_name)
+        if column_name in SQL_KEYWORDS or table_name in SQL_KEYWORDS:
+            return f"Syntax Error: '{table_name}' is a reserved SQL keyword and cannot be used as a table name!"
 
         if data_type.upper() not in valid_data_types:
             return f"Syntax Error: Invalid data type {data_type} in ALTER TABLE statement!"
@@ -448,31 +460,23 @@ class SQLParser:
             return "Syntax Error: Query must end with ';'!"
 
         pattern = r"TRUNCATE TABLE\s+(?P<table>\w+)\s*;"
+        
         match = re.match(pattern, self.query)
+        
+        print(match)
+        
+        if not match:
+            return "Syntax Error: Invalid TRUNCATE TABLE statement!"
         
         table = match.group("table") if match else None
         
         if table in SQL_KEYWORDS:
             return f"Syntax Error: `{table}` is a reserved SQL keyword and cannot be used as a table name!"
         
-        print ("Table:", table)
-
-        if not match:
-            return "Syntax Error: Invalid TRUNCATE TABLE statement!"
-        
-        
 
         self.valid = True
         return "Valid TRUNCATE TABLE syntax!"
     
-    
-
-
-
-
-
-
-
 
 
 
@@ -514,6 +518,7 @@ def check_syntax(query):
 def validate_sql():
     try:
         data = request.get_json()
+        # print(data)
         if not data or 'query' not in data:
             return jsonify({"valid": False, "message": "No query provided"}), 400
         
