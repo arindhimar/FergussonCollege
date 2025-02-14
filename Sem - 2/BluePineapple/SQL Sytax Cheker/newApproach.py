@@ -309,8 +309,9 @@ class SQLParser:
 
 
     
+
     def extract_columns(self, query):
-        """Extracts columns from a CREATE TABLE statement and checks for missing names or data types."""
+        """Extracts columns from a CREATE TABLE statement and validates syntax."""
         match = re.match(r"CREATE TABLE\s+(\w+)\s*\((.+)\)\s*;", query, re.IGNORECASE)
         if not match:
             return "Syntax Error: Invalid CREATE TABLE statement!", None
@@ -318,7 +319,6 @@ class SQLParser:
         table_name = match.group(1)
         columns_def = match.group(2).strip()
 
-        # **Fix: Extract columns correctly, preserving `DECIMAL(10,2)`**
         column_list = []
         current_col = ""
         open_paren = 0  # Track parentheses depth
@@ -337,53 +337,70 @@ class SQLParser:
         if current_col.strip():
             column_list.append(current_col.strip())
 
-        print("Extracted Columns:", column_list)  # Debug print
-
         if not column_list:
             return "Syntax Error: No valid column definitions found!", None
 
-        # **Check for missing column names or data types**
         for col in column_list:
-            parts = col.split()  # Split by spaces
+            print(col)  # Debugging output
+            parts = re.split(r"\s+", col, maxsplit=2)  # Improved split
+
             if len(parts) < 2:
                 return f"Syntax Error: Column `{col}` is missing a data type!", None
-            if parts[0].upper() in {"INT", "VARCHAR", "TEXT", "DECIMAL", "FLOAT", "BOOLEAN", "DATE", "CHAR"}:
-                return f"Syntax Error: Column `{col}` is missing a name!", None
+
+            column_name = parts[0]
+            data_type = parts[1]
+
+            # **Fix: Detect invalid VARCHAR without parentheses**
+            if data_type.upper() == "VARCHAR":
+                return f"Syntax Error: `{column_name} {data_type}` is incorrect! Use `VARCHAR(n)` with parentheses."
 
         return "Valid column extraction!", column_list
 
     def validate_column_types(self, columns):
-        """Validates the data types of extracted columns."""
+        """Validates column data types and constraints in CREATE TABLE."""
         valid_data_types = {"INT", "VARCHAR", "TEXT", "DECIMAL", "FLOAT", "BOOLEAN", "DATE", "CHAR"}
         primary_key_defined = False
 
         for col in columns:
-            parts = col.split()
-            column_name, data_type = parts[:2]  # Extract column name and data type
+            parts = re.split(r"\s+", col, maxsplit=2)
 
-            if "(" in data_type:  # Handle `DECIMAL(10,2)` or similar
-                data_type_match = re.match(r"(\w+)\(\d+(?:,\d+)?\)", data_type)
-                if data_type_match:
-                    data_type = data_type_match.group(1)
+            column_name = parts[0]
+            data_type = parts[1] if len(parts) > 1 else ""
+
+            # **Fix: Handle `VARCHAR(50)` properly**
+            if data_type.upper() == "VARCHAR" or "(" in data_type:
+                data_type_match = re.match(r"(\w+)\(\d+\)", data_type)
+                if not data_type_match:
+                    return f"Syntax Error: `{col}` has an invalid type! Use `VARCHAR(n)`."
 
             if data_type.upper() not in valid_data_types:
                 return f"Syntax Error: Invalid data type `{data_type}` in `{col}`!"
 
-            if "PRIMARY KEY" in col:
+            # **Detect PRIMARY KEY**
+            if re.search(r"\bPRIMARY\s+KEY\b", col, re.IGNORECASE):
                 if primary_key_defined:
                     return "Syntax Error: Multiple PRIMARY KEY constraints found!"
                 primary_key_defined = True
 
         return "Valid CREATE TABLE syntax!"
-
+    
     def parse_create(self):
-        """Handles extraction first, then validates column types."""
-        column_check, columns = self.extract_columns(self.query)
+        """Parses a CREATE TABLE statement and validates columns."""
+        result = self.extract_columns(self.query)
+        
+        # Ensure we always unpack two values
+        if isinstance(result, str):  # If it returned an error message
+            return result  # Directly return the error
+        
+        column_check, columns = result  # Properly unpack values
+
         if column_check != "Valid column extraction!":
-            return column_check  # Return error if columns are missing data types or names
+            return column_check  # Return error if columns are invalid
 
         return self.validate_column_types(columns)  # Validate extracted columns
 
+
+        return self.validate_column_types(columns)  # Validate extracted columns
 
     def parse_alter(self):
         """Parses and validates an ALTER TABLE statement."""
