@@ -5,7 +5,14 @@ SQL_KEYWORDS = {
     "INTO", "VALUES", "SET", "JOIN", "ORDER", "BY", "GROUP", "HAVING", "DISTINCT", "AND", "OR",
     "NOT", "IN", "BETWEEN", "LIKE", "AS", "PRIMARY", "KEY", "FOREIGN", "NULL", "DEFAULT",
     "CHECK", "INDEX", "REFERENCES", "INT", "VARCHAR", "TEXT", "DECIMAL", "FLOAT", "BOOLEAN",
-    "DATE", "CHAR"
+    "DATE", "CHAR", "DOUBLE", "PRECISION", "UNIQUE", "AUTO_INCREMENT", "ON", "CASCADE", "RESTRICT",
+    "ADD", "MODIFY", "COLUMN", "IF", "EXISTS", "TRUNCATE", "VIEW", "DATABASE", "USE", "SHOW",
+    "DATABASES", "INDEXES", "CONSTRAINT", "ALL", "USERS", "PRIVILEGES", "GRANT", "REVOKE", "TO",
+    "IDENTIFIED", "BY", "WITH", "OPTION", "CURRENT_TIMESTAMP", "CURRENT_DATE", "CURRENT_TIME",
+    "NOW", "DATE_ADD", "DATE_SUB", "INTERVAL", "YEAR", "MONTH", "DAY", "HOUR", "MINUTE", "SECOND",
+    "CASE", "WHEN", "THEN", "ELSE", "END", "JOIN", "INNER", "LEFT", "RIGHT", "OUTER", "CROSS",
+    "NATURAL", "USING", "DATABASE", "SHOW", "TABLES", "SHOW", "COLUMNS", "SHOW", "INDEXES",
+    "SHOW", "GRANTS", "SHOW", "PRIVILEGES", "SHOW", "PROCESSLIST", "SHOW", "STATUS"
 }
 
 class SQLParser:
@@ -58,33 +65,34 @@ class SQLParser:
 
         # Validate WHERE clause (BETWEEN, IN, NOT IN, LIKE)
         if clauses["where"]:
-            #  Match full BETWEEN condition first
             between_match = re.search(
-                r"(\w+)\s+BETWEEN\s+(['\"]?[\w\s]+['\"]?)\s+AND\s+(['\"]?[\w\s]+['\"]?)", 
-                clauses["where"]
+                r"(\w+)\s+BETWEEN\s+(['\"]?[\w\s]+['\"]?)\s+AND\s+(['\"]?[\w\s]+['\"]?)",
+                where_clause
             )
 
             if between_match:
                 column, val1, val2 = between_match.groups()
-                print("Matched BETWEEN:", column, val1, val2)  # Debug print
 
-                #  Remove surrounding quotes for validation
+                # Remove surrounding quotes
                 val1_clean = val1.strip("'\"")
                 val2_clean = val2.strip("'\"")
 
-                #  Check if both values are **numbers**
-                is_val1_numeric = val1_clean.replace(".", "", 1).isdigit()
-                is_val2_numeric = val2_clean.replace(".", "", 1).isdigit()
+                # Check if both are numbers **even if enclosed in quotes**
+                is_val1_numeric = re.match(r"^-?\d+(\.\d+)?$", val1_clean) is not None
+                is_val2_numeric = re.match(r"^-?\d+(\.\d+)?$", val2_clean) is not None
 
-                #  Check if both values are **strings** (non-numeric literals)
-                is_val1_text = bool(re.match(r"^[A-Za-z\s]+$", val1_clean))
-                is_val2_text = bool(re.match(r"^[A-Za-z\s]+$", val2_clean))
+                # Check if both are actual text (non-numeric)
+                is_val1_text = not is_val1_numeric  # If it's not numeric, it's text
+                is_val2_text = not is_val2_numeric
 
-                #  Ensure both are either numbers **or** both are text
+                print(f"BETWEEN Validation: {val1} ({'Numeric' if is_val1_numeric else 'Text'}), {val2} ({'Numeric' if is_val2_numeric else 'Text'})")
+
+                # ✅ Ensure both values are either numbers OR both are text
                 if (is_val1_numeric and is_val2_numeric) or (is_val1_text and is_val2_text):
-                    pass  #  Valid BETWEEN condition
+                    return True
                 else:
                     return f"Syntax Error: BETWEEN values `{val1}` and `{val2}` must be of the same type (either both numbers or both text)."
+
 
                 #  Remove the matched BETWEEN condition from WHERE
                 clauses["where"] = re.sub(
@@ -177,50 +185,49 @@ class SQLParser:
         self.valid = True
         return "Valid SELECT syntax!"
 
-    
- 
+        
+
     def parse_insert(self):
-        """Parses an INSERT statement, ensuring correct structure and data validation."""
+        """Parses an INSERT statement and validates syntax."""
+
+        self.query = self.query.strip()  # Ensure no leading/trailing spaces
         if not self.query.endswith(";"):
             return "Syntax Error: Query must end with ';'!"
 
-        # Extract INSERT INTO structure
-        pattern = r"INSERT INTO\s+(?P<table>\w+)\s*(?:\((?P<columns>.+?)\))?\s+VALUES\s*\((?P<values>.+?)\)\s*;"
-        match = re.match(pattern, self.query)
+        # Correct regex to avoid duplicate INTO and ensure proper format
+        pattern = r"^INSERT\s+INTO\s+(\w+)\s*(?:\(([^)]+)\))?\s+VALUES\s*\(([^)]+)\)\s*;$"
+        match = re.match(pattern, self.query, re.IGNORECASE)
 
         if not match:
             return "Syntax Error: Invalid INSERT statement!"
 
-        clauses = match.groupdict()
-        table = clauses["table"]
-        columns = clauses["columns"]
-        values = clauses["values"]
+        table, columns, values = match.groups()
         
-        
+        if table in SQL_KEYWORDS:
+            return f"Syntax Error: `{table}` is a reserved SQL keyword and cannot be used as a table name!"
 
-        # Split columns and values
+        # Ensure table name is present
+        if not table:
+            return "Syntax Error: Missing table name in INSERT INTO statement!"
+
+        # Split columns and values properly
         column_list = [col.strip() for col in columns.split(",")] if columns else []
-        
-        print(column_list)
-        
         value_list = [val.strip() for val in values.split(",")]
 
         # Ensure column count matches value count
         if column_list and len(column_list) != len(value_list):
             return f"Syntax Error: Expected {len(column_list)} values, but found {len(value_list)}!"
 
-        # Validate data types (basic check: numbers should not be enclosed in quotes)
+        # Validate values (numbers should not be in quotes, strings should be quoted)
         for val in value_list:
             if re.match(r"^\d+$", val):  # Integer check
                 continue  # Valid number
-            elif re.match(r"^'.*'$", val):  # Strings should be enclosed in single quotes
+            elif re.match(r"^'.*'$", val):  # Ensure string values are enclosed in single quotes
                 continue  # Valid string
             else:
-                return f"Syntax Error: Invalid value format: {val}"
+                return f"Syntax Error: Invalid value format `{val}`! Strings must be in single quotes."
 
-        self.valid = True
         return "Valid INSERT syntax!"
-
 
     def parse_update(self):
         """Parses an UPDATE statement, ensuring correct structure for SET and WHERE clauses."""
@@ -242,7 +249,14 @@ class SQLParser:
 
         clauses = match.groupdict()
         table_name = clauses["table"]
+        
+        if table_name in SQL_KEYWORDS:
+            return f"Syntax Error: `{table_name}` is a reserved SQL keyword and cannot be used as a table name!"
+        
         set_clause = clauses["set_clause"].strip()
+        
+        
+        
         where_clause = clauses["where_clause"].strip() if clauses["where_clause"] else None
 
         # Validate SET clause
@@ -300,7 +314,7 @@ class SQLParser:
 
         clauses = match.groupdict()
         
-        # print("Clauses:", clauses)
+        
 
         if clauses['table'] in SQL_KEYWORDS:
             return f"Syntax Error: `{clauses['table']}` is a reserved SQL keyword and cannot be used as a table name!"

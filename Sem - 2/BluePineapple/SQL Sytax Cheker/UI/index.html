@@ -3,50 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advanced SQL Syntax Checker</title>
+    <title>SQL Maestro - Advanced Syntax Checker</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/codemirror.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/theme/dracula.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/theme/monokai.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="app-container">
         <header>
-            <h1><i class="fas fa-database"></i> Advanced SQL Syntax Checker</h1>
+            <div class="logo">
+                <i class="fas fa-database"></i>
+                <h1>SQL Maestro</h1>
+            </div>
             <nav>
-                <button id="newQueryBtn"><i class="fas fa-plus"></i> New Query</button>
-                <button id="saveQueryBtn"><i class="fas fa-save"></i> Save Query</button>
-                <button id="loadQueryBtn"><i class="fas fa-folder-open"></i> Load Query</button>
-                <button id="settingsBtn"><i class="fas fa-cog"></i> Settings</button>
+                <button id="newQueryBtn" class="glow-on-hover"><i class="fas fa-plus"></i> New Query</button>
+                <button id="saveQueryBtn" class="glow-on-hover"><i class="fas fa-save"></i> Save Query</button>
+                <button id="loadQueryBtn" class="glow-on-hover"><i class="fas fa-folder-open"></i> Load Query</button>
+                <button id="settingsBtn" class="glow-on-hover"><i class="fas fa-cog"></i> Settings</button>
             </nav>
         </header>
         <main>
             <div class="editor-container">
                 <div class="editor-header">
-                    <h2>SQL Editor</h2>
+                    <h2><i class="fas fa-code"></i> SQL Editor</h2>
                     <div class="editor-actions">
-                        <button id="formatQueryBtn"><i class="fas fa-align-left"></i> Format Query</button>
-                        <button id="clearEditorBtn"><i class="fas fa-eraser"></i> Clear</button>
+                        <button id="formatQueryBtn" class="glow-on-hover"><i class="fas fa-align-left"></i> Format</button>
+                        <button id="clearEditorBtn" class="glow-on-hover"><i class="fas fa-eraser"></i> Clear</button>
                     </div>
                 </div>
                 <textarea id="sqlEditor"></textarea>
             </div>
             <div class="result-container">
                 <div class="result-header">
-                    <h2>Result</h2>
-                    <button id="checkSyntaxBtn"><i class="fas fa-check-circle"></i> Check Syntax</button>
+                    <h2><i class="fas fa-clipboard-check"></i> Result</h2>
+                    <button id="checkSyntaxBtn" class="glow-on-hover"><i class="fas fa-check-circle"></i> Check Syntax</button>
                 </div>
                 <div id="result" class="result-content"></div>
             </div>
         </main>
         <aside>
             <div class="history-container">
-                <h2>Query History</h2>
+                <h2><i class="fas fa-history"></i> Query History</h2>
                 <ul id="historyList"></ul>
-                <button id="clearHistoryBtn"><i class="fas fa-trash"></i> Clear History</button>
+                <button id="clearHistoryBtn" class="glow-on-hover"><i class="fas fa-trash"></i> Clear History</button>
             </div>
             <div class="quick-reference">
-                <h2>Quick Reference</h2>
+                <h2><i class="fas fa-book"></i> Quick Reference</h2>
                 <ul>
                     <li><code>SELECT</code> - Retrieve data</li>
                     <li><code>INSERT</code> - Add new data</li>
@@ -61,12 +64,12 @@
     </div>
     <div id="settingsModal" class="modal">
         <div class="modal-content">
-            <h2>Settings</h2>
+            <h2><i class="fas fa-sliders-h"></i> Settings</h2>
             <label>
                 Theme:
                 <select id="themeSelect">
-                    <option value="dracula">Dracula</option>
                     <option value="monokai">Monokai</option>
+                    <option value="dracula">Dracula</option>
                     <option value="solarized">Solarized</option>
                 </select>
             </label>
@@ -74,16 +77,25 @@
                 Font Size:
                 <input type="number" id="fontSizeInput" min="10" max="24" value="14">
             </label>
-            <button id="saveSettingsBtn">Save Settings</button>
-            <button id="closeSettingsBtn">Close</button>
+            <div class="modal-actions">
+                <button id="saveSettingsBtn" class="glow-on-hover">Save Settings</button>
+                <button id="closeSettingsBtn" class="glow-on-hover">Close</button>
+            </div>
         </div>
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/codemirror.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/mode/sql/sql.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/addon/edit/matchbrackets.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.62.0/addon/edit/closebrackets.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sql-formatter/2.3.3/sql-formatter.min.js"></script>
-    <script src="script.js"></script>
+    <!-- CodeMirror CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.12/codemirror.min.css">
+<!-- CodeMirror Core -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.12/codemirror.min.js"></script>
+<!-- SQL Mode -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.12/mode/sql/sql.min.js"></script>
+<!-- Theme -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.12/theme/monokai.min.css">
+<!-- Autocomplete -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.12/addon/hint/show-hint.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.12/addon/hint/sql-hint.min.js"></script>
+
+    <script type="module" src="script.js"></script>
 </body>
 </html>
 

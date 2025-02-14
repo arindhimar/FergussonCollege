@@ -1,22 +1,22 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-import re
-
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "*"}})  # Allow all origins for now, restrict in production
+CORS(app)
+import re
 
 def extract_columns(query):
     """Extracts columns from a CREATE TABLE statement and checks for missing names or data types."""
-    match = re.match(r"CREATE TABLE\s+(\w+)\s*$$(.+)$$\s*;", query, re.IGNORECASE | re.DOTALL)
+    match = re.match(r"CREATE TABLE\s+(\w+)\s*\((.+)\)\s*;", query, re.IGNORECASE)
     if not match:
         return "Syntax Error: Invalid CREATE TABLE statement!", None
 
     table_name = match.group(1)
     columns_def = match.group(2).strip()
 
+    # ✅ **Fix: Extract columns correctly, preserving `DECIMAL(10,2)`**
     column_list = []
     current_col = ""
-    open_paren = 0
+    open_paren = 0  # Track parentheses depth
 
     for char in columns_def:
         if char == "," and open_paren == 0:
@@ -32,17 +32,21 @@ def extract_columns(query):
     if current_col.strip():
         column_list.append(current_col.strip())
 
+    print("Extracted Columns:", column_list)  # Debug print
+
     if not column_list:
         return "Syntax Error: No valid column definitions found!", None
 
+    # ✅ **Check for missing column names or data types**
     for col in column_list:
-        parts = col.split()
+        parts = col.split()  # Split by spaces
         if len(parts) < 2:
             return f"Syntax Error: Column `{col}` is missing a data type!", None
         if parts[0].upper() in {"INT", "VARCHAR", "TEXT", "DECIMAL", "FLOAT", "BOOLEAN", "DATE", "CHAR"}:
             return f"Syntax Error: Column `{col}` is missing a name!", None
 
     return "Valid column extraction!", column_list
+
 
 def validate_column_types(columns):
     """Validates the data types of extracted columns."""
@@ -51,68 +55,52 @@ def validate_column_types(columns):
 
     for col in columns:
         parts = col.split()
-        column_name, data_type = parts[:2]
+        column_name, data_type = parts[:2]  # Extract column name and data type
 
-        if "(" in data_type:
-            data_type_match = re.match(r"(\w+)$$\d+(?:,\d+)?$$", data_type)
+        if "(" in data_type:  # Handle `DECIMAL(10,2)` or similar
+            data_type_match = re.match(r"(\w+)\(\d+(?:,\d+)?\)", data_type)
             if data_type_match:
                 data_type = data_type_match.group(1)
 
         if data_type.upper() not in valid_data_types:
             return f"Syntax Error: Invalid data type `{data_type}` in `{col}`!"
 
-        if "PRIMARY KEY" in col.upper():
+        if "PRIMARY KEY" in col:
             if primary_key_defined:
                 return "Syntax Error: Multiple PRIMARY KEY constraints found!"
             primary_key_defined = True
 
     return "Valid CREATE TABLE syntax!"
 
+
 def check_syntax(query):
-    """Checks the syntax of the SQL query."""
-    query = query.strip()
-    
-    if not query.endswith(';'):
-        return "Syntax Error: Query must end with a semicolon."
+    """Handles extraction first, then validates column types."""
+    column_check, columns = extract_columns(query)
+    if column_check != "Valid column extraction!":
+        return column_check  # Return error if columns are missing data types or names
 
-    first_word = query.split()[0].upper()
+    return validate_column_types(columns)  # Validate extracted columns
 
-    if first_word == "CREATE":
-        column_check, columns = extract_columns(query)
-        if column_check != "Valid column extraction!":
-            return column_check
-        return validate_column_types(columns)
-    elif first_word in ["SELECT", "INSERT", "UPDATE", "DELETE", "ALTER", "DROP"]:
-        # Basic check for other query types
-        required_keywords = {
-            "SELECT": ["FROM"],
-            "INSERT": ["INTO", "VALUES"],
-            "UPDATE": ["SET"],
-            "DELETE": ["FROM"],
-            "ALTER": ["TABLE"],
-            "DROP": ["TABLE"]
-        }
-        
-        for keyword in required_keywords[first_word]:
-            if keyword not in query.upper():
-                return f"Syntax Error: Missing '{keyword}' in {first_word} statement."
-        
-        return "Valid syntax!"
-    else:
-        return "Syntax Error: Unsupported SQL statement type."
+
+# Interactive CLI for testing queries
+# while True:
+#     query = input("Enter a SQL query (or 'exit' to quit): ").strip()
+#     if not query:
+#         continue  # Ignore empty inputs
+
+#     if query.lower() == "exit":
+#         break
+
+#     result = check_syntax(query)
+#     print(result)
+
 
 @app.route('/', methods=['POST'])
-def check_query():
-    try:
-        data = request.get_json()
-        if not data or 'query' not in data:
-            return jsonify({"error": "No query provided"}), 400
-        
-        result = check_syntax(data['query'])
-        return jsonify({"message": result, "isValid": "Valid syntax!" in result})
-    except Exception as e:
-        app.logger.error(f"An error occurred: {str(e)}")
-        return jsonify({"error": "An internal server error occurred"}), 500
+def hello_name():
+    data = request.get_json()
+    print(data)
+    result = check_syntax(data)
+    return jsonify(result)
 
 if __name__ == '__main__':
    app.run(debug=True)
