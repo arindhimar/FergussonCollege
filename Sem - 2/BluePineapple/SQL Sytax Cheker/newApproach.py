@@ -244,7 +244,7 @@ class SQLParser:
             return "Syntax Error: Missing table name in INSERT INTO statement!"
         
         if table in SQL_KEYWORDS:
-            return f"Syntax Error: `{table}` is a reserved SQL keyword and cannot be used as a table name
+            return f"Syntax Error: `{table}` is a reserved SQL keyword and cannot be used as a table name!"
 
         
         # Split columns safely
@@ -579,11 +579,20 @@ class SQLParser:
         if not self.query.endswith(";"):
             return "Syntax Error: Query must end with ';'!"
 
-        pattern = r"DROP TABLE\s+(?P<table>\w+)\s*;"
+        pattern = r"DROP TABLE\s+(?P<table>[\w, ]+)\s*;"  
         match = re.match(pattern, self.query)
 
         if not match:
             return "Syntax Error: Invalid DROP TABLE statement!"
+
+        tables_string = match.group("table")
+        tables = [table.strip() for table in tables_string.split(",")]  # Split by comma and strip whitespace
+
+        if not tables:
+            return "Syntax Error: Missing table name in DROP TABLE statement!"
+
+        if any(table in SQL_KEYWORDS for table in tables):
+            return "Syntax Error: SQL keywords cannot be used as table names!"
 
         self.valid = True
         return "Valid DROP TABLE syntax!"
@@ -598,6 +607,8 @@ class SQLParser:
 
         if not match:
             return "Syntax Error: Invalid TRUNCATE TABLE statement!"
+        
+        
 
         self.valid = True
         return "Valid TRUNCATE TABLE syntax!"
