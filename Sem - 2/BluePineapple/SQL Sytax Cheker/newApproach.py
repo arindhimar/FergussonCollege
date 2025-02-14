@@ -195,9 +195,14 @@ class SQLParser:
         table = clauses["table"]
         columns = clauses["columns"]
         values = clauses["values"]
+        
+        
 
         # Split columns and values
         column_list = [col.strip() for col in columns.split(",")] if columns else []
+        
+        print(column_list)
+        
         value_list = [val.strip() for val in values.split(",")]
 
         # Ensure column count matches value count
@@ -294,6 +299,13 @@ class SQLParser:
             return "Syntax Error: Invalid DELETE statement!"
 
         clauses = match.groupdict()
+        
+        # print("Clauses:", clauses)
+
+        if clauses['table'] in SQL_KEYWORDS:
+            return f"Syntax Error: `{clauses['table']}` is a reserved SQL keyword and cannot be used as a table name!"
+        if not clauses["table"]:
+            return "Syntax Error: Missing table name after 'FROM' in DELETE statement!"
 
         # Ensure WHERE clause is valid
         if clauses["where"]:
@@ -472,6 +484,7 @@ class SQLParser:
     def parse(self):
         """Determines SQL statement type and validates it."""
         first_word = self.query.split()[0]
+        
         if first_word == "SELECT":
             return self.parse_select()
         elif first_word == "INSERT":
