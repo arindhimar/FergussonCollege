@@ -1,183 +1,209 @@
-<!DOCTYPE
-html>
-<html>
-<head>
-<title>SQL Editor</title>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/theme/dracula.min.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/codemirror.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/mode/sql/sql.min.js"></script>
+// Assuming CodeMirror is included via a script tag in your HTML file.  If not, you'll need to include it.  For example:
+// <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.70.0/codemirror.min.js"></script>
 
+document.addEventListener("DOMContentLoaded", () => {
+  const editor = CodeMirror.fromTextArea(document.getElementById("sqlEditor"), {
+    mode: "text/x-sql",
+    theme: "monokai",
+    lineNumbers: true,
+    autoCloseBrackets: true,
+    matchBrackets: true,
+    indentUnit: 4,
+    tabSize: 4,
+    indentWithTabs: true,
+    extraKeys: { "Ctrl-Space": "autocomplete" },
+  })
 
-<style>
-body {
-    font-family: sans-serif;
-}
-#sqlEditor {
-    width: 800px;
-    height: 400px;
-    border: 1px solid #ccc;
-}
-#result {
-    margin-top: 10px;
-    font-weight: bold;
-}
-#historyList {
-    margin-top: 10px;
-    list-style-type: none;
-    padding: 0;
-}
-#historyList li {
-    cursor: pointer;
-}
-</style>
-</head>
-<body>
+  const checkSyntaxBtn = document.getElementById("checkSyntaxBtn")
+  const clearEditorBtn = document.getElementById("clearEditorBtn")
+  const saveQueryBtn = document.getElementById("saveQueryBtn")
+  const loadQueryBtn = document.getElementById("loadQueryBtn")
+  const newQueryBtn = document.getElementById("newQueryBtn")
+  const formatQueryBtn = document.getElementById("formatQueryBtn")
+  const clearHistoryBtn = document.getElementById("clearHistoryBtn")
+  const settingsBtn = document.getElementById("settingsBtn")
+  const saveSettingsBtn = document.getElementById("saveSettingsBtn")
+  const closeSettingsBtn = document.getElementById("closeSettingsBtn")
+  const resultDiv = document.getElementById("result")
+  const historyList = document.getElementById("historyList")
+  const settingsModal = document.getElementById("settingsModal")
+  const themeSelect = document.getElementById("themeSelect")
+  const fontSizeInput = document.getElementById("fontSizeInput")
 
-<h1>SQL Editor</h1>
+  checkSyntaxBtn.addEventListener("click", () => {
+    const query = editor.getValue()
+    const result = checkSyntax(query)
+    displayResult(result)
+    addToHistory(query, result)
+  })
 
-<textarea id="sqlEditor">
--- Enter your SQL query here
-</textarea>
+  clearEditorBtn.addEventListener("click", () => {
+    editor.setValue("")
+  })
 
-<button id="checkSyntaxBtn">Check Syntax</button>
-<button id="clearEditorBtn">Clear Editor</button>
-<button id="saveQueryBtn">Save Query</button>
-<button id="clearHistoryBtn">Clear History</button>
-
-<div id="result"></div>
-
-<h2>Query History</h2>
-<ul id="historyList"></ul>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const editor = CodeMirror.fromTextArea(document.getElementById("sqlEditor"), {
-        mode: "text/x-sql",
-        theme: "dracula",
-        lineNumbers: true,
-        autoCloseBrackets: true,
-        matchBrackets: true,
-        indentUnit: 4,
-        tabSize: 4,
-        indentWithTabs: true,
-        extraKeys: {"Ctrl-Space": "autocomplete"}
-    });
-
-    const checkSyntaxBtn = document.getElementById('checkSyntaxBtn');
-    const clearEditorBtn = document.getElementById('clearEditorBtn');
-    const saveQueryBtn = document.getElementById('saveQueryBtn');
-    const clearHistoryBtn = document.getElementById('clearHistoryBtn');
-    const resultDiv = document.getElementById('result');
-    const historyList = document.getElementById('historyList');
-
-    checkSyntaxBtn.addEventListener('click', function() {
-        const query = editor.getValue();
-        const result = checkSyntax(query);
-        displayResult(result);
-        addToHistory(query, result);
-    });
-
-    clearEditorBtn.addEventListener('click', function() {
-        editor.setValue('');
-    });
-
-    saveQueryBtn.addEventListener('click', function() {
-        const query = editor.getValue();
-        if (query.trim() !== '') {
-            localStorage.setItem('savedQuery', query);
-            alert('Query saved successfully!');
-        } else {
-            alert('Cannot save an empty query!');
-        }
-    });
-
-    clearHistoryBtn.addEventListener('click', function() {
-        localStorage.removeItem('queryHistory');
-        updateHistoryList();
-    });
-
-    historyList.addEventListener('click', function(e) {
-        if (e.target && e.target.nodeName === "LI") {
-            const query = e.target.dataset.query;
-            editor.setValue(query);
-        }
-    });
-
-    function checkSyntax(query) {
-        // This is a simplified syntax check. In a real-world scenario,
-        // you'd want to implement a more robust SQL parser here.
-        const keywords = ['SELECT', 'FROM', 'WHERE', 'INSERT', 'UPDATE', 'DELETE', 'CREATE', 'ALTER', 'DROP'];
-        const uppercaseQuery = query.toUpperCase();
-        
-        let isValid = true;
-        let errorMessage = '';
-
-        // Check for basic structure
-        if (!uppercaseQuery.includes('SELECT') && !uppercaseQuery.includes('INSERT') && 
-            !uppercaseQuery.includes('UPDATE') && !uppercaseQuery.includes('DELETE') &&
-            !uppercaseQuery.includes('CREATE') && !uppercaseQuery.includes('ALTER') &&
-            !uppercaseQuery.includes('DROP')) {
-            isValid = false;
-            errorMessage = 'Query must include a valid SQL command (SELECT, INSERT, UPDATE, DELETE, CREATE, ALTER, DROP)';
-        }
-
-        // Check for semicolon at the end
-        if (!query.trim().endsWith(';')) {
-            isValid = false;
-            errorMessage += ' Query must end with a semicolon.';
-        }
-
-        // Check for balanced parentheses
-        const openParenCount = (query.match(/\(/g) || []).length;
-        const closeParenCount = (query.match(/\)/g) || []).length;
-        if (openParenCount !== closeParenCount) {
-            isValid = false;
-            errorMessage += ' Unbalanced parentheses.';
-        }
-
-        return {
-            isValid: isValid,
-            message: isValid ? 'Syntax appears to be valid.' : 'Syntax error: ' + errorMessage.trim()
-        };
+  saveQueryBtn.addEventListener("click", () => {
+    const query = editor.getValue()
+    if (query.trim() !== "") {
+      localStorage.setItem("savedQuery", query)
+      showNotification("Query saved successfully!", "success")
+    } else {
+      showNotification("Cannot save an empty query!", "error")
     }
+  })
 
-    function displayResult(result) {
-        resultDiv.textContent = result.message;
-        resultDiv.style.color = result.isValid ? 'green' : 'red';
-    }
-
-    function addToHistory(query, result) {
-        let history = JSON.parse(localStorage.getItem('queryHistory')) || [];
-        history.unshift({ query, result: result.message });
-        if (history.length > 10) history.pop();
-        localStorage.setItem('queryHistory', JSON.stringify(history));
-        updateHistoryList();
-    }
-
-    function updateHistoryList() {
-        const history = JSON.parse(localStorage.getItem('queryHistory')) || [];
-        historyList.innerHTML = '';
-        history.forEach(item => {
-            const li = document.createElement('li');
-            li.textContent = item.query;
-            li.title = item.result;
-            li.dataset.query = item.query;
-            historyList.appendChild(li);
-        });
-    }
-
-    // Load saved query if exists
-    const savedQuery = localStorage.getItem('savedQuery');
+  loadQueryBtn.addEventListener("click", () => {
+    const savedQuery = localStorage.getItem("savedQuery")
     if (savedQuery) {
-        editor.setValue(savedQuery);
+      editor.setValue(savedQuery)
+      showNotification("Query loaded successfully!", "success")
+    } else {
+      showNotification("No saved query found!", "error")
+    }
+  })
+
+  newQueryBtn.addEventListener("click", () => {
+    if (confirm("Are you sure you want to start a new query? This will clear the current editor.")) {
+      editor.setValue("")
+      showNotification("New query started!", "success")
+    }
+  })
+
+  formatQueryBtn.addEventListener("click", () => {
+    const query = editor.getValue()
+    const formattedQuery = sqlFormatter.format(query)
+    editor.setValue(formattedQuery)
+    showNotification("Query formatted!", "success")
+  })
+
+  clearHistoryBtn.addEventListener("click", () => {
+    if (confirm("Are you sure you want to clear the entire query history?")) {
+      localStorage.removeItem("queryHistory")
+      updateHistoryList()
+      showNotification("Query history cleared!", "success")
+    }
+  })
+
+  settingsBtn.addEventListener("click", () => {
+    settingsModal.style.display = "block"
+  })
+
+  saveSettingsBtn.addEventListener("click", () => {
+    const theme = themeSelect.value
+    const fontSize = fontSizeInput.value
+    editor.setOption("theme", theme)
+    document.querySelector(".CodeMirror").style.fontSize = `${fontSize}px`
+    localStorage.setItem("editorTheme", theme)
+    localStorage.setItem("editorFontSize", fontSize)
+    settingsModal.style.display = "none"
+    showNotification("Settings saved!", "success")
+  })
+
+  closeSettingsBtn.addEventListener("click", () => {
+    settingsModal.style.display = "none"
+  })
+
+  historyList.addEventListener("click", (e) => {
+    if (e.target && e.target.nodeName === "LI") {
+      const query = e.target.dataset.query
+      editor.setValue(query)
+      showNotification("Query loaded from history!", "success")
+    }
+  })
+
+  function checkSyntax(query) {
+    const keywords = ["SELECT", "FROM", "WHERE", "INSERT", "UPDATE", "DELETE", "CREATE", "ALTER", "DROP"]
+    const uppercaseQuery = query.toUpperCase()
+
+    let isValid = true
+    let errorMessage = ""
+
+    if (!keywords.some((keyword) => uppercaseQuery.includes(keyword))) {
+      isValid = false
+      errorMessage = "Query must include a valid SQL command (SELECT, INSERT, UPDATE, DELETE, CREATE, ALTER, DROP)"
     }
 
-    // Initial history update
-    updateHistoryList();
-});
-</script>
+    if (!query.trim().endsWith(";")) {
+      isValid = false
+      errorMessage += " Query must end with a semicolon."
+    }
 
-</body>
-</html>
+    const openParenCount = (query.match(/\(/g) || []).length
+    const closeParenCount = (query.match(/\)/g) || []).length
+    if (openParenCount !== closeParenCount) {
+      isValid = false
+      errorMessage += " Unbalanced parentheses."
+    }
+
+    return {
+      isValid: isValid,
+      message: isValid ? "Syntax appears to be valid." : "Syntax error: " + errorMessage.trim(),
+    }
+  }
+
+  function displayResult(result) {
+    resultDiv.innerHTML = `
+            <div class="${result.isValid ? "success" : "error"}">
+                <i class="fas ${result.isValid ? "fa-check-circle" : "fa-exclamation-circle"}"></i>
+                ${result.message}
+            </div>
+        `
+  }
+
+  function addToHistory(query, result) {
+    const history = JSON.parse(localStorage.getItem("queryHistory")) || []
+    history.unshift({ query, result: result.message })
+    if (history.length > 10) history.pop()
+    localStorage.setItem("queryHistory", JSON.stringify(history))
+    updateHistoryList()
+  }
+
+  function updateHistoryList() {
+    const history = JSON.parse(localStorage.getItem("queryHistory")) || []
+    historyList.innerHTML = ""
+    history.forEach((item) => {
+      const li = document.createElement("li")
+      li.textContent = item.query.substring(0, 50) + (item.query.length > 50 ? "..." : "")
+      li.title = item.result
+      li.dataset.query = item.query
+      historyList.appendChild(li)
+    })
+  }
+
+  function showNotification(message, type) {
+    const notification = document.createElement("div")
+    notification.textContent = message
+    notification.className = `notification ${type}`
+    document.body.appendChild(notification)
+    setTimeout(() => {
+      notification.classList.add("show")
+      setTimeout(() => {
+        notification.classList.remove("show")
+        setTimeout(() => {
+          document.body.removeChild(notification)
+        }, 300)
+      }, 2000)
+    }, 100)
+  }
+
+  // Load saved settings
+  const savedTheme = localStorage.getItem("editorTheme")
+  const savedFontSize = localStorage.getItem("editorFontSize")
+  if (savedTheme) {
+    editor.setOption("theme", savedTheme)
+    themeSelect.value = savedTheme
+  }
+  if (savedFontSize) {
+    document.querySelector(".CodeMirror").style.fontSize = `${savedFontSize}px`
+    fontSizeInput.value = savedFontSize
+  }
+
+  // Load saved query if exists
+  const savedQuery = localStorage.getItem("savedQuery")
+  if (savedQuery) {
+    editor.setValue(savedQuery)
+  }
+
+  // Initial history update
+  updateHistoryList()
+})
 
