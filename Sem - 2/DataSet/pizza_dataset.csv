@@ -1,0 +1,201 @@
+Diameter (inches),Topping,BreadType,Extra Topping,Extra Cheese,Price (INR)
+14,Margherita,Detroit,None,False,320
+11,Veggie Delight,Brooklyn,Mushrooms,False,290
+15,BBQ Chicken,thin,None,False,340
+12,Margherita,thin,Jalapenos,False,310
+14,Margherita,Brooklyn,Jalapenos,True,390
+10,Pepperoni,thin,Olives,True,310
+14,Pepperoni,Detroit,None,False,320
+15,Veggie Delight,thick,Mushrooms,False,370
+12,BBQ Chicken,Detroit,Jalapenos,True,350
+11,Pepperoni,thick,Jalapenos,False,290
+15,Margherita,thick,Mushrooms,False,370
+15,BBQ Chicken,Detroit,Mushrooms,True,410
+10,BBQ Chicken,Detroit,Jalapenos,False,270
+13,Margherita,Detroit,Jalapenos,False,330
+12,Pepperoni,Detroit,Mushrooms,True,350
+9,Margherita,Brooklyn,Jalapenos,True,290
+15,BBQ Chicken,thin,Olives,True,410
+13,Four Cheese,thick,Olives,False,330
+9,Four Cheese,Detroit,Mushrooms,True,290
+12,Veggie Delight,Detroit,None,True,320
+8,Margherita,Detroit,Mushrooms,True,270
+13,Margherita,Brooklyn,Mushrooms,True,370
+16,Veggie Delight,Detroit,None,True,400
+8,Veggie Delight,Detroit,None,True,240
+10,Veggie Delight,Detroit,None,False,240
+14,BBQ Chicken,thin,Olives,False,350
+11,Margherita,Brooklyn,Jalapenos,True,330
+16,BBQ Chicken,Detroit,Olives,True,430
+10,Veggie Delight,thick,Jalapenos,True,310
+12,Margherita,thick,Olives,False,310
+10,BBQ Chicken,thick,Jalapenos,False,270
+14,BBQ Chicken,Brooklyn,Olives,False,350
+12,Veggie Delight,Brooklyn,None,False,280
+16,Margherita,thick,Mushrooms,False,390
+14,Veggie Delight,Detroit,Olives,False,350
+9,Margherita,Brooklyn,Jalapenos,False,250
+11,Four Cheese,thick,None,False,260
+16,Pepperoni,thick,Olives,False,390
+9,Pepperoni,Detroit,Olives,True,290
+16,Pepperoni,thin,None,True,400
+12,Veggie Delight,Brooklyn,Olives,True,350
+9,Four Cheese,Detroit,Mushrooms,True,290
+11,Margherita,thick,Olives,False,290
+14,BBQ Chicken,thick,Mushrooms,False,350
+15,Margherita,Detroit,Mushrooms,True,410
+10,BBQ Chicken,Brooklyn,None,False,240
+8,Margherita,thin,Olives,True,270
+11,Four Cheese,thin,None,False,260
+9,BBQ Chicken,thick,Olives,True,290
+15,Veggie Delight,Brooklyn,Olives,False,370
+11,Margherita,thin,Jalapenos,False,290
+9,Margherita,Brooklyn,Olives,True,290
+13,BBQ Chicken,Brooklyn,None,False,300
+13,Veggie Delight,thick,Mushrooms,True,370
+11,Veggie Delight,thin,Olives,True,330
+13,Four Cheese,Detroit,Jalapenos,True,370
+9,Veggie Delight,thick,None,True,260
+9,Veggie Delight,thin,Olives,False,250
+11,Veggie Delight,thin,None,False,260
+15,Pepperoni,thin,Jalapenos,False,370
+14,Four Cheese,thin,Jalapenos,True,390
+16,Margherita,thin,None,False,360
+15,BBQ Chicken,Brooklyn,Olives,True,410
+12,Margherita,thick,Mushrooms,False,310
+9,Four Cheese,Brooklyn,Jalapenos,False,250
+12,BBQ Chicken,Detroit,Olives,False,310
+15,Four Cheese,thin,Olives,True,410
+16,Veggie Delight,thick,Mushrooms,False,390
+16,BBQ Chicken,thin,Jalapenos,False,390
+8,Veggie Delight,thick,Jalapenos,True,270
+16,Margherita,Brooklyn,Olives,False,390
+14,Margherita,thick,Olives,True,390
+16,BBQ Chicken,Detroit,Mushrooms,False,390
+15,BBQ Chicken,Detroit,Mushrooms,True,410
+8,Four Cheese,thick,Jalapenos,True,270
+15,Four Cheese,thick,None,False,340
+15,Veggie Delight,thick,Jalapenos,True,410
+10,BBQ Chicken,thick,Olives,True,310
+8,Margherita,Detroit,Jalapenos,True,270
+15,Four Cheese,thin,None,True,380
+10,Four Cheese,thick,Mushrooms,True,310
+10,Margherita,thick,None,True,280
+8,Four Cheese,Detroit,None,False,200
+12,Veggie Delight,Detroit,None,True,320
+14,BBQ Chicken,Brooklyn,Mushrooms,True,390
+16,Margherita,thick,None,False,360
+14,BBQ Chicken,Brooklyn,None,False,320
+16,Four Cheese,Detroit,None,False,360
+15,Four Cheese,Detroit,Olives,False,370
+9,Margherita,thin,None,False,220
+8,Veggie Delight,thick,Mushrooms,False,230
+14,Pepperoni,Brooklyn,None,False,320
+14,Margherita,Detroit,None,True,360
+15,Pepperoni,Detroit,Mushrooms,True,410
+12,Pepperoni,Brooklyn,None,False,280
+10,Veggie Delight,thin,Mushrooms,True,310
+15,Pepperoni,Detroit,None,True,380
+13,Pepperoni,thick,Mushrooms,True,370
+10,Veggie Delight,Detroit,None,False,240
+8,Pepperoni,thick,None,False,200
+10,Pepperoni,Brooklyn,Olives,True,310
+12,Pepperoni,thick,Olives,False,310
+10,Margherita,Brooklyn,None,True,280
+8,Margherita,thick,None,True,240
+12,Margherita,Brooklyn,Jalapenos,True,350
+14,Veggie Delight,thick,Mushrooms,True,390
+14,Four Cheese,thin,Jalapenos,False,350
+16,Pepperoni,thick,Olives,False,390
+10,Pepperoni,thick,Olives,False,270
+14,Veggie Delight,thin,Olives,True,390
+8,Pepperoni,Detroit,Olives,False,230
+11,Margherita,Detroit,None,True,300
+11,Four Cheese,thick,Olives,False,290
+12,BBQ Chicken,thin,None,True,320
+14,Pepperoni,thick,None,True,360
+14,Margherita,Brooklyn,Olives,True,390
+11,BBQ Chicken,Brooklyn,Olives,False,290
+14,Four Cheese,thick,Mushrooms,False,350
+10,BBQ Chicken,Detroit,Jalapenos,False,270
+13,Margherita,Detroit,Olives,False,330
+9,BBQ Chicken,thick,Mushrooms,True,290
+16,Veggie Delight,thick,Mushrooms,False,390
+12,BBQ Chicken,Brooklyn,Jalapenos,False,310
+13,Pepperoni,Detroit,None,True,340
+11,Pepperoni,thick,Olives,True,330
+14,Veggie Delight,Brooklyn,Jalapenos,True,390
+16,Margherita,Detroit,Olives,False,390
+14,Pepperoni,thin,Mushrooms,True,390
+8,Four Cheese,Brooklyn,Mushrooms,True,270
+8,Pepperoni,Detroit,None,True,240
+16,Pepperoni,Detroit,Mushrooms,False,390
+16,Margherita,Brooklyn,Mushrooms,True,430
+11,BBQ Chicken,thin,Jalapenos,False,290
+16,Pepperoni,Brooklyn,Olives,False,390
+10,Veggie Delight,Detroit,Olives,True,310
+14,BBQ Chicken,thick,Jalapenos,True,390
+13,Four Cheese,thick,None,False,300
+15,Margherita,Brooklyn,Olives,True,410
+16,Four Cheese,Detroit,Mushrooms,True,430
+12,BBQ Chicken,thick,Olives,False,310
+8,BBQ Chicken,Detroit,Mushrooms,False,230
+10,BBQ Chicken,Brooklyn,None,True,280
+15,Four Cheese,thick,Jalapenos,False,370
+13,BBQ Chicken,Detroit,Olives,True,370
+15,Four Cheese,thick,Jalapenos,True,410
+16,BBQ Chicken,Brooklyn,Olives,True,430
+11,Veggie Delight,Detroit,Mushrooms,False,290
+8,BBQ Chicken,thick,Jalapenos,True,270
+8,Four Cheese,Brooklyn,Olives,True,270
+11,Pepperoni,thick,Mushrooms,True,330
+14,BBQ Chicken,thick,Jalapenos,False,350
+9,Pepperoni,thin,Jalapenos,False,250
+10,Veggie Delight,thin,Olives,False,270
+8,Margherita,Brooklyn,Olives,False,230
+12,Veggie Delight,thin,Olives,False,310
+8,BBQ Chicken,Brooklyn,Mushrooms,True,270
+15,Pepperoni,thin,Olives,False,370
+8,Pepperoni,thick,Jalapenos,False,230
+8,Four Cheese,Brooklyn,Jalapenos,False,230
+9,Pepperoni,Brooklyn,Olives,True,290
+9,Four Cheese,thick,Olives,False,250
+13,Margherita,Brooklyn,None,False,300
+14,BBQ Chicken,Brooklyn,Jalapenos,True,390
+12,Four Cheese,thin,Mushrooms,False,310
+8,Margherita,Brooklyn,None,True,240
+8,Pepperoni,Detroit,Olives,True,270
+10,Pepperoni,thick,Olives,True,310
+9,Margherita,thin,Jalapenos,True,290
+12,Pepperoni,thin,Olives,True,350
+13,Margherita,Detroit,Mushrooms,False,330
+14,Four Cheese,thick,Jalapenos,True,390
+11,Four Cheese,thick,Olives,True,330
+14,Margherita,thin,Jalapenos,False,350
+15,Four Cheese,Brooklyn,Olives,True,410
+8,Four Cheese,thin,Olives,False,230
+13,Four Cheese,thick,Olives,False,330
+15,Veggie Delight,Detroit,Mushrooms,False,370
+12,BBQ Chicken,thin,Mushrooms,True,350
+11,Pepperoni,thick,Jalapenos,True,330
+9,Veggie Delight,thin,Olives,True,290
+13,Four Cheese,Brooklyn,Olives,False,330
+13,Margherita,thin,Mushrooms,True,370
+8,Four Cheese,thin,Olives,True,270
+16,BBQ Chicken,thick,Mushrooms,True,430
+13,Four Cheese,thick,Olives,False,330
+10,Margherita,thick,Jalapenos,False,270
+11,BBQ Chicken,thin,Olives,True,330
+11,Four Cheese,Brooklyn,Olives,True,330
+10,BBQ Chicken,Detroit,None,True,280
+10,Pepperoni,Detroit,Mushrooms,True,310
+10,Pepperoni,thick,Olives,False,270
+11,Four Cheese,thick,Olives,False,290
+14,BBQ Chicken,thin,None,False,320
+11,Margherita,Detroit,None,False,260
+16,Four Cheese,thick,Mushrooms,True,430
+8,Pepperoni,Brooklyn,None,True,240
+15,Pepperoni,Brooklyn,Jalapenos,True,410
+14,Four Cheese,thick,None,False,320
+9,BBQ Chicken,thick,Jalapenos,True,290
+15,Pepperoni,Detroit,Mushrooms,False,370

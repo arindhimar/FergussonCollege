@@ -31,11 +31,11 @@ class SQLParser:
         if not self.query.endswith(";"):
             return "Syntax Error: Query must end with ';'!"
 
-        # Unified case-insensitive handling
+        # case-insensitive handling
         query = self.query.upper()
-        original_query = self.query  # Keep original for error messages
+        original_query = self.query  
 
-        # Enhanced set operation handling
+        
         set_ops = re.compile(r"\s+(UNION|INTERSECT)\s+", re.IGNORECASE)
         if set_ops.search(query):
             parts = set_ops.split(original_query)
@@ -46,7 +46,7 @@ class SQLParser:
                 if "FROM" not in subq.upper():
                     return "Syntax Error: Missing FROM in set operation subquery!"
 
-        # Improved regex pattern with quoted identifier support
+        
         pattern = re.compile(
             r"(?i)SELECT\s+(?P<select>.+?)\s+"
             r"FROM\s+(?P<from>\w+(?:\.\w+)?(?:,\s*\w+(?:\.\w+)?)*)"
@@ -57,7 +57,7 @@ class SQLParser:
             r"\s*;\s*$"
         , re.DOTALL)
 
-        match = pattern.search(original_query + " ")  # Padding for regex boundary
+        match = pattern.search(original_query + " ") 
         if not match:
             return "Syntax Error: Invalid SELECT statement structure!"
 
@@ -103,9 +103,12 @@ class SQLParser:
         # GROUP BY validation
         if clauses['group_by']:
             group_cols = [col.strip() for col in clauses['group_by'].split(",")]
-            invalid = [col for col in group_cols if col not in select_columns and col != "*"]
-            if invalid:
-                return f"Syntax Error: GROUP BY column(s) {invalid} not in SELECT list!"
+            invalid1 = [col for col in group_cols if col not in select_columns and col != "*"]
+            invalid2 = [col for col in group_cols if col not in select_columns and col == "*"]
+            # print(invalid)
+            
+            if invalid1 or invalid2 :
+                return f"Syntax Error: GROUP BY column(s) {invalid1} {invalid2} not in SELECT list!"
 
         # ORDER BY validation with expression support
         if clauses['order_by']:
@@ -126,12 +129,11 @@ class SQLParser:
         if not self.query.endswith(";"):
             return "Syntax Error: Query must end with ';'!"
 
-        # Correct regex to avoid duplicate INTO and ensure proper format
+        #duplicate nokal
         pattern = r"^INSERT\s+INTO\s+(\w+)\s*(?:\(([^)]+)\))?\s+VALUES\s*\((.+)\)\s*;$"
         match = re.match(pattern, self.query, re.IGNORECASE)
         
-        
-        
+    
         #insert into table_name (col1, col2, col3) values (val1, val2, val3);
 
         if not match:
@@ -345,7 +347,7 @@ class SQLParser:
 
         if current_col.strip():
             column_list.append(current_col.strip())
-        print(column_list)
+        # print(column_list)
         if not column_list:
             return "Syntax Error: No valid column definitions found!", None
 

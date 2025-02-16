@@ -1,0 +1,201 @@
+Pizza Diameter,Topping,BreadType,Extra Toppings,Extra Cheese,Price (INR)
+14,Pepperoni,Brooklyn,False,False,826
+11,Pepperoni,Thin,False,False,619
+18,BBQ Chicken,Thick,False,True,1006
+15,Jalapeno,Thick,False,True,825
+12,Pepperoni,Thin,False,False,680
+14,Pineapple,Thick,True,False,797
+17,Sausage,Thin,True,False,961
+10,Pepperoni,Detroit,False,False,620
+14,Sausage,Thin,False,False,795
+18,Mushroom,Thick,False,True,975
+18,Extra Cheese,Thin,True,True,1028
+15,Extra Cheese,Thin,True,True,870
+12,Extra Cheese,Thin,True,False,680
+11,Pepperoni,Detroit,False,True,739
+15,Bell Pepper,Thick,False,False,780
+15,Mushroom,Detroit,False,False,865
+10,Pepperoni,Detroit,False,False,658
+13,Pepperoni,Thick,False,True,779
+12,Extra Cheese,Thick,False,False,654
+9,Pineapple,Thick,False,True,533
+15,Pepperoni,Thick,False,False,833
+13,Extra Cheese,Thick,False,True,721
+9,Pepperoni,Thin,False,True,544
+12,Extra Cheese,Thick,False,False,652
+8,Pepperoni,Thick,False,True,525
+17,Pineapple,Brooklyn,True,True,1029
+13,Mushroom,Thick,False,False,688
+16,Ham,Brooklyn,False,False,914
+8,Pepperoni,Thick,True,False,526
+18,Mushroom,Thick,False,False,953
+18,Pepperoni,Thin,False,False,968
+17,Ham,Thin,False,True,925
+10,Olive,Brooklyn,False,True,611
+14,Mushroom,Thin,False,True,758
+11,Pineapple,Brooklyn,True,False,688
+16,Bell Pepper,Thick,True,False,909
+10,Extra Cheese,Thick,True,False,586
+12,Extra Cheese,Thin,True,False,670
+10,Pepperoni,Brooklyn,True,False,694
+14,Pepperoni,Detroit,True,True,939
+12,Olive,Thin,False,False,644
+16,Ham,Thick,True,False,908
+14,Extra Cheese,Thin,False,False,754
+9,Mushroom,Thick,False,True,502
+11,Mushroom,Detroit,False,False,666
+16,Sausage,Brooklyn,False,False,949
+9,Olive,Thin,True,False,557
+17,Olive,Thin,True,False,953
+16,Sausage,Thin,True,False,921
+17,Extra Cheese,Thick,True,False,938
+12,Pepperoni,Detroit,True,True,836
+9,Pepperoni,Thin,True,False,576
+11,Olive,Brooklyn,True,False,689
+14,Extra Cheese,Thick,True,False,781
+15,Pepperoni,Brooklyn,False,False,885
+10,Pepperoni,Thick,True,False,633
+8,Pineapple,Thick,False,False,438
+11,Pepperoni,Detroit,False,False,677
+9,Pepperoni,Thick,False,True,570
+15,Extra Cheese,Thick,True,False,840
+11,Pineapple,Detroit,False,False,646
+9,Pineapple,Detroit,False,True,582
+13,Pepperoni,Thin,True,False,796
+13,Sausage,Thin,False,False,725
+17,Pepperoni,Thin,False,False,915
+11,Mushroom,Thick,True,False,627
+13,Sausage,Thick,True,True,814
+9,Extra Cheese,Thin,False,True,517
+17,Bell Pepper,Thin,False,True,924
+9,Pineapple,Thin,True,False,531
+17,Extra Cheese,Thin,True,True,964
+11,Pepperoni,Thick,False,True,665
+15,Mushroom,Thin,False,True,825
+14,Mushroom,Thick,False,False,751
+16,Pepperoni,Thin,False,False,869
+15,Jalapeno,Thin,False,True,815
+12,Mushroom,Brooklyn,False,True,716
+9,Olive,Thick,True,False,536
+12,Extra Cheese,Thick,True,False,692
+15,Sausage,Thick,False,True,865
+17,Extra Cheese,Thin,False,False,890
+16,Extra Cheese,Thin,False,True,871
+16,BBQ Chicken,Thick,False,True,896
+8,Pepperoni,Thick,True,False,523
+16,Sausage,Thin,False,False,874
+14,Mushroom,Thick,False,False,726
+16,Pepperoni,Brooklyn,True,True,1008
+15,Extra Cheese,Thin,True,False,827
+8,Pepperoni,Thick,False,False,482
+15,Ham,Thick,True,True,878
+15,Jalapeno,Detroit,False,False,847
+18,Ham,Thick,True,True,1030
+10,Mushroom,Thick,False,False,549
+8,Pepperoni,Brooklyn,True,True,638
+15,Ham,Detroit,False,False,864
+10,BBQ Chicken,Detroit,False,True,667
+10,Jalapeno,Thin,False,False,558
+8,Jalapeno,Thick,False,False,436
+18,Olive,Thick,False,False,933
+12,Mushroom,Thin,True,True,730
+17,Mushroom,Thin,False,False,893
+14,Olive,Thin,False,True,784
+17,Mushroom,Detroit,False,False,963
+16,Pepperoni,Thick,False,True,892
+14,Extra Cheese,Thin,True,True,836
+16,Ham,Thick,True,True,939
+15,Pineapple,Thin,False,False,795
+9,Extra Cheese,Thick,False,False,492
+8,Pepperoni,Thick,False,True,528
+14,Extra Cheese,Thick,False,False,734
+14,Jalapeno,Thin,False,False,723
+15,Pepperoni,Thin,False,False,838
+12,Extra Cheese,Thin,True,False,691
+10,Olive,Detroit,True,False,654
+15,Sausage,Thick,True,False,872
+13,Pineapple,Thick,True,True,767
+18,Sausage,Brooklyn,True,True,1132
+10,Mushroom,Thick,True,False,585
+8,Mushroom,Detroit,True,False,531
+10,Bell Pepper,Thick,True,True,634
+12,Bell Pepper,Detroit,False,True,743
+10,Olive,Thick,True,False,599
+8,Ham,Brooklyn,False,False,492
+12,Extra Cheese,Thin,False,True,662
+17,Extra Cheese,Detroit,False,True,977
+14,Sausage,Thick,True,False,841
+14,Extra Cheese,Thin,False,False,751
+18,Sausage,Detroit,False,True,1084
+16,Sausage,Thin,False,True,928
+17,Olive,Thin,False,True,928
+17,Mushroom,Thin,True,False,948
+10,Mushroom,Thin,True,True,615
+14,Pepperoni,Thin,False,True,799
+8,Extra Cheese,Thin,False,False,449
+11,Pepperoni,Detroit,False,True,724
+11,BBQ Chicken,Thick,False,False,648
+12,Extra Cheese,Thick,True,True,719
+14,Mushroom,Detroit,False,True,814
+14,Extra Cheese,Brooklyn,True,True,860
+18,Pepperoni,Thin,False,False,989
+11,Pepperoni,Thin,False,False,612
+14,Bell Pepper,Thick,False,False,733
+18,Mushroom,Thick,True,True,1029
+10,Pepperoni,Thin,True,False,613
+13,Extra Cheese,Thick,False,True,717
+9,Sausage,Thin,True,True,626
+17,Pepperoni,Thick,False,False,934
+16,Extra Cheese,Detroit,True,True,960
+12,Pepperoni,Detroit,False,True,764
+13,Pepperoni,Thin,False,True,748
+11,Extra Cheese,Thin,True,True,664
+18,Extra Cheese,Thick,False,True,973
+17,Extra Cheese,Brooklyn,True,False,983
+14,Sausage,Thin,True,False,821
+16,Jalapeno,Thick,False,False,856
+14,Extra Cheese,Detroit,False,False,816
+8,Mushroom,Brooklyn,False,True,515
+8,Sausage,Detroit,True,True,638
+16,Mushroom,Thin,False,True,873
+18,BBQ Chicken,Thin,False,False,970
+16,Pepperoni,Thin,False,True,902
+11,Pepperoni,Detroit,False,False,703
+16,Jalapeno,Brooklyn,False,False,904
+10,Bell Pepper,Thick,False,False,526
+14,Pineapple,Thick,False,False,723
+13,BBQ Chicken,Thick,False,True,747
+15,Pepperoni,Brooklyn,False,False,889
+18,Pepperoni,Detroit,True,False,1098
+16,Mushroom,Thick,False,True,859
+12,Extra Cheese,Thin,False,False,653
+8,Sausage,Thick,True,False,535
+10,Pineapple,Detroit,True,False,632
+17,Mushroom,Brooklyn,False,False,935
+15,Jalapeno,Brooklyn,False,False,834
+18,Sausage,Thin,False,True,994
+13,Extra Cheese,Thin,True,True,772
+15,Extra Cheese,Thick,False,False,778
+16,BBQ Chicken,Thick,True,False,944
+11,Pepperoni,Brooklyn,True,True,769
+8,Mushroom,Brooklyn,True,True,594
+8,Sausage,Detroit,False,False,537
+17,Pepperoni,Detroit,False,False,986
+11,Pepperoni,Thin,False,False,633
+14,Pepperoni,Thin,False,True,792
+9,Pepperoni,Detroit,False,True,631
+10,Olive,Brooklyn,False,True,644
+8,Sausage,Thick,False,False,497
+12,BBQ Chicken,Thin,False,True,702
+8,Pepperoni,Thick,False,False,484
+15,BBQ Chicken,Detroit,False,True,908
+8,BBQ Chicken,Thin,False,False,463
+18,Pepperoni,Thick,False,False,973
+8,BBQ Chicken,Thin,False,False,496
+9,Mushroom,Thin,True,True,583
+9,Extra Cheese,Thick,False,True,510
+13,Extra Cheese,Thick,False,True,702
+14,Pepperoni,Thin,False,False,787
+12,Mushroom,Thin,False,False,648
+8,Extra Cheese,Thin,False,False,428
+8,Extra Cheese,Thin,True,False,472
