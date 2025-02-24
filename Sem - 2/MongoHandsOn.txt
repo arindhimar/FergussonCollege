@@ -1,0 +1,157 @@
+=View Databases=
+show databases;
+
+=View Collections=
+show collections;
+
+
+=Creating Collection/Table=
+db.createCollection("collectionname")
+
+=Inserting into COllection(document)=
+->db.collectionname.insertOne({})
+
+=Example
+db.Cars.insertOne({
+"maker":"Tata",
+"model":"nexon",
+"fuel_type":"petrol",
+"engine":{
+"type":"turbochargeed",
+"cc":"110",
+"torque":"190 nm"
+},
+"features":[
+"touchscreen","reverse camera","bluetooth"
+],
+"sunroof":false,
+"airbags":2
+})
+
+->db.collectionname.insertMany([{},{},{}])
+=Example
+db.Cars.insertMany(
+[
+ {
+ "maker": "Hyundai",
+ "model": "Creta",
+ "fuel_type": "Diesel",
+ "transmission": "Manual",
+ "engine": {
+ "type": "Naturally Aspirated",
+ "cc": 1493,
+ "torque": "250 Nm"
+ },
+ "features": [
+ "Sunroof",
+ "Leather Seats",
+ "Wireless Charging",
+"Ventilated Seats",
+"Bluetooth"
+ ],
+ "sunroof": true,
+ "airbags": 6
+ },
+ {
+ "maker": "Maruti Suzuki",
+ "model": "Baleno",
+ "fuel_type": "Petrol",
+ "transmission": "Automatic",
+ "engine": {
+ "type": "Naturally Aspirated",
+ "cc": 1197,
+ "torque": "113 Nm"
+ },
+ "features": [
+ "Projector Headlamps",
+ "Apple CarPlay",
+ "ABS"
+ ],
+ "sunroof": false,
+ "airbags": 2
+ },
+ {
+ "maker": "Mahindra",
+ "model": "XUV500",
+ "fuel_type": "Diesel",
+ "transmission": "Manual",
+ "engine": {
+ "type": "Turbocharged",
+ "cc": 2179,
+ "torque": "360 Nm"
+ },
+ "features": [
+ "All-Wheel Drive",
+ "Navigation System",
+ "Cruise Control"
+ ],
+ "sunroof": true,
+ "airbags": 6
+ },
+ {
+ "maker": "Honda",
+ "model": "City",
+ "fuel_type": "Petrol",
+ "transmission": "Automatic",
+ "engine": {
+ "type": "Naturally Aspirated",
+ "cc": 1498,
+ "torque": "145 Nm"
+ },
+ "features": [
+ "Keyless Entry",
+ "Auto AC",
+ "Multi-angle Rearview Camera"
+ ],
+ "sunroof": false,
+ "airbags": 4
+ }
+]
+)
+
+=Viewing Data in Collection=
+=db.collectionname.find()
+->db.Cars.find()
+
+->db.Cars.find({},{model:1})//{} 1st wala jo hai wo where condition ke liye hai ;second position wala * jo hota hai select statement mein uske liye hai aur ye jo select kar rahe hai usme 0 , 1 , -1 hota hai 0 nahi ke liye , 1 true , -1 ek order ke liye;
+
+->db.Cars.find({fuel_type:"petrol"})
+
+->db.Cars.find({"engine.type":"Turbocharged"});//in case of using nested object you need to use "" to access inner data
+
+
+=db.collectionname.findOne()
+
+->db.Cars.findOne()
+
+
+=Upating Document/Row=
+=db.collectionname.updateOne({condition},{what to set/push , also need to use $set to access the key})
+
+->db.Cars.updateOne(
+	{"model":"Nexon"},
+	{$set : {color:"red"}}
+)
+
+->db.Cars.updateOne(
+	{model:"nexon"},
+	{$set : {color:"red"}}//maybe set is for adding 
+)
+
+->db.Cars.updateOne(
+	{model:nexon"},
+	{$push : {features:"Heated Seats"}}//maybe push is for concat
+)
+
+->db.Cars.updateOne(
+	{model:"nexon"},
+	{$set : {features:"Set Try Kiya"}}
+)
+//isne old data ko pura replace kar diya
+
+=Delete  Dara in Collection=
+=db.deleteOne()
+db.deleteMany()
+
+
+
