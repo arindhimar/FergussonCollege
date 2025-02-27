@@ -1,0 +1,81 @@
+docker pull postgres
+
+docker run --name postgres-one -e POSTGRES_PASSWORD=pass1 -d postgres
+c1b6e8327355659a5b507264b9d82ac077b0f0859d136cba4ed47e0c8a8f2785
+
+docker stop c1b6(no need of using complete code only required if more then 4 char are mathcing , we can also use the name that we've given )
+
+docker stop postgres-one
+
+
+=To view the container=
+docker container ls
+
+docker ps 
+
+-a can be used to view both stopped and the running one
+
+
+
+
+
+
+
+
+=Trying to have two postgres running=
+docker run --name postgres-two -e POSTGRES_PASSWORD=pass2 -d postgres:13.8
+(in this one as the version is not present locallly it will go online and download it first)
+
+
+
+C:\Users\Arin Dhimar>docker ps
+CONTAINER ID   IMAGE           COMMAND                  CREATED          STATUS          PORTS      NAMES
+1b9c22e60eb7   postgres:13.8   "docker-entrypoint.s…"   20 seconds ago   Up 19 seconds   5432/tcp   postgres-two
+
+C:\Users\Arin Dhimar>docker container ls
+CONTAINER ID   IMAGE           COMMAND                  CREATED          STATUS          PORTS      NAMES
+1b9c22e60eb7   postgres:13.8   "docker-entrypoint.s…"   32 seconds ago   Up 31 seconds   5432/tcp   postgres-two
+c1b6e8327355   postgres        "docker-entrypoint.s…"   5 minutes ago    Up 6 seconds    5432/tcp   postgres-one
+
+
+(The port that we have here can be anything it can also be same , but if we had this running on a local ssytem this would not work as we have only one thing running at a port once , but here we have both at 5432 what we can do is that the local port 4000 can communicate with the first one and 5000 with the second one)
+
+
+
+=To remove the container that are stopped=
+C:\Users\Arin Dhimar>docker container prune
+WARNING! This will remove all stopped containers.
+Are you sure you want to continue? [y/N] y
+Deleted Containers:
+1b9c22e60eb79eacd5c06cd733ce0c233a12669ed1e6214b53dedf5fac44e32a
+c1b6e8327355659a5b507264b9d82ac077b0f0859d136cba4ed47e0c8a8f2785
+
+
+
+
+
+
+
+
+
+
+
+
+=Mongo Express=
+C:\Users\Arin Dhimar>docker network create mongo-network
+97956a2016e8631049cdd879cee61400f1abea7f053da9c395fa892454ad3e1d
+
+C:\Users\Arin Dhimar>docker run -p 27017:27017 -e MONGO_INITDB_ROOT_USERNAME=admin -e MONGO_INITDB_ROOT_PASSWORD=password --name mongodb --net mongo-network -d mongo
+52d9050bbda25b7f70f529a810aa443f40c4a15bcdfe6eab3521d5ddccb08b2c
+
+//on windows ^ for multi line command while on linux and mac use \
+
+docker run --rm -d ^
+    --net mongo-network ^
+    --name mongo-express ^
+    -p 8081:8081 ^
+    -e ME_CONFIG_MONGODB_ADMINUSERNAME=admin ^
+    -e ME_CONFIG_MONGODB_ADMINPASSWORD=password ^
+    -e ME_CONFIG_MONGODB_SERVER=mongodb ^
+    mongo-express
+
