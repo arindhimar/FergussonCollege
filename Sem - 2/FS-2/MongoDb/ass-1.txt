@@ -1,0 +1,73 @@
+db.people.insertMany([
+    { name: "Amit Sharma", age: 99, children: [{ name: "Rahul Sharma", age: 40 }, { name: "Pooja Sharma", age: 35 }] },
+    { name: "Sunita Patel", age: 45, children: [{ name: "Rohan Patel", age: 15 }] },
+    { name: "Rajesh Iyer", age: 67, children: [{ name: "Neha Iyer", age: 25 }] },
+    { name: "Meena Joshi", age: 70, children: [{ name: "Varun Joshi", age: 38 }, { name: "Simran Joshi", age: 33 }] },
+    { name: "Suresh Reddy", age: 16, children: [] },
+    { name: "Anita Desai", age: 80, children: [{ name: "Kiran Desai", age: 50 }] },
+    { name: "Vikram Singh", age: 13, children: [] },
+    { name: "Kavita Nair", age: 99, children: [{ name: "Arjun Nair", age: 47 }] },
+    { name: "Ramesh Gupta", age: 18, children: [] },
+    { name: "Lakshmi Menon", age: 72, children: [{ name: "Priya Menon", age: 42 }] }
+])
+
+
+db.people.find({ age: 99 })
+db.people.find({ age: { $gt: 65 } })
+db.people.find({ age: { $gt: 12, $lt: 20 } })
+
+
+
+
+
+db.restaurants.insertMany([
+    {
+        restaurant_id: "R101",
+        name: "Spice Junction",
+        address: { street: "MG Road", area: "Pune Camp", city: "Pune" },
+        cuisine: ["Indian", "Chinese"],
+        grades: [{ date: "2024-03-15", score: 85, grade: "A" }]
+    },
+    {
+        restaurant_id: "R102",
+        name: "The Burger House",
+        address: { street: "East Street", area: "Pune Camp", city: "Pune" },
+        cuisine: ["Fast Food", "American"],
+        grades: [{ date: "2024-02-20", score: 78, grade: "B" }]
+    },
+    {
+        restaurant_id: "R103",
+        name: "Shahi Dawat",
+        address: { street: "FC Road", area: "Shivajinagar", city: "Pune" },
+        cuisine: ["Mughlai", "North Indian"],
+        grades: [{ date: "2024-01-10", score: 92, grade: "A" }]
+    },
+    {
+        restaurant_id: "R104",
+        name: "Sizzling Wok",
+        address: { street: "Koregaon Park", area: "Koregaon Park", city: "Pune" },
+        cuisine: ["Thai", "Chinese"],
+        grades: [{ date: "2024-02-05", score: 65, grade: "B" }]
+    },
+    {
+        restaurant_id: "R105",
+        name: "South Delights",
+        address: { street: "JM Road", area: "Deccan", city: "Pune" },
+        cuisine: ["South Indian"],
+        grades: [{ date: "2024-01-18", score: 88, grade: "A" }]
+    },
+    {
+        restaurant_id: "R106",
+        name: "Grill House",
+        address: { street: "Viman Nagar Road", area: "Viman Nagar", city: "Pune" },
+        cuisine: ["Continental", "Steaks"],
+        grades: [{ date: "2024-03-10", score: 91, grade: "A" }]
+    }
+])
+
+
+db.restaurants.find().limit(5)
+db.restaurants.find().pretty()
+db.restaurants.find({ "address.area": "Pune Camp" }).pretty()
+db.restaurants.find({ "grades.score": { $gt: 90 } }).pretty()
+
