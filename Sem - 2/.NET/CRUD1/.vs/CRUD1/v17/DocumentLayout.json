@@ -1,0 +1,190 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\CRUD1\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{14E7BBB8-BF35-4F48-BC83-D35F2F25427E}|CRUD1.csproj|c:\\users\\arin dhimar\\documents\\fergussoncollege\\sem - 2\\.net\\crud1\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{14E7BBB8-BF35-4F48-BC83-D35F2F25427E}|CRUD1.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{14E7BBB8-BF35-4F48-BC83-D35F2F25427E}|CRUD1.csproj|c:\\users\\arin dhimar\\documents\\fergussoncollege\\sem - 2\\.net\\crud1\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{14E7BBB8-BF35-4F48-BC83-D35F2F25427E}|CRUD1.csproj|solutionrelative:views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{14E7BBB8-BF35-4F48-BC83-D35F2F25427E}|CRUD1.csproj|c:\\users\\arin dhimar\\documents\\fergussoncollege\\sem - 2\\.net\\crud1\\views\\home\\privacy.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{14E7BBB8-BF35-4F48-BC83-D35F2F25427E}|CRUD1.csproj|solutionrelative:views\\home\\privacy.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{14E7BBB8-BF35-4F48-BC83-D35F2F25427E}|CRUD1.csproj|c:\\users\\arin dhimar\\documents\\fergussoncollege\\sem - 2\\.net\\crud1\\views\\shared\\error.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{14E7BBB8-BF35-4F48-BC83-D35F2F25427E}|CRUD1.csproj|solutionrelative:views\\shared\\error.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{14E7BBB8-BF35-4F48-BC83-D35F2F25427E}|CRUD1.csproj|c:\\users\\arin dhimar\\documents\\fergussoncollege\\sem - 2\\.net\\crud1\\views\\shared\\_validationscriptspartial.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{14E7BBB8-BF35-4F48-BC83-D35F2F25427E}|CRUD1.csproj|solutionrelative:views\\shared\\_validationscriptspartial.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{14E7BBB8-BF35-4F48-BC83-D35F2F25427E}|CRUD1.csproj|c:\\users\\arin dhimar\\documents\\fergussoncollege\\sem - 2\\.net\\crud1\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{14E7BBB8-BF35-4F48-BC83-D35F2F25427E}|CRUD1.csproj|solutionrelative:views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{14E7BBB8-BF35-4F48-BC83-D35F2F25427E}|CRUD1.csproj|c:\\users\\arin dhimar\\documents\\fergussoncollege\\sem - 2\\.net\\crud1\\controllers\\crud1controller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{14E7BBB8-BF35-4F48-BC83-D35F2F25427E}|CRUD1.csproj|solutionrelative:controllers\\crud1controller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{14E7BBB8-BF35-4F48-BC83-D35F2F25427E}|CRUD1.csproj|c:\\users\\arin dhimar\\documents\\fergussoncollege\\sem - 2\\.net\\crud1\\models\\crud1context.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{14E7BBB8-BF35-4F48-BC83-D35F2F25427E}|CRUD1.csproj|solutionrelative:models\\crud1context.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{14E7BBB8-BF35-4F48-BC83-D35F2F25427E}|CRUD1.csproj|c:\\users\\arin dhimar\\documents\\fergussoncollege\\sem - 2\\.net\\crud1\\models\\crud1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{14E7BBB8-BF35-4F48-BC83-D35F2F25427E}|CRUD1.csproj|solutionrelative:models\\crud1.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{14E7BBB8-BF35-4F48-BC83-D35F2F25427E}|CRUD1.csproj|c:\\users\\arin dhimar\\documents\\fergussoncollege\\sem - 2\\.net\\crud1\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{14E7BBB8-BF35-4F48-BC83-D35F2F25427E}|CRUD1.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 6,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Privacy.cshtml",
+              "DocumentMoniker": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\CRUD1\\Views\\Home\\Privacy.cshtml",
+              "RelativeDocumentMoniker": "Views\\Home\\Privacy.cshtml",
+              "ToolTip": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\CRUD1\\Views\\Home\\Privacy.cshtml",
+              "RelativeToolTip": "Views\\Home\\Privacy.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-03-22T02:17:40.893Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\CRUD1\\Views\\Home\\Index.cshtml",
+              "RelativeDocumentMoniker": "Views\\Home\\Index.cshtml",
+              "ToolTip": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\CRUD1\\Views\\Home\\Index.cshtml",
+              "RelativeToolTip": "Views\\Home\\Index.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-03-22T02:17:39.983Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Error.cshtml",
+              "DocumentMoniker": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\CRUD1\\Views\\Shared\\Error.cshtml",
+              "RelativeDocumentMoniker": "Views\\Shared\\Error.cshtml",
+              "ToolTip": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\CRUD1\\Views\\Shared\\Error.cshtml",
+              "RelativeToolTip": "Views\\Shared\\Error.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-03-22T02:17:37.639Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "_ValidationScriptsPartial.cshtml",
+              "DocumentMoniker": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\CRUD1\\Views\\Shared\\_ValidationScriptsPartial.cshtml",
+              "RelativeDocumentMoniker": "Views\\Shared\\_ValidationScriptsPartial.cshtml",
+              "ToolTip": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\CRUD1\\Views\\Shared\\_ValidationScriptsPartial.cshtml",
+              "RelativeToolTip": "Views\\Shared\\_ValidationScriptsPartial.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-03-22T02:17:36.631Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "_Layout.cshtml",
+              "DocumentMoniker": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\CRUD1\\Views\\Shared\\_Layout.cshtml",
+              "RelativeDocumentMoniker": "Views\\Shared\\_Layout.cshtml",
+              "ToolTip": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\CRUD1\\Views\\Shared\\_Layout.cshtml",
+              "RelativeToolTip": "Views\\Shared\\_Layout.cshtml",
+              "ViewState": "AgIAABgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-03-22T02:17:19.957Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "Crud1.cs",
+              "DocumentMoniker": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\CRUD1\\Models\\Crud1.cs",
+              "RelativeDocumentMoniker": "Models\\Crud1.cs",
+              "ToolTip": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\CRUD1\\Models\\Crud1.cs",
+              "RelativeToolTip": "Models\\Crud1.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-22T02:06:35.221Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\CRUD1\\Program.cs",
+              "RelativeDocumentMoniker": "Program.cs",
+              "ToolTip": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\CRUD1\\Program.cs",
+              "RelativeToolTip": "Program.cs",
+              "ViewState": "AgIAABEAAAAAAAAAAAAAAB0AAAAfAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-22T02:04:42.46Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Crud1Controller.cs",
+              "DocumentMoniker": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\CRUD1\\Controllers\\Crud1Controller.cs",
+              "RelativeDocumentMoniker": "Controllers\\Crud1Controller.cs",
+              "ToolTip": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\CRUD1\\Controllers\\Crud1Controller.cs",
+              "RelativeToolTip": "Controllers\\Crud1Controller.cs",
+              "ViewState": "AgIAAJMAAAAAAAAAAAAIwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-22T02:08:11.071Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\CRUD1\\appsettings.json",
+              "RelativeDocumentMoniker": "appsettings.json",
+              "ToolTip": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\CRUD1\\appsettings.json",
+              "RelativeToolTip": "appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAACAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-03-22T02:03:02.973Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Crud1Context.cs",
+              "DocumentMoniker": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\CRUD1\\Models\\Crud1Context.cs",
+              "RelativeDocumentMoniker": "Models\\Crud1Context.cs",
+              "ToolTip": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\CRUD1\\Models\\Crud1Context.cs",
+              "RelativeToolTip": "Models\\Crud1Context.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAwAAAA1AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-22T02:02:11.409Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -75,7 +75,7 @@ class State {
     int jug1Cap;
     int jug2Cap;
     String actions;
-    int heuristic;  // Heuristic to guide Best First Search
+    int heuristic; 
 
     State(int jug1Cap, int jug2Cap, String actions, int heuristic) {
         this.jug1Cap = jug1Cap;

@@ -1,0 +1,7 @@
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\StudyGuide\Question5\bin\Debug\Question5.exe.config
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\StudyGuide\Question5\bin\Debug\Question5.exe
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\StudyGuide\Question5\bin\Debug\Question5.pdb
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\StudyGuide\Question5\obj\Debug\Question5.csproj.AssemblyReference.cache
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\StudyGuide\Question5\obj\Debug\Question5.csproj.CoreCompileInputs.cache
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\StudyGuide\Question5\obj\Debug\Question5.exe
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\StudyGuide\Question5\obj\Debug\Question5.pdb
