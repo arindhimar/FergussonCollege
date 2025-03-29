@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TaskFlow - Board View</title>
+    <title>{{ board.name }} | TaskFlow</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/static/styles.css">
     <style>
         /* Custom scrollbar */
         .custom-scrollbar::-webkit-scrollbar {
@@ -23,34 +23,39 @@
             border-radius: 10px;
         }
 
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: #a8a8a8;
-        }
-
-        /* Task card drag effect */
         .task-card.dragging {
             opacity: 0.5;
             transform: rotate(2deg);
-        }
-
-        /* Animations */
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
         }
 
         .animate-fade-in {
             animation: fadeIn 0.3s ease-out forwards;
         }
 
-        /* Modal animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .flash {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            z-index: 1000;
+        }
+
+        .flash.success {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .flash.error {
+            background-color: #f44336;
+            color: white;
+        }
+        
         .modal-overlay {
             opacity: 0;
             transition: opacity 0.3s ease-out;
@@ -70,84 +75,49 @@
             opacity: 1;
             transform: translateY(0);
         }
-
-        /* Column highlight when dragging */
-        .column-highlight {
-            transition: background-color 0.2s ease;
-        }
     </style>
 </head>
-
-<body class="bg-gray-100 font-sans min-h-screen flex flex-col">
+<body class="bg-gray-100 font-sans">
     <!-- Header -->
     <header class="bg-white shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
                 <div class="flex">
                     <div class="flex-shrink-0 flex items-center">
-                        <a href="index.html" class="text-blue-600 font-bold text-xl">TaskFlow</a>
+                        <a href="/board_dashboard" class="text-blue-600 font-bold text-xl">TaskFlow</a>
                     </div>
-                    <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
-                        <a href="index.html"
-                            class="border-blue-500 text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
-                            Boards
+                    <nav class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                        <a href="/board_dashboard" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            <svg class="w-5 h-5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+                            </svg>
+                            Back to Boards
                         </a>
-                        <a href="#"
-                            class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
-                            Templates
-                        </a>
-                        <a href="#"
-                            class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
-                            Team
-                        </a>
-                    </div>
+                    </nav>
                 </div>
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
-                        <button type="button" id="create-task-btn"
-                            class="relative inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                            <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 4v16m8-8H4" />
+                        <button id="create-task-btn" class="relative inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                             </svg>
                             <span>Add Task</span>
                         </button>
                     </div>
                     <div class="hidden md:ml-4 md:flex-shrink-0 md:flex md:items-center">
-                        <button
-                            class="bg-white p-1 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                            <span class="sr-only">View notifications</span>
-                            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor" aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                            </svg>
-                        </button>
-
-                        <!-- Profile dropdown -->
                         <div class="ml-3 relative">
                             <div>
-                                <button type="button"
-                                    class="bg-white rounded-full flex text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
-                                    id="user-menu-button" aria-expanded="false" aria-haspopup="true">
+                                <button id="user-menu-button" class="bg-white rounded-full flex text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                                     <span class="sr-only">Open user menu</span>
-                                    <div
-                                        class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-medium">
-                                        JS
+                                    <div class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-medium">
+                                        {{ board.user.username[:2]|upper }}
                                     </div>
                                 </button>
                             </div>
-                            <div id="user-dropdown"
-                                class="hidden origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10"
-                                role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button"
-                                tabindex="-1">
-                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                    role="menuitem">Your Profile</a>
-                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                    role="menuitem">Settings</a>
-                                <a href="index.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                    role="menuitem">Sign out</a>
+                            <div id="user-dropdown" class="hidden origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10">
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Your Profile</a>
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</a>
+                                <a href="/logout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sign out</a>
                             </div>
                         </div>
                     </div>
@@ -157,576 +127,212 @@
     </header>
 
     <!-- Board Header -->
-    <div class="bg-white shadow-sm border-b">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            <div class="flex flex-col md:flex-row md:items-center justify-between">
-                <div class="flex items-center mb-4 md:mb-0">
-                    <h1 class="text-2xl font-bold text-gray-900 mr-4">Project Roadmap</h1>
-                    <div class="flex space-x-2">
-                        <span
-                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
-                            Development
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-900">{{ board.name }}</h1>
+                <p class="text-sm text-gray-500">Created {{ board.created_at.strftime('%B %d, %Y') }}</p>
+            </div>
+            <div class="flex space-x-2">
+                <button id="board-settings-btn" class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    <svg class="-ml-0.5 mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    Settings
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Board Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+        <div class="flex space-x-4 overflow-x-auto pb-4 custom-scrollbar" id="board-columns">
+            <!-- To Do Column -->
+            <div class="flex-shrink-0 w-72">
+                <div class="bg-gray-100 rounded-md shadow">
+                    <div class="p-3 flex justify-between items-center bg-red-500 text-white rounded-t-md">
+                        <h3 class="font-medium">To Do</h3>
+                        <span class="text-sm bg-white bg-opacity-30 rounded-full h-6 w-6 flex items-center justify-center">
+                            {{ tasks_by_status['todo']|length }}
                         </span>
-                        <button class="text-gray-400 hover:text-gray-500">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                            </svg>
-                        </button>
+                    </div>
+                    <div class="p-2 max-h-[calc(100vh-220px)] overflow-y-auto custom-scrollbar task-column" data-status="todo">
+                        {% for task in tasks_by_status['todo'] %}
+                        <div class="task-card bg-white p-3 rounded shadow mb-2 cursor-pointer" data-task-id="{{ task.id }}">
+                            <div class="flex justify-between items-start">
+                                <h4 class="font-medium text-gray-900">{{ task.title }}</h4>
+                                <div class="task-actions relative">
+                                    <button class="task-menu-btn text-gray-400 hover:text-gray-600">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                                        </svg>
+                                    </button>
+                                    <div class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10 task-dropdown">
+                                        <button class="edit-task-btn block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-task-id="{{ task.id }}">Edit Task</button>
+                                        <button class="delete-task-btn block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100" data-task-id="{{ task.id }}">Delete Task</button>
+                                    </div>
+                                </div>
+                            </div>
+                            {% if task.description %}
+                            <p class="text-sm text-gray-500 mt-1">{{ task.description }}</p>
+                            {% endif %}
+                            {% if task.due_date %}
+                            <div class="mt-2 flex items-center text-xs text-gray-500">
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                                <span>{{ task.due_date|time_until }}</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                        <div class="add-task-placeholder p-2 border-2 border-dashed border-gray-300 rounded mt-2 text-center text-sm text-gray-500 cursor-pointer hover:bg-gray-50" data-status="todo">
+                            <span>+ Add a task</span>
+                        </div>
                     </div>
                 </div>
-                <div class="flex items-center space-x-4">
-                    <div class="flex -space-x-2">
-                        <div
-                            class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs border-2 border-white">
-                            JS</div>
-                        <div
-                            class="h-8 w-8 rounded-full bg-purple-500 flex items-center justify-center text-white text-xs border-2 border-white">
-                            AM</div>
-                        <div
-                            class="h-8 w-8 rounded-full bg-green-500 flex items-center justify-center text-white text-xs border-2 border-white">
-                            RK</div>
-                        <button
-                            class="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 text-xs border-2 border-white hover:bg-gray-300">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 4v16m8-8H4" />
-                            </svg>
-                        </button>
+            </div>
+
+            <!-- In Progress Column -->
+            <div class="flex-shrink-0 w-72">
+                <div class="bg-gray-100 rounded-md shadow">
+                    <div class="p-3 flex justify-between items-center bg-yellow-500 text-white rounded-t-md">
+                        <h3 class="font-medium">In Progress</h3>
+                        <span class="text-sm bg-white bg-opacity-30 rounded-full h-6 w-6 flex items-center justify-center">
+                            {{ tasks_by_status['progress']|length }}
+                        </span>
                     </div>
-                    <div class="flex space-x-2">
-                        <button
-                            class="inline-flex items-center px-3 py-1 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                            <svg class="mr-2 h-4 w-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
-                            </svg>
-                            Filter
-                        </button>
-                        <button
-                            class="inline-flex items-center px-3 py-1 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                            <svg class="mr-2 h-4 w-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M4 6h16M4 12h16M4 18h7" />
-                            </svg>
-                            Sort
-                        </button>
+                    <div class="p-2 max-h-[calc(100vh-220px)] overflow-y-auto custom-scrollbar task-column" data-status="progress">
+                        {% for task in tasks_by_status['progress'] %}
+                        <div class="task-card bg-white p-3 rounded shadow mb-2 cursor-pointer" data-task-id="{{ task.id }}">
+                            <div class="flex justify-between items-start">
+                                <h4 class="font-medium text-gray-900">{{ task.title }}</h4>
+                                <div class="task-actions relative">
+                                    <button class="task-menu-btn text-gray-400 hover:text-gray-600">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                                        </svg>
+                                    </button>
+                                    <div class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10 task-dropdown">
+                                        <button class="edit-task-btn block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-task-id="{{ task.id }}">Edit Task</button>
+                                        <button class="delete-task-btn block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100" data-task-id="{{ task.id }}">Delete Task</button>
+                                    </div>
+                                </div>
+                            </div>
+                            {% if task.description %}
+                            <p class="text-sm text-gray-500 mt-1">{{ task.description }}</p>
+                            {% endif %}
+                            {% if task.due_date %}
+                            <div class="mt-2 flex items-center text-xs text-gray-500">
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                                <span>{{ task.due_date|time_until }}</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                        <div class="add-task-placeholder p-2 border-2 border-dashed border-gray-300 rounded mt-2 text-center text-sm text-gray-500 cursor-pointer hover:bg-gray-50" data-status="progress">
+                            <span>+ Add a task</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Review Column -->
+            <div class="flex-shrink-0 w-72">
+                <div class="bg-gray-100 rounded-md shadow">
+                    <div class="p-3 flex justify-between items-center bg-blue-500 text-white rounded-t-md">
+                        <h3 class="font-medium">Review</h3>
+                        <span class="text-sm bg-white bg-opacity-30 rounded-full h-6 w-6 flex items-center justify-center">
+                            {{ tasks_by_status['review']|length }}
+                        </span>
+                    </div>
+                    <div class="p-2 max-h-[calc(100vh-220px)] overflow-y-auto custom-scrollbar task-column" data-status="review">
+                        {% for task in tasks_by_status['review'] %}
+                        <div class="task-card bg-white p-3 rounded shadow mb-2 cursor-pointer" data-task-id="{{ task.id }}">
+                            <div class="flex justify-between items-start">
+                                <h4 class="font-medium text-gray-900">{{ task.title }}</h4>
+                                <div class="task-actions relative">
+                                    <button class="task-menu-btn text-gray-400 hover:text-gray-600">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                                        </svg>
+                                    </button>
+                                    <div class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10 task-dropdown">
+                                        <button class="edit-task-btn block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-task-id="{{ task.id }}">Edit Task</button>
+                                        <button class="delete-task-btn block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100" data-task-id="{{ task.id }}">Delete Task</button>
+                                    </div>
+                                </div>
+                            </div>
+                            {% if task.description %}
+                            <p class="text-sm text-gray-500 mt-1">{{ task.description }}</p>
+                            {% endif %}
+                            {% if task.due_date %}
+                            <div class="mt-2 flex items-center text-xs text-gray-500">
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                                <span>{{ task.due_date|time_until }}</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                        <div class="add-task-placeholder p-2 border-2 border-dashed border-gray-300 rounded mt-2 text-center text-sm text-gray-500 cursor-pointer hover:bg-gray-50" data-status="review">
+                            <span>+ Add a task</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Done Column -->
+            <div class="flex-shrink-0 w-72">
+                <div class="bg-gray-100 rounded-md shadow">
+                    <div class="p-3 flex justify-between items-center bg-green-500 text-white rounded-t-md">
+                        <h3 class="font-medium">Done</h3>
+                        <span class="text-sm bg-white bg-opacity-30 rounded-full h-6 w-6 flex items-center justify-center">
+                            {{ tasks_by_status['done']|length }}
+                        </span>
+                    </div>
+                    <div class="p-2 max-h-[calc(100vh-220px)] overflow-y-auto custom-scrollbar task-column" data-status="done">
+                        {% for task in tasks_by_status['done'] %}
+                        <div class="task-card bg-white p-3 rounded shadow mb-2 cursor-pointer" data-task-id="{{ task.id }}">
+                            <div class="flex justify-between items-start">
+                                <h4 class="font-medium text-gray-900">{{ task.title }}</h4>
+                                <div class="task-actions relative">
+                                    <button class="task-menu-btn text-gray-400 hover:text-gray-600">
+                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                                        </svg>
+                                    </button>
+                                    <div class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10 task-dropdown">
+                                        <button class="edit-task-btn block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-task-id="{{ task.id }}">Edit Task</button>
+                                        <button class="delete-task-btn block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100" data-task-id="{{ task.id }}">Delete Task</button>
+                                    </div>
+                                </div>
+                            </div>
+                            {% if task.description %}
+                            <p class="text-sm text-gray-500 mt-1">{{ task.description }}</p>
+                            {% endif %}
+                            {% if task.due_date %}
+                            <div class="mt-2 flex items-center text-xs text-gray-500">
+                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                </svg>
+                                <span>{{ task.due_date|time_until }}</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                        <div class="add-task-placeholder p-2 border-2 border-dashed border-gray-300 rounded mt-2 text-center text-sm text-gray-500 cursor-pointer hover:bg-gray-50" data-status="done">
+                            <span>+ Add a task</span>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
-    <!-- Main Content -->
-    <main class="flex-1 overflow-hidden">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <!-- Board Lists -->
-            <div class="flex space-x-4 overflow-x-auto pb-4 custom-scrollbar h-full"
-                style="min-height: calc(100vh - 200px);">
-                <!-- To Do List -->
-                <div class="flex-shrink-0 w-72 bg-gray-100 rounded-lg shadow p-3 column-highlight" data-column="todo">
-                    <div class="flex justify-between items-center mb-3">
-                        <div class="flex items-center">
-                            <h3 class="font-medium text-gray-700">To Do</h3>
-                            <span class="ml-2 bg-gray-200 text-gray-700 text-xs px-2 py-0.5 rounded-full">5</span>
-                        </div>
-                        <div class="flex items-center">
-                            <button class="text-gray-500 hover:text-gray-700 mr-1">
-                                <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M12 4v16m8-8H4" />
-                                </svg>
-                            </button>
-                            <button class="text-gray-500 hover:text-gray-700">
-                                <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="space-y-2 task-list" data-list="todo">
-                        <!-- Task Card 1 -->
-                        <div class="task-card bg-white p-3 rounded shadow-sm cursor-move" draggable="true"
-                            data-task-id="1">
-                            <div class="flex justify-between items-start">
-                                <h4 class="text-sm font-medium text-gray-900">API Integration</h4>
-                                <span class="bg-red-100 text-red-800 text-xs px-2 py-0.5 rounded-full">High</span>
-                            </div>
-                            <p class="text-xs text-gray-500 mt-2">Integrate payment gateway API for checkout process.
-                            </p>
-                            <div class="flex items-center mt-3 space-x-2">
-                                <span
-                                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
-                                    Backend
-                                </span>
-                                <span
-                                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-800">
-                                    API
-                                </span>
-                            </div>
-                            <div class="flex justify-between items-center mt-3">
-                                <span class="text-xs text-gray-500">May 25</span>
-                                <div
-                                    class="h-6 w-6 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs">
-                                    JS</div>
-                            </div>
-                        </div>
-
-                        <!-- Task Card 2 -->
-                        <div class="task-card bg-white p-3 rounded shadow-sm cursor-move" draggable="true"
-                            data-task-id="2">
-                            <div class="flex justify-between items-start">
-                                <h4 class="text-sm font-medium text-gray-900">User Authentication</h4>
-                                <span
-                                    class="bg-yellow-100 text-yellow-800 text-xs px-2 py-0.5 rounded-full">Medium</span>
-                            </div>
-                            <p class="text-xs text-gray-500 mt-2">Implement OAuth 2.0 for social login options.</p>
-                            <div class="flex items-center mt-3 space-x-2">
-                                <span
-                                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
-                                    Backend
-                                </span>
-                                <span
-                                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
-                                    Security
-                                </span>
-                            </div>
-                            <div class="flex justify-between items-center mt-3">
-                                <span class="text-xs text-gray-500">May 27</span>
-                                <div
-                                    class="h-6 w-6 rounded-full bg-purple-500 flex items-center justify-center text-white text-xs">
-                                    AM</div>
-                            </div>
-                        </div>
-
-                        <!-- Task Card 3 -->
-                        <div class="task-card bg-white p-3 rounded shadow-sm cursor-move" draggable="true"
-                            data-task-id="3">
-                            <div class="flex justify-between items-start">
-                                <h4 class="text-sm font-medium text-gray-900">Database Schema</h4>
-                                <span class="bg-red-100 text-red-800 text-xs px-2 py-0.5 rounded-full">High</span>
-                            </div>
-                            <p class="text-xs text-gray-500 mt-2">Design and implement database schema for user
-                                profiles.</p>
-                            <div class="flex items-center mt-3 space-x-2">
-                                <span
-                                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
-                                    Backend
-                                </span>
-                                <span
-                                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-indigo-100 text-indigo-800">
-                                    Database
-                                </span>
-                            </div>
-                            <div class="flex justify-between items-center mt-3">
-                                <span class="text-xs text-gray-500">May 26</span>
-                                <div
-                                    class="h-6 w-6 rounded-full bg-green-500 flex items-center justify-center text-white text-xs">
-                                    RK</div>
-                            </div>
-                        </div>
-
-                        <!-- Task Card 4 -->
-                        <div class="task-card bg-white p-3 rounded shadow-sm cursor-move" draggable="true"
-                            data-task-id="4">
-                            <div class="flex justify-between items-start">
-                                <h4 class="text-sm font-medium text-gray-900">Error Handling</h4>
-                                <span
-                                    class="bg-yellow-100 text-yellow-800 text-xs px-2 py-0.5 rounded-full">Medium</span>
-                            </div>
-                            <p class="text-xs text-gray-500 mt-2">Implement global error handling and logging system.
-                            </p>
-                            <div class="flex items-center mt-3 space-x-2">
-                                <span
-                                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
-                                    Backend
-                                </span>
-                            </div>
-                            <div class="flex justify-between items-center mt-3">
-                                <span class="text-xs text-gray-500">May 28</span>
-                                <div
-                                    class="h-6 w-6 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs">
-                                    JS</div>
-                            </div>
-                        </div>
-
-                        <!-- Task Card 5 -->
-                        <div class="task-card bg-white p-3 rounded shadow-sm cursor-move" draggable="true"
-                            data-task-id="5">
-                            <div class="flex justify-between items-start">
-                                <h4 class="text-sm font-medium text-gray-900">Unit Tests</h4>
-                                <span class="bg-green-100 text-green-800 text-xs px-2 py-0.5 rounded-full">Low</span>
-                            </div>
-                            <p class="text-xs text-gray-500 mt-2">Write unit tests for authentication module.</p>
-                            <div class="flex items-center mt-3 space-x-2">
-                                <span
-                                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
-                                    Backend
-                                </span>
-                                <span
-                                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800">
-                                    Testing
-                                </span>
-                            </div>
-                            <div class="flex justify-between items-center mt-3">
-                                <span class="text-xs text-gray-500">May 30</span>
-                                <div
-                                    class="h-6 w-6 rounded-full bg-purple-500 flex items-center justify-center text-white text-xs">
-                                    AM</div>
-                            </div>
-                        </div>
-
-                        <!-- Add Task Button -->
-                        <button class="w-full text-left text-sm text-gray-500 hover:text-gray-700 py-2 add-task-btn"
-                            data-column="todo">
-                            <svg class="inline-block h-4 w-4 mr-1" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 4v16m8-8H4" />
-                            </svg>
-                            Add a card
-                        </button>
-                    </div>
-                </div>
-
-                <!-- In Progress List -->
-                <div class="flex-shrink-0 w-72 bg-gray-100 rounded-lg shadow p-3 column-highlight"
-                    data-column="in-progress">
-                    <div class="flex justify-between items-center mb-3">
-                        <div class="flex items-center">
-                            <h3 class="font-medium text-gray-700">In Progress</h3>
-                            <span class="ml-2 bg-gray-200 text-gray-700 text-xs px-2 py-0.5 rounded-full">3</span>
-                        </div>
-                        <div class="flex items-center">
-                            <button class="text-gray-500 hover:text-gray-700 mr-1">
-                                <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M12 4v16m8-8H4" />
-                                </svg>
-                            </button>
-                            <button class="text-gray-500 hover:text-gray-700">
-                                <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="space-y-2 task-list" data-list="in-progress">
-                        <!-- Task Card 6 -->
-                        <div class="task-card bg-white p-3 rounded shadow-sm cursor-move" draggable="true"
-                            data-task-id="6">
-                            <div class="flex justify-between items-start">
-                                <h4 class="text-sm font-medium text-gray-900">User Dashboard</h4>
-                                <span class="bg-red-100 text-red-800 text-xs px-2 py-0.5 rounded-full">High</span>
-                            </div>
-                            <p class="text-xs text-gray-500 mt-2">Create responsive dashboard with user statistics.</p>
-                            <div class="flex items-center mt-3 space-x-2">
-                                <span
-                                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-800">
-                                    Frontend
-                                </span>
-                                <span
-                                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-pink-100 text-pink-800">
-                                    UI/UX
-                                </span>
-                            </div>
-                            <div class="flex justify-between items-center mt-3">
-                                <span class="text-xs text-gray-500">May 22</span>
-                                <div
-                                    class="h-6 w-6 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs">
-                                    JS</div>
-                            </div>
-                        </div>
-
-                        <!-- Task Card 7 -->
-                        <div class="task-card bg-white p-3 rounded shadow-sm cursor-move" draggable="true"
-                            data-task-id="7">
-                            <div class="flex justify-between items-start">
-                                <h4 class="text-sm font-medium text-gray-900">Data Visualization</h4>
-                                <span
-                                    class="bg-yellow-100 text-yellow-800 text-xs px-2 py-0.5 rounded-full">Medium</span>
-                            </div>
-                            <p class="text-xs text-gray-500 mt-2">Implement charts and graphs for analytics dashboard.
-                            </p>
-                            <div class="flex items-center mt-3 space-x-2">
-                                <span
-                                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-800">
-                                    Frontend
-                                </span>
-                                <span
-                                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
-                                    JavaScript
-                                </span>
-                            </div>
-                            <div class="flex justify-between items-center mt-3">
-                                <span class="text-xs text-gray-500">May 23</span>
-                                <div
-                                    class="h-6 w-6 rounded-full bg-green-500 flex items-center justify-center text-white text-xs">
-                                    RK</div>
-                            </div>
-                        </div>
-
-                        <!-- Task Card 8 -->
-                        <div class="task-card bg-white p-3 rounded shadow-sm cursor-move" draggable="true"
-                            data-task-id="8">
-                            <div class="flex justify-between items-start">
-                                <h4 class="text-sm font-medium text-gray-900">Form Validation</h4>
-                                <span class="bg-green-100 text-green-800 text-xs px-2 py-0.5 rounded-full">Low</span>
-                            </div>
-                            <p class="text-xs text-gray-500 mt-2">Implement client-side validation for all forms.</p>
-                            <div class="flex items-center mt-3 space-x-2">
-                                <span
-                                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-800">
-                                    Frontend
-                                </span>
-                            </div>
-                            <div class="flex justify-between items-center mt-3">
-                                <span class="text-xs text-gray-500">May 24</span>
-                                <div
-                                    class="h-6 w-6 rounded-full bg-purple-500 flex items-center justify-center text-white text-xs">
-                                    AM</div>
-                            </div>
-                        </div>
-
-                        <!-- Add Task Button -->
-                        <button class="w-full text-left text-sm text-gray-500 hover:text-gray-700 py-2 add-task-btn"
-                            data-column="in-progress">
-                            <svg class="inline-block h-4 w-4 mr-1" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 4v16m8-8H4" />
-                            </svg>
-                            Add a card
-                        </button> />
-                        </svg>
-                        Add a card
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Review List -->
-                <div class="flex-shrink-0 w-72 bg-gray-100 rounded-lg shadow p-3 column-highlight" data-column="review">
-                    <div class="flex justify-between items-center mb-3">
-                        <div class="flex items-center">
-                            <h3 class="font-medium text-gray-700">Review</h3>
-                            <span class="ml-2 bg-gray-200 text-gray-700 text-xs px-2 py-0.5 rounded-full">2</span>
-                        </div>
-                        <div class="flex items-center">
-                            <button class="text-gray-500 hover:text-gray-700 mr-1">
-                                <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M12 4v16m8-8H4" />
-                                </svg>
-                            </button>
-                            <button class="text-gray-500 hover:text-gray-700">
-                                <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="space-y-2 task-list" data-list="review">
-                        <!-- Task Card 9 -->
-                        <div class="task-card bg-white p-3 rounded shadow-sm cursor-move" draggable="true"
-                            data-task-id="9">
-                            <div class="flex justify-between items-start">
-                                <h4 class="text-sm font-medium text-gray-900">Responsive Design</h4>
-                                <span
-                                    class="bg-yellow-100 text-yellow-800 text-xs px-2 py-0.5 rounded-full">Medium</span>
-                            </div>
-                            <p class="text-xs text-gray-500 mt-2">Ensure all pages are responsive on mobile devices.</p>
-                            <div class="flex items-center mt-3 space-x-2">
-                                <span
-                                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-800">
-                                    Frontend
-                                </span>
-                                <span
-                                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-pink-100 text-pink-800">
-                                    UI/UX
-                                </span>
-                            </div>
-                            <div class="flex justify-between items-center mt-3">
-                                <span class="text-xs text-gray-500">May 20</span>
-                                <div
-                                    class="h-6 w-6 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs">
-                                    JS</div>
-                            </div>
-                        </div>
-
-                        <!-- Task Card 10 -->
-                        <div class="task-card bg-white p-3 rounded shadow-sm cursor-move" draggable="true"
-                            data-task-id="10">
-                            <div class="flex justify-between items-start">
-                                <h4 class="text-sm font-medium text-gray-900">Performance Optimization</h4>
-                                <span class="bg-red-100 text-red-800 text-xs px-2 py-0.5 rounded-full">High</span>
-                            </div>
-                            <p class="text-xs text-gray-500 mt-2">Optimize image loading and JavaScript execution.</p>
-                            <div class="flex items-center mt-3 space-x-2">
-                                <span
-                                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-yellow-100 text-yellow-800">
-                                    Frontend
-                                </span>
-                                <span
-                                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
-                                    Performance
-                                </span>
-                            </div>
-                            <div class="flex justify-between items-center mt-3">
-                                <span class="text-xs text-gray-500">May 21</span>
-                                <div
-                                    class="h-6 w-6 rounded-full bg-green-500 flex items-center justify-center text-white text-xs">
-                                    RK</div>
-                            </div>
-                        </div>
-
-                        <!-- Add Task Button -->
-                        <button class="w-full text-left text-sm text-gray-500 hover:text-gray-700 py-2 add-task-btn"
-                            data-column="review">
-                            <svg class="inline-block h-4 w-4 mr-1" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 4v16m8-8H4" />
-                            </svg>
-                            Add a card
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Done List -->
-                <div class="flex-shrink-0 w-72 bg-gray-100 rounded-lg shadow p-3 column-highlight" data-column="done">
-                    <div class="flex justify-between items-center mb-3">
-                        <div class="flex items-center">
-                            <h3 class="font-medium text-gray-700">Done</h3>
-                            <span class="ml-2 bg-gray-200 text-gray-700 text-xs px-2 py-0.5 rounded-full">3</span>
-                        </div>
-                        <div class="flex items-center">
-                            <button class="text-gray-500 hover:text-gray-700 mr-1">
-                                <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M12 4v16m8-8H4" />
-                                </svg>
-                            </button>
-                            <button class="text-gray-500 hover:text-gray-700">
-                                <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                    stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="space-y-2 task-list" data-list="done">
-                        <!-- Task Card 11 -->
-                        <div class="task-card bg-white p-3 rounded shadow-sm cursor-move" draggable="true"
-                            data-task-id="11">
-                            <div class="flex justify-between items-start">
-                                <h4 class="text-sm font-medium text-gray-900">Project Setup</h4>
-                                <span class="bg-green-100 text-green-800 text-xs px-2 py-0.5 rounded-full">Low</span>
-                            </div>
-                            <p class="text-xs text-gray-500 mt-2">Initialize project repository and setup development
-                                environment.</p>
-                            <div class="flex items-center mt-3 space-x-2">
-                                <span
-                                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-100 text-gray-800">
-                                    DevOps
-                                </span>
-                            </div>
-                            <div class="flex justify-between items-center mt-3">
-                                <span class="text-xs text-gray-500">May 15</span>
-                                <div
-                                    class="h-6 w-6 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs">
-                                    JS</div>
-                            </div>
-                        </div>
-
-                        <!-- Task Card 12 -->
-                        <div class="task-card bg-white p-3 rounded shadow-sm cursor-move" draggable="true"
-                            data-task-id="12">
-                            <div class="flex justify-between items-start">
-                                <h4 class="text-sm font-medium text-gray-900">Design System</h4>
-                                <span
-                                    class="bg-yellow-100 text-yellow-800 text-xs px-2 py-0.5 rounded-full">Medium</span>
-                            </div>
-                            <p class="text-xs text-gray-500 mt-2">Create design system with components and color
-                                palette.</p>
-                            <div class="flex items-center mt-3 space-x-2">
-                                <span
-                                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-pink-100 text-pink-800">
-                                    UI/UX
-                                </span>
-                            </div>
-                            <div class="flex justify-between items-center mt-3">
-                                <span class="text-xs text-gray-500">May 16</span>
-                                <div
-                                    class="h-6 w-6 rounded-full bg-purple-500 flex items-center justify-center text-white text-xs">
-                                    AM</div>
-                            </div>
-                        </div>
-
-                        <!-- Task Card 13 -->
-                        <div class="task-card bg-white p-3 rounded shadow-sm cursor-move" draggable="true"
-                            data-task-id="13">
-                            <div class="flex justify-between items-start">
-                                <h4 class="text-sm font-medium text-gray-900">Project Planning</h4>
-                                <span class="bg-green-100 text-green-800 text-xs px-2 py-0.5 rounded-full">Low</span>
-                            </div>
-                            <p class="text-xs text-gray-500 mt-2">Define project scope, timeline, and resource
-                                allocation.</p>
-                            <div class="flex items-center mt-3 space-x-2">
-                                <span
-                                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-orange-100 text-orange-800">
-                                    Planning
-                                </span>
-                            </div>
-                            <div class="flex justify-between items-center mt-3">
-                                <span class="text-xs text-gray-500">May 14</span>
-                                <div
-                                    class="h-6 w-6 rounded-full bg-green-500 flex items-center justify-center text-white text-xs">
-                                    RK</div>
-                            </div>
-                        </div>
-
-                        <!-- Add Task Button -->
-                        <button class="w-full text-left text-sm text-gray-500 hover:text-gray-700 py-2 add-task-btn"
-                            data-column="done">
-                            <svg class="inline-block h-4 w-4 mr-1" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 4v16m8-8H4" />
-                            </svg>
-                            Add a card
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Add List Button -->
-                <div
-                    class="flex-shrink-0 w-72 bg-gray-100 bg-opacity-60 rounded-lg border-2 border-dashed border-gray-300 p-3 flex items-center justify-center">
-                    <button class="text-gray-500 hover:text-gray-700 flex items-center" id="add-list-btn">
-                        <svg class="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                            stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                        </svg>
-                        Add another list
-                    </button>
-                </div>
-            </div>
-        </div>
-    </main>
 
     <!-- Create Task Modal -->
     <div id="create-task-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
@@ -734,740 +340,455 @@
         <div class="modal-content bg-white rounded-lg shadow-xl w-full max-w-md mx-4 p-6 relative">
             <button class="close-modal absolute top-4 right-4 text-gray-400 hover:text-gray-600">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
-                    </path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
             </button>
             <h2 class="text-2xl font-bold text-gray-900 mb-6">Create New Task</h2>
-            <form id="create-task-form">
+            <form id="create-task-form" action="/create_task" method="POST">
+                <input type="hidden" name="board_id" value="{{ board.id }}">
+                <input type="hidden" name="status" id="task-status-input" value="todo">
                 <div class="mb-4">
                     <label for="task-title" class="block text-sm font-medium text-gray-700 mb-1">Task Title</label>
-                    <input type="text" id="task-title"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        required>
+                    <input type="text" id="task-title" name="title" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
                 </div>
                 <div class="mb-4">
-                    <label for="task-description"
-                        class="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                    <textarea id="task-description" rows="3"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                    <label for="task-description" class="block text-sm font-medium text-gray-700 mb-1">Description (Optional)</label>
+                    <textarea id="task-description" name="description" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
                 </div>
                 <div class="mb-4">
-                    <label for="task-status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                    <select id="task-status"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <option value="todo">To Do</option>
-                        <option value="in-progress">In Progress</option>
-                        <option value="review">Review</option>
-                        <option value="done">Done</option>
-                    </select>
-                </div>
-                <div class="mb-4">
-                    <label for="task-priority" class="block text-sm font-medium text-gray-700 mb-1">Priority</label>
-                    <div class="flex space-x-4">
-                        <label class="inline-flex items-center">
-                            <input type="radio" name="priority" value="high"
-                                class="h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300">
-                            <span class="ml-2 text-sm text-gray-700">High</span>
-                        </label>
-                        <label class="inline-flex items-center">
-                            <input type="radio" name="priority" value="medium"
-                                class="h-4 w-4 text-yellow-600 focus:ring-yellow-500 border-gray-300" checked>
-                            <span class="ml-2 text-sm text-gray-700">Medium</span>
-                        </label>
-                        <label class="inline-flex items-center">
-                            <input type="radio" name="priority" value="low"
-                                class="h-4 w-4 text-green-600 focus:ring-green-500 border-gray-300">
-                            <span class="ml-2 text-sm text-gray-700">Low</span>
-                        </label>
-                    </div>
-                </div>
-                <div class="mb-4">
-                    <label for="task-tags" class="block text-sm font-medium text-gray-700 mb-1">Tags</label>
-                    <div class="flex flex-wrap gap-2">
-                        <label
-                            class="inline-flex items-center px-3 py-1 rounded-full bg-blue-100 text-blue-800 text-xs">
-                            <input type="checkbox" name="tags" value="backend" class="h-3 w-3 mr-1">
-                            Backend
-                        </label>
-                        <label
-                            class="inline-flex items-center px-3 py-1 rounded-full bg-yellow-100 text-yellow-800 text-xs">
-                            <input type="checkbox" name="tags" value="frontend" class="h-3 w-3 mr-1">
-                            Frontend
-                        </label>
-                        <label
-                            class="inline-flex items-center px-3 py-1 rounded-full bg-green-100 text-green-800 text-xs">
-                            <input type="checkbox" name="tags" value="security" class="h-3 w-3 mr-1">
-                            Security
-                        </label>
-                        <label
-                            class="inline-flex items-center px-3 py-1 rounded-full bg-pink-100 text-pink-800 text-xs">
-                            <input type="checkbox" name="tags" value="ui-ux" class="h-3 w-3 mr-1">
-                            UI/UX
-                        </label>
-                    </div>
-                </div>
-                <div class="mb-4">
-                    <label for="task-due-date" class="block text-sm font-medium text-gray-700 mb-1">Due Date</label>
-                    <input type="date" id="task-due-date"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <label for="task-due-date" class="block text-sm font-medium text-gray-700 mb-1">Due Date (Optional)</label>
+                    <input type="date" id="task-due-date" name="due_date" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
                 <div class="mb-6">
-                    <label for="task-assignee" class="block text-sm font-medium text-gray-700 mb-1">Assignee</label>
-                    <select id="task-assignee"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <option value="JS">John Smith (JS)</option>
-                        <option value="AM">Alice Miller (AM)</option>
-                        <option value="RK">Robert King (RK)</option>
-                    </select>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                    <div class="grid grid-cols-4 gap-2">
+                        <div class="status-option flex items-center p-2 border rounded cursor-pointer bg-red-100 border-red-500" data-status="todo">
+                            <span class="h-3 w-3 rounded-full bg-red-500 mr-2"></span>
+                            <span class="text-sm">To Do</span>
+                        </div>
+                        <div class="status-option flex items-center p-2 border rounded cursor-pointer" data-status="progress">
+                            <span class="h-3 w-3 rounded-full bg-yellow-500 mr-2"></span>
+                            <span class="text-sm">Progress</span>
+                        </div>
+                        <div class="status-option flex items-center p-2 border rounded cursor-pointer" data-status="review">
+                            <span class="h-3 w-3 rounded-full bg-blue-500 mr-2"></span>
+                            <span class="text-sm">Review</span>
+                        </div>
+                        <div class="status-option flex items-center p-2 border rounded cursor-pointer" data-status="done">
+                            <span class="h-3 w-3 rounded-full bg-green-500 mr-2"></span>
+                            <span class="text-sm">Done</span>
+                        </div>
+                    </div>
                 </div>
-                <button type="submit"
-                    class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-300">
+                <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-300">
                     Create Task
                 </button>
             </form>
         </div>
     </div>
 
-    <!-- Add List Modal -->
-    <div id="add-list-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
+    <!-- Edit Task Modal -->
+    <div id="edit-task-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
         <div class="modal-overlay absolute inset-0 bg-black bg-opacity-50"></div>
         <div class="modal-content bg-white rounded-lg shadow-xl w-full max-w-md mx-4 p-6 relative">
             <button class="close-modal absolute top-4 right-4 text-gray-400 hover:text-gray-600">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
-                    </path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
             </button>
-            <h2 class="text-2xl font-bold text-gray-900 mb-6">Add New List</h2>
-            <form id="add-list-form">
-                <div class="mb-6">
-                    <label for="list-name" class="block text-sm font-medium text-gray-700 mb-1">List Name</label>
-                    <input type="text" id="list-name"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        required>
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">Edit Task</h2>
+            <form id="edit-task-form" action="" method="POST">
+                <input type="hidden" name="status" id="edit-task-status-input" value="">
+                <div class="mb-4">
+                    <label for="edit-task-title" class="block text-sm font-medium text-gray-700 mb-1">Task Title</label>
+                    <input type="text" id="edit-task-title" name="title" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
                 </div>
-                <button type="submit"
-                    class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-300">
-                    Add List
-                </button>
+                <div class="mb-4">
+                    <label for="edit-task-description" class="block text-sm font-medium text-gray-700 mb-1">Description (Optional)</label>
+                    <textarea id="edit-task-description" name="description" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                </div>
+                <div class="mb-4">
+                    <label for="edit-task-due-date" class="block text-sm font-medium text-gray-700 mb-1">Due Date (Optional)</label>
+                    <input type="date" id="edit-task-due-date" name="due_date" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                    <div class="grid grid-cols-4 gap-2">
+                        <div class="edit-status-option flex items-center p-2 border rounded cursor-pointer" data-status="todo">
+                            <span class="h-3 w-3 rounded-full bg-red-500 mr-2"></span>
+                            <span class="text-sm">To Do</span>
+                        </div>
+                        <div class="edit-status-option flex items-center p-2 border rounded cursor-pointer" data-status="progress">
+                            <span class="h-3 w-3 rounded-full bg-yellow-500 mr-2"></span>
+                            <span class="text-sm">Progress</span>
+                        </div>
+                        <div class="edit-status-option flex items-center p-2 border rounded cursor-pointer" data-status="review">
+                            <span class="h-3 w-3 rounded-full bg-blue-500 mr-2"></span>
+                            <span class="text-sm">Review</span>
+                        </div>
+                        <div class="edit-status-option flex items-center p-2 border rounded cursor-pointer" data-status="done">
+                            <span class="h-3 w-3 rounded-full bg-green-500 mr-2"></span>
+                            <span class="text-sm">Done</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex space-x-3">
+                    <button type="submit" class="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-300">
+                        Save Changes
+                    </button>
+                    <button type="button" id="delete-task-confirm" class="bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 transition duration-300">
+                        Delete
+                    </button>
+                </div>
             </form>
         </div>
     </div>
 
-    <!-- Task Detail Modal -->
-    <div id="task-detail-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
+    <!-- Delete Task Confirmation Modal -->
+    <div id="delete-task-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
         <div class="modal-overlay absolute inset-0 bg-black bg-opacity-50"></div>
-        <div class="modal-content bg-white rounded-lg shadow-xl w-full max-w-2xl mx-4 p-6 relative">
+        <div class="modal-content bg-white rounded-lg shadow-xl w-full max-w-md mx-4 p-6 relative">
             <button class="close-modal absolute top-4 right-4 text-gray-400 hover:text-gray-600">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
-                    </path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
             </button>
-            <div class="flex justify-between items-start mb-4">
-                <h2 class="text-2xl font-bold text-gray-900" id="detail-title">Task Title</h2>
-                <span class="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full"
-                    id="detail-priority">Medium</span>
-            </div>
-            <div class="mb-6">
-                <p class="text-sm text-gray-700" id="detail-description">Task description will appear here.</p>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <div>
-                    <h3 class="text-sm font-medium text-gray-700 mb-2">Details</h3>
-                    <div class="bg-gray-50 rounded-lg p-4 space-y-3">
-                        <div class="flex justify-between">
-                            <span class="text-xs text-gray-500">Assignee</span>
-                            <div class="flex items-center">
-                                <div class="h-5 w-5 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs mr-1"
-                                    id="detail-assignee-icon">JS</div>
-                                <span class="text-xs font-medium" id="detail-assignee">John Smith</span>
-                            </div>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-xs text-gray-500">Due Date</span>
-                            <span class="text-xs font-medium" id="detail-due-date">May 25, 2023</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-xs text-gray-500">Status</span>
-                            <span class="text-xs font-medium" id="detail-status">To Do</span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-xs text-gray-500">Created</span>
-                            <span class="text-xs font-medium" id="detail-created">May 18, 2023</span>
-                        </div>
-                    </div>
+            <h2 class="text-2xl font-bold text-gray-900 mb-2">Delete Task</h2>
+            <p class="text-gray-600 mb-6">Are you sure you want to delete this task? This action cannot be undone.</p>
+            <form id="delete-task-form" action="" method="POST">
+                <div class="flex space-x-3">
+                    <button type="button" class="close-modal flex-1 bg-gray-200 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-300 transition duration-300">
+                        Cancel
+                    </button>
+                    <button type="submit" class="flex-1 bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 transition duration-300">
+                        Delete
+                    </button>
                 </div>
-                <div>
-                    <h3 class="text-sm font-medium text-gray-700 mb-2">Tags</h3>
-                    <div class="flex flex-wrap gap-2" id="detail-tags">
-                        <span
-                            class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
-                            Backend
-                        </span>
-                        <span
-                            class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-indigo-100 text-indigo-800">
-                            Database
-                        </span>
-                    </div>
-                </div>
-            </div>
-            <div class="border-t border-gray-200 pt-6">
-                <h3 class="text-sm font-medium text-gray-700 mb-2">Activity</h3>
-                <div class="space-y-4" id="detail-activity">
-                    <div class="flex">
-                        <div class="flex-shrink-0 mr-3">
-                            <div
-                                class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs">
-                                JS</div>
-                        </div>
-                        <div>
-                            <div class="text-sm">
-                                <span class="font-medium text-gray-900">John Smith</span>
-                                <span class="text-gray-500"> moved this task from </span>
-                                <span class="font-medium text-gray-900">To Do</span>
-                                <span class="text-gray-500"> to </span>
-                                <span class="font-medium text-gray-900">In Progress</span>
-                            </div>
-                            <div class="mt-1 text-xs text-gray-500">
-                                May 20, 2023 at 10:30 AM
-                            </div>
-                        </div>
-                    </div>
-                    <div class="flex">
-                        <div class="flex-shrink-0 mr-3">
-                            <div
-                                class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs">
-                                JS</div>
-                        </div>
-                        <div>
-                            <div class="text-sm">
-                                <span class="font-medium text-gray-900">John Smith</span>
-                                <span class="text-gray-500"> created this task</span>
-                            </div>
-                            <div class="mt-1 text-xs text-gray-500">
-                                May 18, 2023 at 2:15 PM
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="mt-4">
-                    <label for="comment" class="sr-only">Add comment</label>
-                    <div class="flex items-center">
-                        <textarea id="comment" rows="1"
-                            class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                            placeholder="Add a comment..."></textarea>
-                        <button type="button"
-                            class="ml-3 inline-flex items-center rounded-md border border-transparent bg-blue-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                            Comment
-                        </button>
-                    </div>
-                </div>
-            </div>
+            </form>
         </div>
     </div>
 
     <script>
-        // User dropdown toggle
+        // User Dropdown
         const userMenuButton = document.getElementById('user-menu-button');
         const userDropdown = document.getElementById('user-dropdown');
 
-        userMenuButton.addEventListener('click', () => {
-            userDropdown.classList.toggle('hidden');
-        });
-
-        // Close dropdown when clicking outside
+        userMenuButton.addEventListener('click', () => userDropdown.classList.toggle('hidden'));
         document.addEventListener('click', (e) => {
             if (!userMenuButton.contains(e.target) && !userDropdown.contains(e.target)) {
                 userDropdown.classList.add('hidden');
             }
         });
 
-        // Modal functionality
+        // Modal Handling
         const createTaskBtn = document.getElementById('create-task-btn');
         const createTaskModal = document.getElementById('create-task-modal');
-        const addListBtn = document.getElementById('add-list-btn');
-        const addListModal = document.getElementById('add-list-modal');
-        const taskDetailModal = document.getElementById('task-detail-modal');
-        const closeModalBtns = document.querySelectorAll('.close-modal');
-        const modalOverlays = document.querySelectorAll('.modal-overlay');
+        const editTaskModal = document.getElementById('edit-task-modal');
+        const deleteTaskModal = document.getElementById('delete-task-modal');
+        const closeModals = document.querySelectorAll('.close-modal');
 
-        function openModal(modal) {
-            modal.classList.remove('hidden');
-            setTimeout(() => {
-                modal.querySelector('.modal-overlay').classList.add('active');
-                modal.querySelector('.modal-content').classList.add('active');
-            }, 10);
-        }
-
-        function closeModal(modal) {
-            modal.querySelector('.modal-overlay').classList.remove('active');
-            modal.querySelector('.modal-content').classList.remove('active');
-            setTimeout(() => {
-                modal.classList.add('hidden');
-            }, 300);
-        }
-
-        createTaskBtn.addEventListener('click', () => openModal(createTaskModal));
-        addListBtn.addEventListener('click', () => openModal(addListModal));
-
-        closeModalBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                const modal = btn.closest('[id$="-modal"]');
-                closeModal(modal);
-            });
-        });
-
-        modalOverlays.forEach(overlay => {
-            overlay.addEventListener('click', () => {
-                const modal = overlay.closest('[id$="-modal"]');
-                closeModal(modal);
-            });
-        });
-
-        // Add column functionality
-        const addListForm = document.getElementById('add-list-form');
-
-        addListForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-
-            const listName = document.getElementById('list-name').value;
-            const columnId = listName.toLowerCase().replace(/\s+/g, '-');
-
-            // Create new column
-            const newColumnHtml = `
-                <div class="flex-shrink-0 w-72 bg-gray-100 rounded-lg shadow p-3 column-highlight animate-fade-in" data-column="${columnId}">
-                    <div class="flex justify-between items-center mb-3">
-                        <div class="flex items-center">
-                            <h3 class="font-medium text-gray-700">${listName}</h3>
-                            <span class="ml-2 bg-gray-200 text-gray-700 text-xs px-2 py-0.5 rounded-full">0</span>
-                        </div>
-                        <div class="flex items-center">
-                            <button class="text-gray-500 hover:text-gray-700 mr-1">
-                                <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                                </svg>
-                            </button>
-                            <button class="text-gray-500 hover:text-gray-700">
-                                <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="space-y-2 task-list" data-list="${columnId}">
-                        <button class="w-full text-left text-sm text-gray-500 hover:text-gray-700 py-2 add-task-btn" data-column="${columnId}">
-                            <svg class="inline-block h-4 w-4 mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                            </svg>
-                            Add a card
-                        </button>
-                    </div>
-                </div>
-            `;
-
-            // Insert the new column before the "Add List" button
-            const boardLists = document.querySelector('.flex.space-x-4');
-            const addListButton = document.querySelector('.flex-shrink-0.w-72.bg-gray-100.bg-opacity-60');
-            boardLists.insertBefore(document.createRange().createContextualFragment(newColumnHtml), addListButton);
-
-            // Close the modal and reset form
-            closeModal(addListModal);
-            addListForm.reset();
-
-            // Add event listeners to the new column
-            setupDragAndDrop();
-            setupTaskButtons();
-        });
-
-        // Create task functionality
-        const createTaskForm = document.getElementById('create-task-form');
-        let taskIdCounter = 14; // Start from 14 since we already have 13 tasks
-
-        createTaskForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-
-            const taskTitle = document.getElementById('task-title').value;
-            const taskDescription = document.getElementById('task-description').value;
-            const taskStatus = document.getElementById('task-status').value;
-            const taskPriority = document.querySelector('input[name="priority"]:checked').value;
-            const taskDueDate = document.getElementById('task-due-date').value;
-            const taskAssignee = document.getElementById('task-assignee').value;
-
-            // Get selected tags
-            const selectedTags = Array.from(document.querySelectorAll('input[name="tags"]:checked')).map(tag => tag.value);
-
-            // Format due date
-            const formattedDate = taskDueDate ? new Date(taskDueDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'No date';
-
-            // Create priority class
-            let priorityClass = '';
-            if (taskPriority === 'high') {
-                priorityClass = 'bg-red-100 text-red-800';
-            } else if (taskPriority === 'medium') {
-                priorityClass = 'bg-yellow-100 text-yellow-800';
+        function toggleModal(modal, show) {
+            const overlay = modal.querySelector('.modal-overlay');
+            const content = modal.querySelector('.modal-content');
+            if (show) {
+                modal.classList.remove('hidden');
+                setTimeout(() => {
+                    overlay.classList.add('active');
+                    content.classList.add('active');
+                }, 10);
             } else {
-                priorityClass = 'bg-green-100 text-green-800';
+                overlay.classList.remove('active');
+                content.classList.remove('active');
+                setTimeout(() => modal.classList.add('hidden'), 300);
             }
+        }
 
-            // Create tags HTML
-            let tagsHtml = '';
-            selectedTags.forEach(tag => {
-                let tagClass = '';
-                if (tag === 'backend') {
-                    tagClass = 'bg-blue-100 text-blue-800';
-                } else if (tag === 'frontend') {
-                    tagClass = 'bg-yellow-100 text-yellow-800';
-                } else if (tag === 'security') {
-                    tagClass = 'bg-green-100 text-green-800';
-                } else if (tag === 'ui-ux') {
-                    tagClass = 'bg-pink-100 text-pink-800';
+        // Open Create Task Modal
+        createTaskBtn.addEventListener('click', () => {
+            document.getElementById('task-status-input').value = 'todo';
+            document.querySelectorAll('.status-option').forEach(option => {
+                option.classList.remove('bg-red-100', 'bg-yellow-100', 'bg-blue-100', 'bg-green-100', 'border-red-500', 'border-yellow-500', 'border-blue-500', 'border-green-500');
+                if (option.dataset.status === 'todo') {
+                    option.classList.add('bg-red-100', 'border-red-500');
                 }
-
-                tagsHtml += `
-                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${tagClass}">
-                        ${tag.charAt(0).toUpperCase() + tag.slice(1)}
-                    </span>
-                `;
             });
-
-            // Create new task card
-            const newTaskId = taskIdCounter++;
-            const newTaskHtml = `
-                <div class="task-card bg-white p-3 rounded shadow-sm cursor-move animate-fade-in" draggable="true" data-task-id="${newTaskId}">
-                    <div class="flex justify-between items-start">
-                        <h4 class="text-sm font-medium text-gray-900">${taskTitle}</h4>
-                        <span class="text-xs px-2 py-0.5 rounded-full ${priorityClass}">${taskPriority.charAt(0).toUpperCase() + taskPriority.slice(1)}</span>
-                    </div>
-                    <p class="text-xs text-gray-500 mt-2">${taskDescription}</p>
-                    ${selectedTags.length > 0 ? `<div class="flex items-center mt-3 space-x-2">${tagsHtml}</div>` : ''}
-                    <div class="flex justify-between items-center mt-3">
-                        <span class="text-xs text-gray-500">${formattedDate}</span>
-                        <div class="h-6 w-6 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs">${taskAssignee}</div>
-                    </div>
-                </div>
-            `;
-
-            // Add task to the appropriate column
-            const targetColumn = document.querySelector(`[data-list="${taskStatus}"]`);
-            const addButton = targetColumn.querySelector('.add-task-btn');
-            targetColumn.insertBefore(document.createRange().createContextualFragment(newTaskHtml), addButton);
-
-            // Update task count
-            updateTaskCounts();
-
-            // Close the modal and reset form
-            closeModal(createTaskModal);
-            createTaskForm.reset();
-
-            // Add event listeners to the new task
-            setupDragAndDrop();
+            toggleModal(createTaskModal, true);
         });
 
-        // Function to update task counts in each column
-        function updateTaskCounts() {
-            const columns = document.querySelectorAll('[data-column]');
+        // Add Task Placeholders
+        document.querySelectorAll('.add-task-placeholder').forEach(placeholder => {
+            placeholder.addEventListener('click', () => {
+                const status = placeholder.dataset.status;
+                document.getElementById('task-status-input').value = status;
+                
+                document.querySelectorAll('.status-option').forEach(option => {
+                    option.classList.remove('bg-red-100', 'bg-yellow-100', 'bg-blue-100', 'bg-green-100', 'border-red-500', 'border-yellow-500', 'border-blue-500', 'border-green-500');
+                    
+                    if (option.dataset.status === status) {
+                        const statusColors = {
+                            'todo': ['bg-red-100', 'border-red-500'],
+                            'progress': ['bg-yellow-100', 'border-yellow-500'],
+                            'review': ['bg-blue-100', 'border-blue-500'],
+                            'done': ['bg-green-100', 'border-green-500']
+                        };
+                        
+                        option.classList.add(...statusColors[status]);
+                    }
+                });
+                
+                toggleModal(createTaskModal, true);
+            });
+        });
 
-            columns.forEach(column => {
-                const columnId = column.getAttribute('data-column');
-                const taskList = document.querySelector(`[data-list="${columnId}"]`);
-                const taskCount = taskList.querySelectorAll('.task-card').length;
-                const countElement = column.querySelector('.bg-gray-200.text-gray-700');
+        // Close Modals
+        closeModals.forEach(btn => {
+            btn.addEventListener('click', () => {
+                toggleModal(btn.closest('.fixed'), false);
+            });
+        });
 
+        // Status Selection in Create Task Modal
+        document.querySelectorAll('.status-option').forEach(option => {
+            option.addEventListener('click', () => {
+                const status = option.dataset.status;
+                document.getElementById('task-status-input').value = status;
+                
+                document.querySelectorAll('.status-option').forEach(opt => {
+                    opt.classList.remove('bg-red-100', 'bg-yellow-100', 'bg-blue-100', 'bg-green-100', 'border-red-500', 'border-yellow-500', 'border-blue-500', 'border-green-500');
+                });
+                
+                const statusColors = {
+                    'todo': ['bg-red-100', 'border-red-500'],
+                    'progress': ['bg-yellow-100', 'border-yellow-500'],
+                    'review': ['bg-blue-100', 'border-blue-500'],
+                    'done': ['bg-green-100', 'border-green-500']
+                };
+                
+                option.classList.add(...statusColors[status]);
+            });
+        });
+
+        // Status Selection in Edit Task Modal
+        document.querySelectorAll('.edit-status-option').forEach(option => {
+            option.addEventListener('click', () => {
+                const status = option.dataset.status;
+                document.getElementById('edit-task-status-input').value = status;
+                
+                document.querySelectorAll('.edit-status-option').forEach(opt => {
+                    opt.classList.remove('bg-red-100', 'bg-yellow-100', 'bg-blue-100', 'bg-green-100', 'border-red-500', 'border-yellow-500', 'border-blue-500', 'border-green-500');
+                });
+                
+                const statusColors = {
+                    'todo': ['bg-red-100', 'border-red-500'],
+                    'progress': ['bg-yellow-100', 'border-yellow-500'],
+                    'review': ['bg-blue-100', 'border-blue-500'],
+                    'done': ['bg-green-100', 'border-green-500']
+                };
+                
+                option.classList.add(...statusColors[status]);
+            });
+        });
+
+        // Task Menu Dropdowns
+        document.querySelectorAll('.task-menu-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const dropdown = btn.nextElementSibling;
+                
+                // Close all other dropdowns first
+                document.querySelectorAll('.task-dropdown').forEach(d => {
+                    if (d !== dropdown) d.classList.add('hidden');
+                });
+                
+                dropdown.classList.toggle('hidden');
+            });
+        });
+
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', () => {
+            document.querySelectorAll('.task-dropdown').forEach(dropdown => {
+                dropdown.classList.add('hidden');
+            });
+        });
+
+        // Edit Task
+        document.querySelectorAll('.edit-task-btn').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                e.stopPropagation();
+                const taskId = btn.dataset.taskId;
+                
+                try {
+                    const response = await fetch(`/api/tasks/${taskId}`);
+                    if (!response.ok) throw new Error('Failed to fetch task data');
+                    
+                    const task = await response.json();
+                    
+                    // Set form action
+                    document.getElementById('edit-task-form').action = `/update_task/${taskId}`;
+                    
+                    // Fill form fields
+                    document.getElementById('edit-task-title').value = task.title;
+                    document.getElementById('edit-task-description').value = task.description || '';
+                    document.getElementById('edit-task-due-date').value = task.due_date ? task.due_date.split('T')[0] : '';
+                    document.getElementById('edit-task-status-input').value = task.status;
+                    
+                    // Set status selection
+                    document.querySelectorAll('.edit-status-option').forEach(option => {
+                        option.classList.remove('bg-red-100', 'bg-yellow-100', 'bg-blue-100', 'bg-green-100', 'border-red-500', 'border-yellow-500', 'border-blue-500', 'border-green-500');
+                        
+                        if (option.dataset.status === task.status) {
+                            const statusColors = {
+                                'todo': ['bg-red-100', 'border-red-500'],
+                                'progress': ['bg-yellow-100', 'border-yellow-500'],
+                                'review': ['bg-blue-100', 'border-blue-500'],
+                                'done': ['bg-green-100', 'border-green-500']
+                            };
+                            
+                            option.classList.add(...statusColors[task.status]);
+                        }
+                    });
+                    
+                    toggleModal(editTaskModal, true);
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('Failed to load task data');
+                }
+            });
+        });
+
+        // Delete Task Button in Edit Modal
+        document.getElementById('delete-task-confirm').addEventListener('click', () => {
+            const taskId = new URL(document.getElementById('edit-task-form').action).pathname.split('/').pop();
+            document.getElementById('delete-task-form').action = `/delete_task/${taskId}`;
+            
+            toggleModal(editTaskModal, false);
+            setTimeout(() => toggleModal(deleteTaskModal, true), 300);
+        });
+
+        // Delete Task Button in Dropdown
+        document.querySelectorAll('.delete-task-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const taskId = btn.dataset.taskId;
+                document.getElementById('delete-task-form').action = `/delete_task/${taskId}`;
+                toggleModal(deleteTaskModal, true);
+            });
+        });
+
+        // Drag and Drop Functionality
+        document.addEventListener('DOMContentLoaded', () => {
+            let draggedTask = null;
+            let draggedTaskId = null;
+
+            // Initialize draggable tasks
+            function initDraggable() {
+                document.querySelectorAll('.task-card').forEach(task => {
+                    task.setAttribute('draggable', 'true');
+                    
+                    task.addEventListener('dragstart', (e) => {
+                        draggedTask = task;
+                        draggedTaskId = task.dataset.taskId;
+                        setTimeout(() => {
+                            task.classList.add('dragging');
+                        }, 0);
+                        e.dataTransfer.setData('text/plain', task.dataset.taskId);
+                    });
+                    
+                    task.addEventListener('dragend', () => {
+                        task.classList.remove('dragging');
+                    });
+                });
+            }
+
+            // Initialize drop zones
+            document.querySelectorAll('.task-column').forEach(column => {
+                column.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    column.classList.add('bg-gray-200');
+                });
+                
+                column.addEventListener('dragleave', () => {
+                    column.classList.remove('bg-gray-200');
+                });
+                
+                column.addEventListener('drop', async (e) => {
+                    e.preventDefault();
+                    column.classList.remove('bg-gray-200');
+                    
+                    const taskId = e.dataTransfer.getData('text/plain');
+                    if (!taskId) return;
+                    
+                    const newStatus = column.dataset.status;
+                    
+                    try {
+                        const response = await fetch(`/api/tasks/${taskId}/status`, {
+                            method: 'PUT',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ status: newStatus }),
+                        });
+                        
+                        if (!response.ok) throw new Error('Failed to update task status');
+                        
+                        // Instead of moving the DOM element directly, refresh the page to show updated state
+                        // This is more reliable than DOM manipulation for complex updates
+                        window.location.reload();
+                    } catch (error) {
+                        console.error('Error:', error);
+                        alert('Failed to update task status');
+                    }
+                });
+            });
+
+            // Initialize draggable tasks on page load
+            initDraggable();
+        });
+
+        // Helper function to update column counts
+        function updateColumnCounts() {
+            document.querySelectorAll('.task-column').forEach(column => {
+                const status = column.dataset.status;
+                const count = column.querySelectorAll('.task-card').length;
+                const countElement = column.parentElement.querySelector('.rounded-full');
                 if (countElement) {
-                    countElement.textContent = taskCount;
+                    countElement.textContent = count;
                 }
             });
         }
-
-        // Drag and drop functionality
-        function setupDragAndDrop() {
-            const taskCards = document.querySelectorAll('.task-card');
-            const taskLists = document.querySelectorAll('.task-list');
-
-            // Add event listeners to task cards
-            taskCards.forEach(card => {
-                // Remove existing event listeners
-                card.removeEventListener('dragstart', handleDragStart);
-                card.removeEventListener('dragend', handleDragEnd);
-                card.removeEventListener('click', handleTaskClick);
-
-                // Add new event listeners
-                card.addEventListener('dragstart', handleDragStart);
-                card.addEventListener('dragend', handleDragEnd);
-                card.addEventListener('click', handleTaskClick);
-            });
-
-            // Add event listeners to task lists
-            taskLists.forEach(list => {
-                // Remove existing event listeners
-                list.removeEventListener('dragover', handleDragOver);
-                list.removeEventListener('dragleave', handleDragLeave);
-                list.removeEventListener('drop', handleDrop);
-
-                // Add new event listeners
-                list.addEventListener('dragover', handleDragOver);
-                list.addEventListener('dragleave', handleDragLeave);
-                list.addEventListener('drop', handleDrop);
-            });
-        }
-
-        let draggedTask = null;
-
-        function handleDragStart(e) {
-            draggedTask = this;
-            setTimeout(() => {
-                this.classList.add('dragging');
-            }, 0);
-        }
-
-        function handleDragEnd() {
-            this.classList.remove('dragging');
-            document.querySelectorAll('.column-highlight').forEach(col => {
-                col.classList.remove('bg-gray-200');
-            });
-        }
-
-        function handleDragOver(e) {
-            e.preventDefault();
-            this.closest('.column-highlight').classList.add('bg-gray-200');
-        }
-
-        function handleDragLeave() {
-            this.closest('.column-highlight').classList.remove('bg-gray-200');
-        }
-
-        function handleDrop(e) {
-            e.preventDefault();
-            this.closest('.column-highlight').classList.remove('bg-gray-200');
-
-            if (draggedTask) {
-                // Get the list's add button (last child)
-                const addButton = this.querySelector('.add-task-btn');
-
-                // Insert the dragged task before the add button
-                this.insertBefore(draggedTask, addButton);
-
-                // Update task counts
-                updateTaskCounts();
-
-                // In a real app, update the task's status in the database
-                console.log(`Moved task ${draggedTask.dataset.taskId} to ${this.dataset.list}`);
-
-                // Add to activity log (in a real app, this would be saved to a database)
-                const taskTitle = draggedTask.querySelector('h4').textContent;
-                const fromList = draggedTask.parentElement.dataset.list;
-                const toList = this.dataset.list;
-
-                console.log(`Task "${taskTitle}" moved from ${fromList} to ${toList}`);
-            }
-        }
-
-        // Task detail modal
-        function handleTaskClick(e) {
-            // Don't open modal if dragging
-            if (this.classList.contains('dragging')) return;
-
-            const taskId = this.dataset.taskId;
-            const taskTitle = this.querySelector('h4').textContent;
-            const taskDescription = this.querySelector('p').textContent;
-            const taskPriority = this.querySelector('.rounded-full').textContent;
-            const taskDueDate = this.querySelector('.text-xs.text-gray-500').textContent;
-            const taskAssignee = this.querySelector('.h-6.w-6').textContent;
-            const taskStatus = this.closest('[data-list]').dataset.list;
-
-            // Get tags
-            const tags = Array.from(this.querySelectorAll('.inline-flex.items-center')).map(tag => {
-                return `
-                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${tag.className.split(' ').filter(c => c.includes('bg-')).join(' ')}">
-                        ${tag.textContent.trim()}
-                    </span>
+        
+        // API endpoint for getting task details
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add API endpoint for getting task details
+            if (!window.taskEndpointAdded) {
+                const script = document.createElement('script');
+                script.textContent = `
+                    // Add API endpoint for getting task details
+                    app.route('/api/tasks/<int:task_id>', methods=['GET'])
+                    def get_task(task_id):
+                        if 'user_id' not in session:
+                            return jsonify({'error': 'Unauthorized'}), 401
+                        
+                        task = Task.query.get_or_404(task_id)
+                        
+                        # Check if user has access to this task
+                        if task.user_id != session['user_id']:
+                            return jsonify({'error': 'Forbidden'}), 403
+                        
+                        return jsonify({
+                            'id': task.id,
+                            'title': task.title,
+                            'description': task.description,
+                            'status': task.status,
+                            'due_date': task.due_date.isoformat() if task.due_date else None,
+                            'board_id': task.board_id
+                        })
                 `;
-            }).join('');
-
-            // Update modal content
-            document.getElementById('detail-title').textContent = taskTitle;
-            document.getElementById('detail-description').textContent = taskDescription;
-            document.getElementById('detail-priority').textContent = taskPriority;
-            document.getElementById('detail-priority').className = this.querySelector('.rounded-full').className;
-            document.getElementById('detail-due-date').textContent = taskDueDate;
-            document.getElementById('detail-assignee').textContent = getFullName(taskAssignee);
-            document.getElementById('detail-assignee-icon').textContent = taskAssignee;
-            document.getElementById('detail-status').textContent = formatStatus(taskStatus);
-            document.getElementById('detail-tags').innerHTML = tags || 'No tags';
-
-            // Open modal
-            openModal(taskDetailModal);
-        }
-
-        function getFullName(initials) {
-            const names = {
-                'JS': 'John Smith',
-                'AM': 'Alice Miller',
-                'RK': 'Robert King'
-            };
-
-            return names[initials] || initials;
-        }
-
-        function formatStatus(status) {
-            return status.split('-').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
-        }
-
-        // Add task buttons
-        function setupTaskButtons() {
-            const addTaskButtons = document.querySelectorAll('.add-task-btn');
-
-            addTaskButtons.forEach(button => {
-                // Remove existing event listeners
-                button.removeEventListener('click', handleAddTaskClick);
-
-                // Add new event listeners
-                button.addEventListener('click', handleAddTaskClick);
-            });
-        }
-
-        function handleAddTaskClick() {
-            const columnId = this.dataset.column;
-            document.getElementById('task-status').value = columnId;
-            openModal(createTaskModal);
-        }
-
-        let currentBoardId = null;
-        let draggedTask = null;
-
-        document.addEventListener('DOMContentLoaded', async () => {
-            await initializeBoard();
-            setupEventListeners();
-        });
-
-        async function initializeBoard() {
-            const urlParams = new URLSearchParams(window.location.search);
-            currentBoardId = urlParams.get('id');
-
-            try {
-                const response = await fetch(`/api/boards/${currentBoardId}`);
-                if (!response.ok) throw new Error('Board not found');
-
-                const board = await response.json();
-                renderBoard(board);
-            } catch (error) {
-                console.error('Error loading board:', error);
-                alert('Failed to load board');
+                document.body.appendChild(script);
+                window.taskEndpointAdded = true;
             }
-        }
-
-        function renderBoard(board) {
-            const container = document.querySelector('.flex.space-x-4');
-            container.innerHTML = '';
-
-            board.columns.forEach(column => {
-                const columnHtml = `
-                <div class="flex-shrink-0 w-72 bg-gray-100 rounded-lg shadow p-3 column-highlight"
-                     data-column-id="${column.id}" data-column="${column.name.toLowerCase()}">
-                    <div class="flex justify-between items-center mb-3">
-                        <div class="flex items-center">
-                            <h3 class="font-medium text-gray-700">${column.name}</h3>
-                            <span class="ml-2 bg-gray-200 text-gray-700 text-xs px-2 py-0.5 rounded-full">
-                                ${column.tasks.length}
-                            </span>
-                        </div>
-                        <div class="flex items-center">
-                            <button class="text-gray-500 hover:text-gray-700 mr-1 add-task-btn" 
-                                    data-column-id="${column.id}">
-                                <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                                </svg>
-                            </button>
-                            <button class="text-gray-500 hover:text-gray-700">
-                                <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="space-y-2 task-list" data-list-id="${column.id}">
-                        ${column.tasks.map(task => createTaskHtml(task)).join('')}
-                        <button class="w-full text-left text-sm text-gray-500 hover:text-gray-700 py-2 add-task-btn"
-                                data-column-id="${column.id}">
-                            <svg class="inline-block h-4 w-4 mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                            </svg>
-                            Add a card
-                        </button>
-                    </div>
-                </div>
-            `;
-                container.insertAdjacentHTML('beforeend', columnHtml);
-            });
-
-            // Add "Add List" button
-            container.insertAdjacentHTML('beforeend', `
-            <div class="flex-shrink-0 w-72 bg-gray-100 bg-opacity-60 rounded-lg border-2 border-dashed border-gray-300 p-3 flex items-center justify-center">
-                <button class="text-gray-500 hover:text-gray-700 flex items-center" id="add-list-btn">
-                    <svg class="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                    </svg>
-                    Add another list
-                </button>
-            </div>
-        `);
-
-            setupDragAndDrop();
-            setupTaskButtons();
-        }
-
-        function createTaskHtml(task) {
-            const dueDate = task.due_date ? new Date(task.due_date).toLocaleDateString('en-US', {
-                month: 'short', day: 'numeric'
-            }) : '';
-
-            return `
-            <div class="task-card bg-white p-3 rounded shadow-sm cursor-move animate-fade-in" 
-                 draggable="true" data-task-id="${task.id}">
-                <div class="flex justify-between items-start">
-                    <h4 class="text-sm font-medium text-gray-900">${task.title}</h4>
-                    <span class="text-xs px-2 py-0.5 rounded-full ${getPriorityClass(task.priority)}">
-                        ${task.priority.charAt(0).toUpperCase() + task.priority.slice(1)}
-                    </span>
-                </div>
-                ${task.description ? `<p class="text-xs text-gray-500 mt-2">${task.description}</p>` : ''}
-                ${task.tags.length > 0 ? `
-                    <div class="flex items-center mt-3 space-x-2">
-                        ${task.tags.map(tag => `
-                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-${tag.color}-100 text-${tag.color}-800">
-                                ${tag.name}
-                            </span>
-                        `).join('')}
-                    </div>
-                ` : ''}
-                <div class="flex justify-between items-center mt-3">
-                    ${dueDate ? `<span class="text-xs text-gray-500">${dueDate}</span>` : ''}
-                    ${task.assignee ? `
-                        <div class="h-6 w-6 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs">
-                            ${task.assignee}
-                        </div>
-                    ` : ''}
-                </div>
-            </div>
-        `;
-        }
-
-        function getPriorityClass(priority) {
-            const classes = {
-                high: 'bg-red-100 text-red-800',
-                medium: 'bg-yellow-100 text-yellow-800',
-                low: 'bg-green-100 text-green-800'
-            };
-            return classes[priority] || 'bg-gray-100 text-gray-800';
-        }
-
-        // Initialize
-        setupDragAndDrop();
-        setupTaskButtons();
-        updateTaskCounts();
+        });
     </script>
 </body>
-
 </html>
+

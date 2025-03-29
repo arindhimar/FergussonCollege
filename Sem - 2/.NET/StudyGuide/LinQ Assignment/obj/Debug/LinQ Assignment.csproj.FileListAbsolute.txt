@@ -1,0 +1,7 @@
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\StudyGuide\LinQ Assignment\bin\Debug\LinQ Assignment.exe.config
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\StudyGuide\LinQ Assignment\bin\Debug\LinQ Assignment.exe
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\StudyGuide\LinQ Assignment\bin\Debug\LinQ Assignment.pdb
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\StudyGuide\LinQ Assignment\obj\Debug\LinQ Assignment.csproj.AssemblyReference.cache
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\StudyGuide\LinQ Assignment\obj\Debug\LinQ Assignment.csproj.CoreCompileInputs.cache
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\StudyGuide\LinQ Assignment\obj\Debug\LinQ Assignment.exe
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\StudyGuide\LinQ Assignment\obj\Debug\LinQ Assignment.pdb

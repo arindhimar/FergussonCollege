@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session
+from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify, abort
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
@@ -36,7 +36,7 @@ class Task(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     board_id = db.Column(db.Integer, db.ForeignKey('board.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-
+    
     @property
     def status_color(self):
         colors = {
@@ -141,23 +141,191 @@ def create_board():
     db.session.commit()
     return redirect(url_for('board_dashboard'))
 
+
+@app.route('/update_board/<int:board_id>', methods=['POST'])
+def update_board(board_id):
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    
+    board = Board.query.get_or_404(board_id)
+    if board.user_id != session['user_id']:
+        abort(403)
+
+    board.name = request.form.get('name')
+    board.color = request.form.get('color', 'blue')
+    
+    db.session.commit()
+    return redirect(url_for('board_dashboard'))
+
+@app.route('/delete_board/<int:board_id>', methods=['POST'])
+def delete_board(board_id):
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+    
+    board = Board.query.get_or_404(board_id)
+    if board.user_id != session['user_id']:
+        abort(403)
+
+    db.session.delete(board)
+    db.session.commit()
+    return redirect(url_for('board_dashboard'))
+
+# New route for board view
+@app.route('/board-view')
+def board_view():
+    if 'user_id' not in session:
+        return redirect(url_for('home'))
+    
+    board_id = request.args.get('board_id')
+    if not board_id:
+        flash('Board not found', 'error')
+        return redirect(url_for('board_dashboard'))
+    
+    board = Board.query.get_or_404(board_id)
+    
+    # Check if user has access to this board
+    if board.user_id != session['user_id']:
+        abort(403)
+    
+    # Get tasks grouped by status
+    tasks_by_status = {
+        'todo': Task.query.filter_by(board_id=board_id, status='todo').all(),
+        'progress': Task.query.filter_by(board_id=board_id, status='progress').all(),
+        'review': Task.query.filter_by(board_id=board_id, status='review').all(),
+        'done': Task.query.filter_by(board_id=board_id, status='done').all()
+    }
+    
+    return render_template(
+        'board-view.html',
+        board=board,
+        tasks_by_status=tasks_by_status
+    )
+
+# API endpoints for board data
+@app.route('/api/boards/<int:board_id>', methods=['GET'])
+def get_board(board_id):
+    if 'user_id' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    board = Board.query.get_or_404(board_id)
+    
+    # Check if user has access to this board
+    if board.user_id != session['user_id']:
+        return jsonify({'error': 'Forbidden'}), 403
+    
+    # Get tasks grouped by status
+    tasks_by_status = {
+        'todo': [{'id': t.id, 'title': t.title, 'description': t.description, 'due_date': t.due_date.isoformat() if t.due_date else None} 
+                for t in Task.query.filter_by(board_id=board_id, status='todo').all()],
+        'progress': [{'id': t.id, 'title': t.title, 'description': t.description, 'due_date': t.due_date.isoformat() if t.due_date else None} 
+                    for t in Task.query.filter_by(board_id=board_id, status='progress').all()],
+        'review': [{'id': t.id, 'title': t.title, 'description': t.description, 'due_date': t.due_date.isoformat() if t.due_date else None} 
+                  for t in Task.query.filter_by(board_id=board_id, status='review').all()],
+        'done': [{'id': t.id, 'title': t.title, 'description': t.description, 'due_date': t.due_date.isoformat() if t.due_date else None} 
+                for t in Task.query.filter_by(board_id=board_id, status='done').all()]
+    }
+    
+    return jsonify({
+        'id': board.id,
+        'name': board.name,
+        'color': board.color,
+        'tasks': tasks_by_status
+    })
+
 @app.route('/create_task', methods=['POST'])
 def create_task():
     if 'user_id' not in session:
         return redirect(url_for('home'))
 
+    board_id = request.form.get('board_id')
+    board = Board.query.get_or_404(board_id)
+    
+    # Check if user has access to this board
+    if board.user_id != session['user_id']:
+        abort(403)
+    
+    due_date = None
+    if request.form.get('due_date'):
+        due_date = datetime.strptime(request.form.get('due_date'), '%Y-%m-%d')
+    
     task = Task(
         title=request.form.get('title'),
         description=request.form.get('description'),
         status=request.form.get('status', 'todo'),
-        due_date=datetime.strptime(request.form.get('due_date'), '%Y-%m-%d'),
-        board_id=request.form.get('board_id'),
+        due_date=due_date,
+        board_id=board_id,
         user_id=session['user_id']
     )
     
     db.session.add(task)
     db.session.commit()
-    return redirect(url_for('board_dashboard'))
+    
+    # Redirect back to board view
+    return redirect(url_for('board_view', board_id=board_id))
+
+@app.route('/update_task/<int:task_id>', methods=['POST'])
+def update_task(task_id):
+    if 'user_id' not in session:
+        return redirect(url_for('home'))
+    
+    task = Task.query.get_or_404(task_id)
+    
+    # Check if user has access to this task
+    if task.user_id != session['user_id']:
+        abort(403)
+    
+    task.title = request.form.get('title')
+    task.description = request.form.get('description')
+    task.status = request.form.get('status')
+    
+    if request.form.get('due_date'):
+        task.due_date = datetime.strptime(request.form.get('due_date'), '%Y-%m-%d')
+    
+    db.session.commit()
+    
+    # Redirect back to board view
+    return redirect(url_for('board_view', board_id=task.board_id))
+
+@app.route('/delete_task/<int:task_id>', methods=['POST'])
+def delete_task(task_id):
+    if 'user_id' not in session:
+        return redirect(url_for('home'))
+    
+    task = Task.query.get_or_404(task_id)
+    
+    # Check if user has access to this task
+    if task.user_id != session['user_id']:
+        abort(403)
+    
+    board_id = task.board_id
+    db.session.delete(task)
+    db.session.commit()
+    
+    # Redirect back to board view
+    return redirect(url_for('board_view', board_id=board_id))
+
+# API endpoint to update task status (for drag and drop)
+@app.route('/api/tasks/<int:task_id>/status', methods=['PUT'])
+def update_task_status(task_id):
+    if 'user_id' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    data = request.json
+    new_status = data.get('status')
+    
+    if not new_status:
+        return jsonify({'error': 'Status is required'}), 400
+    
+    task = Task.query.get_or_404(task_id)
+    
+    # Check if user has access to this task
+    if task.user_id != session['user_id']:
+        return jsonify({'error': 'Forbidden'}), 403
+    
+    task.status = new_status
+    db.session.commit()
+    
+    return jsonify({'success': True})
 
 @app.route('/logout')
 def logout():
@@ -194,3 +362,4 @@ if __name__ == '__main__':
     with app.app_context():
         db.create_all()
     app.run(debug=True)
+

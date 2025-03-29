@@ -1,30 +1,98 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TaskFlow Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Keep existing styles */
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 10px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #a8a8a8; }
-        .board-card { transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out; }
-        .board-card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); }
-        .task-card.dragging { opacity: 0.5; transform: rotate(2deg); }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .animate-fade-in { animation: fadeIn 0.3s ease-out forwards; }
-        .modal-overlay { opacity: 0; transition: opacity 0.3s ease-out; }
-        .modal-overlay.active { opacity: 1; }
-        .modal-content { opacity: 0; transform: translateY(-20px); transition: all 0.3s ease-out; }
-        .modal-content.active { opacity: 1; transform: translateY(0); }
-        .progress-ring-circle { transition: stroke-dashoffset 0.35s; transform: rotate(-90deg); transform-origin: 50% 50%; }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 10px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+
+        .board-card {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+
+        .board-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .task-card.dragging {
+            opacity: 0.5;
+            transform: rotate(2deg);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in {
+            animation: fadeIn 0.3s ease-out forwards;
+        }
+
+        .modal-overlay {
+            opacity: 0;
+            transition: opacity 0.3s ease-out;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+        }
+
+        .modal-content {
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.3s ease-out;
+        }
+
+        .modal-content.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .progress-ring-circle {
+            transition: stroke-dashoffset 0.35s;
+            transform: rotate(-90deg);
+            transform-origin: 50% 50%;
+        }
+
+        .board-actions-btn {
+            transition: all 0.2s ease;
+        }
+
+        .board-actions-btn:hover {
+            transform: scale(1.1);
+        }
     </style>
 </head>
+
 <body class="bg-gray-100 font-sans">
-    <!-- Header -->
     <header class="bg-white shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
@@ -33,16 +101,22 @@
                         <span class="text-blue-600 font-bold text-xl">TaskFlow</span>
                     </div>
                     <nav class="hidden sm:ml-6 sm:flex sm:space-x-8">
-                        <a href="#" class="border-blue-500 text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Boards</a>
-                        <a href="#" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Templates</a>
-                        <a href="#" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Team</a>
+                        <a href="#"
+                            class="border-blue-500 text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Boards</a>
+                        <a href="#"
+                            class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Templates</a>
+                        <a href="#"
+                            class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Team</a>
                     </nav>
                 </div>
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
-                        <button id="create-board-btn" class="relative inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                            <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                        <button id="create-board-btn"
+                            class="relative inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 4v16m8-8H4" />
                             </svg>
                             <span>Create Board</span>
                         </button>
@@ -50,17 +124,22 @@
                     <div class="hidden md:ml-4 md:flex-shrink-0 md:flex md:items-center">
                         <div class="ml-3 relative">
                             <div>
-                                <button id="user-menu-button" class="bg-white rounded-full flex text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                <button id="user-menu-button"
+                                    class="bg-white rounded-full flex text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                                     <span class="sr-only">Open user menu</span>
-                                    <div class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-medium">
+                                    <div
+                                        class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-medium">
                                         {{ user.username[:2]|upper }}
                                     </div>
                                 </button>
                             </div>
-                            <div id="user-dropdown" class="hidden origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10">
-                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Your Profile</a>
+                            <div id="user-dropdown"
+                                class="hidden origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10">
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Your
+                                    Profile</a>
                                 <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</a>
-                                <a href="/logout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sign out</a>
+                                <a href="/logout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sign
+                                    out</a>
                             </div>
                         </div>
                     </div>
@@ -69,14 +148,13 @@
         </div>
     </header>
 
-    <!-- Main Content -->
     <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <!-- Task Analytics Section -->
         <div class="mb-10">
             <div class="flex items-center justify-between mb-6">
                 <h2 class="text-2xl font-bold text-gray-900">Task Analytics</h2>
                 <div class="flex space-x-2">
-                    <select id="time-filter" class="bg-white border border-gray-300 rounded-md text-sm px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <select id="time-filter"
+                        class="bg-white border border-gray-300 rounded-md text-sm px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <option value="week">This Week</option>
                         <option value="month">This Month</option>
                         <option value="quarter">This Quarter</option>
@@ -84,7 +162,6 @@
                 </div>
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                <!-- Task Completion Card -->
                 <div class="bg-white rounded-lg shadow-md p-6">
                     <div class="flex justify-between items-start">
                         <div>
@@ -92,7 +169,8 @@
                             <h3 class="text-2xl font-bold text-gray-900">{{ completion_percent }}%</h3>
                             <p class="text-xs text-green-600 flex items-center mt-1">
                                 <svg class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M5 10l7-7m0 0l7 7m-7-7v18" />
                                 </svg>
                                 {{ (completion_percent - (completion_percent - 12))|abs }}% from last week
                             </p>
@@ -100,17 +178,18 @@
                         <div class="relative h-16 w-16">
                             <svg class="h-16 w-16" viewBox="0 0 36 36">
                                 <circle cx="18" cy="18" r="16" fill="none" stroke="#f3f4f6" stroke-width="2"></circle>
-                                <circle class="progress-ring-circle" cx="18" cy="18" r="16" fill="none" stroke="#3b82f6" 
-                                    stroke-width="2" stroke-dasharray="100" stroke-dashoffset="{{ 100 - completion_percent }}"></circle>
+                                <circle class="progress-ring-circle" cx="18" cy="18" r="16" fill="none" stroke="#3b82f6"
+                                    stroke-width="2" stroke-dasharray="100"
+                                    stroke-dashoffset="{{ 100 - completion_percent }}"></circle>
                             </svg>
-                            <div class="absolute top-0 left-0 h-16 w-16 flex items-center justify-center text-xs font-medium">
+                            <div
+                                class="absolute top-0 left-0 h-16 w-16 flex items-center justify-center text-xs font-medium">
                                 {{ completion_percent }}%
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Tasks By Status Card -->
                 <div class="bg-white rounded-lg shadow-md p-6">
                     <p class="text-sm text-gray-500 mb-3">Tasks By Status</p>
                     <div class="space-y-2">
@@ -121,21 +200,22 @@
                                 <span class="font-medium">{{ status_counts[status] }}</span>
                             </div>
                             <div class="h-2 bg-gray-200 rounded-full">
-                                <div class="h-2 bg-{{ status|status_color }}-500 rounded-full" 
-                                     style="width: {{ (status_counts[status]/total_tasks * 100) if total_tasks > 0 else 0 }}%"></div>
+                                <div class="h-2 bg-{{ status|status_color }}-500 rounded-full"
+                                    style="width: {{ (status_counts[status]/total_tasks * 100) if total_tasks > 0 else 0 }}%">
+                                </div>
                             </div>
                         </div>
                         {% endfor %}
                     </div>
                 </div>
 
-                <!-- Upcoming Deadlines Card -->
                 <div class="bg-white rounded-lg shadow-md p-6">
                     <p class="text-sm text-gray-500 mb-3">Upcoming Deadlines</p>
                     <ul class="space-y-3">
                         {% for task in upcoming %}
                         <li class="flex items-center text-sm">
-                            <span class="h-2 w-2 bg-{{ task.status_color }}-500 rounded-full mr-2"></span>
+                            <span class="h-2 w-2 bg-{{ task.status_color }}                            -500 rounded-full mr-2"></span>
+
                             <span class="truncate flex-1">{{ task.title }}</span>
                             <span class="text-xs text-gray-500">{{ task.due_date|time_until }}</span>
                         </li>
@@ -143,13 +223,13 @@
                     </ul>
                 </div>
 
-                <!-- Team Productivity Card -->
                 <div class="bg-white rounded-lg shadow-md p-6">
                     <p class="text-sm text-gray-500 mb-3">Team Productivity</p>
                     {% for member in team_productivity %}
                     <div class="flex items-center justify-between mb-4">
                         <div class="flex items-center">
-                            <div class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs mr-2">
+                            <div
+                                class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs mr-2">
                                 {{ member.initials }}
                             </div>
                             <span class="text-sm">{{ member.name }}</span>
@@ -163,7 +243,6 @@
             </div>
         </div>
 
-        <!-- Recent Boards Section -->
         <div class="mb-10">
             <div class="flex items-center justify-between mb-6">
                 <h2 class="text-2xl font-bold text-gray-900">Recent Boards</h2>
@@ -171,7 +250,32 @@
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="boards-container">
                 {% for board in boards %}
-                <div class="board-card bg-white rounded-lg shadow-md overflow-hidden" data-board-id="{{ board.id }}">
+                <div class="board-card bg-white rounded-lg shadow-md overflow-hidden relative"
+                    data-board-id="{{ board.id }}">
+                    <div class="absolute top-2 right-2">
+                        <button
+                            class="board-actions-btn text-gray-400 hover:text-gray-600 p-1 rounded-full bg-white shadow-sm">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                            </svg>
+                        </button>
+                        <div
+                            class="hidden origin-top-right absolute right-0 mt-1 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10">
+                            <button
+                                class="edit-board-btn block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                data-board-id="{{ board.id }}" data-board-name="{{ board.name }}"
+                                data-board-color="{{ board.color }}"
+                                data-board-private="{{ 'true' if board.private else 'false' }}">
+                                Edit Board
+                            </button>
+                            <button
+                                class="delete-board-btn block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
+                                data-board-id="{{ board.id }}">
+                                Delete Board
+                            </button>
+                        </div>
+                    </div>
                     <div class="h-24 bg-gradient-to-r from-{{ board.color }}-500 to-{{ board.color }}-600 p-4">
                         <h3 class="text-white font-semibold text-lg">{{ board.name }}</h3>
                     </div>
@@ -183,7 +287,8 @@
                             </span>
                         </div>
                         <div class="flex -space-x-2">
-                            <div class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs">
+                            <div
+                                class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs">
                                 {{ board.user.username[:2]|upper }}
                             </div>
                         </div>
@@ -191,12 +296,15 @@
                 </div>
                 {% endfor %}
 
-                <!-- Create New Board Card -->
-                <div class="board-card bg-white rounded-lg shadow-md overflow-hidden border-2 border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:border-blue-500" id="create-board-card">
+                <div class="board-card bg-white rounded-lg shadow-md overflow-hidden border-2 border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:border-blue-500"
+                    id="create-board-card">
                     <div class="text-center p-6">
-                        <div class="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 mx-auto mb-4">
-                            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                        <div
+                            class="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 mx-auto mb-4">
+                            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 4v16m8-8H4" />
                             </svg>
                         </div>
                         <p class="text-gray-700 font-medium">Create New Board</p>
@@ -206,37 +314,92 @@
         </div>
     </main>
 
-    <!-- Modals -->
     <div id="create-board-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
         <div class="modal-overlay absolute inset-0 bg-black bg-opacity-50"></div>
         <div class="modal-content bg-white rounded-lg shadow-xl w-full max-w-md mx-4 p-6 relative">
             <button class="close-modal absolute top-4 right-4 text-gray-400 hover:text-gray-600">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                    </path>
                 </svg>
             </button>
             <h2 class="text-2xl font-bold text-gray-900 mb-6">Create New Board</h2>
             <form id="create-board-form">
                 <div class="mb-4">
                     <label for="board-name" class="block text-sm font-medium text-gray-700 mb-1">Board Name</label>
-                    <input type="text" id="board-name" name="name" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    <input type="text" id="board-name" name="name"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        required>
                 </div>
                 <div class="mb-6">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Background</label>
                     <div class="grid grid-cols-5 gap-2">
-                        <div class="h-10 bg-blue-500 rounded cursor-pointer border-2 border-white" data-color="blue"></div>
-                        <div class="h-10 bg-purple-500 rounded cursor-pointer border-2 border-transparent hover:border-white" data-color="purple"></div>
-                        <div class="h-10 bg-green-500 rounded cursor-pointer border-2 border-transparent hover:border-white" data-color="green"></div>
-                        <div class="h-10 bg-red-500 rounded cursor-pointer border-2 border-transparent hover:border-white" data-color="red"></div>
-                        <div class="h-10 bg-yellow-500 rounded cursor-pointer border-2 border-transparent hover:border-white" data-color="yellow"></div>
+                        <div class="h-10 bg-blue-500 rounded cursor-pointer border-2 border-white" data-color="blue">
+                        </div>
+                        <div class="h-10 bg-purple-500 rounded cursor-pointer border-2 border-transparent hover:border-white"
+                            data-color="purple"></div>
+                        <div class="h-10 bg-green-500 rounded cursor-pointer border-2 border-transparent hover:border-white"
+                            data-color="green"></div>
+                        <div class="h-10 bg-red-500 rounded cursor-pointer border-2 border-transparent hover:border-white"
+                            data-color="red"></div>
+                        <div class="h-10 bg-yellow-500 rounded cursor-pointer border-2 border-transparent hover:border-white"
+                            data-color="yellow"></div>
                     </div>
                 </div>
                 <div class="flex items-center mb-4">
-                    <input type="checkbox" id="private-board" name="private" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                    <input type="checkbox" id="private-board" name="private"
+                        class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
                     <label for="private-board" class="ml-2 block text-sm text-gray-900">Private Board</label>
                 </div>
-                <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-300">
+                <button type="submit"
+                    class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-300">
                     Create Board
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div id="edit-board-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
+        <div class="modal-overlay absolute inset-0 bg-black bg-opacity-50"></div>
+        <div class="modal-content bg-white rounded-lg shadow-xl w-full max-w-md mx-4 p-6 relative">
+            <button class="close-modal absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                    </path>
+                </svg>
+            </button>
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">Edit Board</h2>
+            <form id="edit-board-form">
+                <input type="hidden" id="edit-board-id" name="board_id">
+                <div class="mb-4">
+                    <label for="edit-board-name" class="block text-sm font-medium text-gray-700 mb-1">Board Name</label>
+                    <input type="text" id="edit-board-name" name="name"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        required>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Background</label>
+                    <div class="grid grid-cols-5 gap-2">
+                        <div class="h-10 bg-blue-500 rounded cursor-pointer border-2 border-white" data-color="blue">
+                        </div>
+                        <div class="h-10 bg-purple-500 rounded cursor-pointer border-2 border-transparent hover:border-white"
+                            data-color="purple"></div>
+                        <div class="h-10 bg-green-500 rounded cursor-pointer border-2 border-transparent hover:border-white"
+                            data-color="green"></div>
+                        <div class="h-10 bg-red-500 rounded cursor-pointer border-2 border-transparent hover:border-white"
+                            data-color="red"></div>
+                        <div class="h-10 bg-yellow-500 rounded cursor-pointer border-2 border-transparent hover:border-white"
+                            data-color="yellow"></div>
+                    </div>
+                </div>
+                <div class="flex items-center mb-4">
+                    <input type="checkbox" id="edit-private-board" name="private"
+                        class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                    <label for="edit-private-board" class="ml-2 block text-sm text-gray-900">Private Board</label>
+                </div>
+                <button type="submit"
+                    class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-300">
+                    Save Changes
                 </button>
             </form>
         </div>
@@ -246,7 +409,6 @@
         // User Dropdown
         const userMenuButton = document.getElementById('user-menu-button');
         const userDropdown = document.getElementById('user-dropdown');
-
         userMenuButton.addEventListener('click', () => userDropdown.classList.toggle('hidden'));
         document.addEventListener('click', (e) => {
             if (!userMenuButton.contains(e.target) && !userDropdown.contains(e.target)) {
@@ -258,6 +420,7 @@
         const createBoardBtn = document.getElementById('create-board-btn');
         const createBoardCard = document.getElementById('create-board-card');
         const createBoardModal = document.getElementById('create-board-modal');
+        const editBoardModal = document.getElementById('edit-board-modal');
         const closeModals = document.querySelectorAll('.close-modal');
 
         function toggleModal(modal, show) {
@@ -276,12 +439,10 @@
             }
         }
 
-        // Open Modals
         [createBoardBtn, createBoardCard].forEach(element => {
             element.addEventListener('click', () => toggleModal(createBoardModal, true));
         });
 
-        // Close Modals
         closeModals.forEach(btn => {
             btn.addEventListener('click', () => {
                 toggleModal(btn.closest('.fixed'), false);
@@ -308,7 +469,7 @@
                     method: 'POST',
                     body: formData
                 });
-                
+
                 if (response.ok) {
                     window.location.reload();
                 } else {
@@ -330,23 +491,101 @@
             }
         });
 
-        // Time Filter
-        document.getElementById('time-filter').addEventListener('change', async (e) => {
-            const filter = e.target.value;
-            try {
-                const response = await fetch(`/analytics?filter=${filter}`);
-                const data = await response.json();
-                // Update analytics data here (you'll need to implement backend endpoint)
-                console.log('Updated analytics:', data);
-            } catch (error) {
-                console.error('Error updating analytics:', error);
-            }
+        // Board Actions
+        document.querySelectorAll('.board-actions-btn').forEach(btn => {
+            const dropdown = btn.nextElementSibling;
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                dropdown.classList.toggle('hidden');
+            });
+
+            document.addEventListener('click', (e) => {
+                if (!btn.contains(e.target) && !dropdown.contains(e.target)) {
+                    dropdown.classList.add('hidden');
+                }
+            });
         });
 
-        // Initialize color picker
+        // Edit Board Handling
+        document.querySelectorAll('.edit-board-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const boardId = btn.dataset.boardId;
+                const boardName = btn.dataset.boardName;
+                const boardColor = btn.dataset.boardColor;
+                const isPrivate = btn.dataset.boardPrivate === 'true';
+
+                document.getElementById('edit-board-id').value = boardId;
+                document.getElementById('edit-board-name').value = boardName;
+                document.getElementById('edit-private-board').checked = isPrivate;
+
+                document.querySelectorAll('#edit-board-modal [data-color]').forEach(color => {
+                    color.classList.remove('border-white');
+                    if (color.dataset.color === boardColor) {
+                        color.classList.add('border-white');
+                    }
+                });
+
+                toggleModal(editBoardModal, true);
+            });
+        });
+
+        // Edit Form Submission
+        document.getElementById('edit-board-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            const boardId = document.getElementById('edit-board-id').value;
+            const selectedColor = document.querySelector('#edit-board-modal [data-color].border-white').dataset.color;
+
+            formData.append('color', selectedColor);
+            formData.append('private', document.getElementById('edit-private-board').checked ? 'on' : '');
+
+            try {
+                const response = await fetch(`/update_board/${boardId}`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                if (response.ok) {
+                    window.location.reload();
+                } else {
+                    alert('Error updating board');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to update board');
+            }
+        });
+        // Delete Board Handling
+        document.querySelectorAll('.delete-board-btn').forEach(btn => {
+            btn.addEventListener('click', async (e) => {
+                e.stopPropagation();
+                const boardId = btn.dataset.boardId;
+
+                if (confirm('Are you sure you want to delete this board?')) {
+                    try {
+                        const response = await fetch(`/delete_board/${boardId}`, {
+                            method: 'POST',
+                        });
+
+                        if (response.ok) {
+                            window.location.reload();
+                        } else {
+                            alert('Error deleting board');
+                        }
+                    } catch (error) {
+                        console.error('Error:', error);
+                        alert('Failed to delete board');
+                    }
+                }
+            });
+        });
+        // Initialize color pickers
         document.addEventListener('DOMContentLoaded', () => {
             document.querySelector('[data-color="blue"]').click();
+            document.querySelector('#edit-board-modal [data-color="blue"]').click();
         });
     </script>
 </body>
+
 </html>
