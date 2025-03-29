@@ -110,7 +110,7 @@
                                 <button id="user-menu-button" class="bg-white rounded-full flex text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                                     <span class="sr-only">Open user menu</span>
                                     <div class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-medium">
-                                        {{ board.user.username[:2]|upper }}
+                                        {{ board.owner.username[:2]|upper }}
                                     </div>
                                 </button>
                             </div>
@@ -159,33 +159,46 @@
                     </div>
                     <div class="p-2 max-h-[calc(100vh-220px)] overflow-y-auto custom-scrollbar task-column" data-status="todo">
                         {% for task in tasks_by_status['todo'] %}
-                        <div class="task-card bg-white p-3 rounded shadow mb-2 cursor-pointer" data-task-id="{{ task.id }}">
-                            <div class="flex justify-between items-start">
-                                <h4 class="font-medium text-gray-900">{{ task.title }}</h4>
-                                <div class="task-actions relative">
-                                    <button class="task-menu-btn text-gray-400 hover:text-gray-600">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-                                        </svg>
-                                    </button>
-                                    <div class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10 task-dropdown">
-                                        <button class="edit-task-btn block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-task-id="{{ task.id }}">Edit Task</button>
-                                        <button class="delete-task-btn block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100" data-task-id="{{ task.id }}">Delete Task</button>
-                                    </div>
-                                </div>
-                            </div>
-                            {% if task.description %}
-                            <p class="text-sm text-gray-500 mt-1">{{ task.description }}</p>
-                            {% endif %}
-                            {% if task.due_date %}
-                            <div class="mt-2 flex items-center text-xs text-gray-500">
-                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                </svg>
-                                <span>{{ task.due_date|time_until }}</span>
-                            </div>
-                            {% endif %}
-                        </div>
+                        
+<div class="task-card bg-white p-3 rounded shadow mb-2 cursor-pointer" data-task-id="{{ task.id }}">
+    <div class="flex justify-between items-start">
+        <h4 class="font-medium text-gray-900">{{ task.title }}</h4>
+        <div class="task-actions relative">
+            <button class="task-menu-btn text-gray-400 hover:text-gray-600">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                </svg>
+            </button>
+            <div class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10 task-dropdown">
+                <button class="edit-task-btn block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-task-id="{{ task.id }}">Edit Task</button>
+                <button class="delete-task-btn block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100" data-task-id="{{ task.id }}">Delete Task</button>
+            </div>
+        </div>
+    </div>
+    {% if task.description %}
+    <p class="text-sm text-gray-500 mt-1">{{ task.description }}</p>
+    {% endif %}
+    
+<div class="mt-2 flex items-center justify-between">
+    {% if task.due_date %}
+    <div class="flex items-center text-xs text-gray-500">
+        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+        <span>{{ task.due_date|time_until }}</span>
+    </div>
+    {% endif %}
+    {% if task.assignee %}
+    <div class="flex items-center">
+        <div class="h-5 w-5 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs" title="{{ task.assignee.username }}">
+            {{ task.assignee.username[:2]|upper }}
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+</div>
+
                         {% endfor %}
                         <div class="add-task-placeholder p-2 border-2 border-dashed border-gray-300 rounded mt-2 text-center text-sm text-gray-500 cursor-pointer hover:bg-gray-50" data-status="todo">
                             <span>+ Add a task</span>
@@ -205,33 +218,46 @@
                     </div>
                     <div class="p-2 max-h-[calc(100vh-220px)] overflow-y-auto custom-scrollbar task-column" data-status="progress">
                         {% for task in tasks_by_status['progress'] %}
-                        <div class="task-card bg-white p-3 rounded shadow mb-2 cursor-pointer" data-task-id="{{ task.id }}">
-                            <div class="flex justify-between items-start">
-                                <h4 class="font-medium text-gray-900">{{ task.title }}</h4>
-                                <div class="task-actions relative">
-                                    <button class="task-menu-btn text-gray-400 hover:text-gray-600">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-                                        </svg>
-                                    </button>
-                                    <div class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10 task-dropdown">
-                                        <button class="edit-task-btn block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-task-id="{{ task.id }}">Edit Task</button>
-                                        <button class="delete-task-btn block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100" data-task-id="{{ task.id }}">Delete Task</button>
-                                    </div>
-                                </div>
-                            </div>
-                            {% if task.description %}
-                            <p class="text-sm text-gray-500 mt-1">{{ task.description }}</p>
-                            {% endif %}
-                            {% if task.due_date %}
-                            <div class="mt-2 flex items-center text-xs text-gray-500">
-                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                </svg>
-                                <span>{{ task.due_date|time_until }}</span>
-                            </div>
-                            {% endif %}
-                        </div>
+                        
+<div class="task-card bg-white p-3 rounded shadow mb-2 cursor-pointer" data-task-id="{{ task.id }}">
+    <div class="flex justify-between items-start">
+        <h4 class="font-medium text-gray-900">{{ task.title }}</h4>
+        <div class="task-actions relative">
+            <button class="task-menu-btn text-gray-400 hover:text-gray-600">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                </svg>
+            </button>
+            <div class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10 task-dropdown">
+                <button class="edit-task-btn block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-task-id="{{ task.id }}">Edit Task</button>
+                <button class="delete-task-btn block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100" data-task-id="{{ task.id }}">Delete Task</button>
+            </div>
+        </div>
+    </div>
+    {% if task.description %}
+    <p class="text-sm text-gray-500 mt-1">{{ task.description }}</p>
+    {% endif %}
+    
+<div class="mt-2 flex items-center justify-between">
+    {% if task.due_date %}
+    <div class="flex items-center text-xs text-gray-500">
+        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+        <span>{{ task.due_date|time_until }}</span>
+    </div>
+    {% endif %}
+    {% if task.assignee %}
+    <div class="flex items-center">
+        <div class="h-5 w-5 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs" title="{{ task.assignee.username }}">
+            {{ task.assignee.username[:2]|upper }}
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+</div>
+
                         {% endfor %}
                         <div class="add-task-placeholder p-2 border-2 border-dashed border-gray-300 rounded mt-2 text-center text-sm text-gray-500 cursor-pointer hover:bg-gray-50" data-status="progress">
                             <span>+ Add a task</span>
@@ -251,33 +277,46 @@
                     </div>
                     <div class="p-2 max-h-[calc(100vh-220px)] overflow-y-auto custom-scrollbar task-column" data-status="review">
                         {% for task in tasks_by_status['review'] %}
-                        <div class="task-card bg-white p-3 rounded shadow mb-2 cursor-pointer" data-task-id="{{ task.id }}">
-                            <div class="flex justify-between items-start">
-                                <h4 class="font-medium text-gray-900">{{ task.title }}</h4>
-                                <div class="task-actions relative">
-                                    <button class="task-menu-btn text-gray-400 hover:text-gray-600">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-                                        </svg>
-                                    </button>
-                                    <div class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10 task-dropdown">
-                                        <button class="edit-task-btn block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-task-id="{{ task.id }}">Edit Task</button>
-                                        <button class="delete-task-btn block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100" data-task-id="{{ task.id }}">Delete Task</button>
-                                    </div>
-                                </div>
-                            </div>
-                            {% if task.description %}
-                            <p class="text-sm text-gray-500 mt-1">{{ task.description }}</p>
-                            {% endif %}
-                            {% if task.due_date %}
-                            <div class="mt-2 flex items-center text-xs text-gray-500">
-                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                </svg>
-                                <span>{{ task.due_date|time_until }}</span>
-                            </div>
-                            {% endif %}
-                        </div>
+                        
+<div class="task-card bg-white p-3 rounded shadow mb-2 cursor-pointer" data-task-id="{{ task.id }}">
+    <div class="flex justify-between items-start">
+        <h4 class="font-medium text-gray-900">{{ task.title }}</h4>
+        <div class="task-actions relative">
+            <button class="task-menu-btn text-gray-400 hover:text-gray-600">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                </svg>
+            </button>
+            <div class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10 task-dropdown">
+                <button class="edit-task-btn block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-task-id="{{ task.id }}">Edit Task</button>
+                <button class="delete-task-btn block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100" data-task-id="{{ task.id }}">Delete Task</button>
+            </div>
+        </div>
+    </div>
+    {% if task.description %}
+    <p class="text-sm text-gray-500 mt-1">{{ task.description }}</p>
+    {% endif %}
+    
+<div class="mt-2 flex items-center justify-between">
+    {% if task.due_date %}
+    <div class="flex items-center text-xs text-gray-500">
+        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+        <span>{{ task.due_date|time_until }}</span>
+    </div>
+    {% endif %}
+    {% if task.assignee %}
+    <div class="flex items-center">
+        <div class="h-5 w-5 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs" title="{{ task.assignee.username }}">
+            {{ task.assignee.username[:2]|upper }}
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+</div>
+
                         {% endfor %}
                         <div class="add-task-placeholder p-2 border-2 border-dashed border-gray-300 rounded mt-2 text-center text-sm text-gray-500 cursor-pointer hover:bg-gray-50" data-status="review">
                             <span>+ Add a task</span>
@@ -297,33 +336,46 @@
                     </div>
                     <div class="p-2 max-h-[calc(100vh-220px)] overflow-y-auto custom-scrollbar task-column" data-status="done">
                         {% for task in tasks_by_status['done'] %}
-                        <div class="task-card bg-white p-3 rounded shadow mb-2 cursor-pointer" data-task-id="{{ task.id }}">
-                            <div class="flex justify-between items-start">
-                                <h4 class="font-medium text-gray-900">{{ task.title }}</h4>
-                                <div class="task-actions relative">
-                                    <button class="task-menu-btn text-gray-400 hover:text-gray-600">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-                                        </svg>
-                                    </button>
-                                    <div class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10 task-dropdown">
-                                        <button class="edit-task-btn block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-task-id="{{ task.id }}">Edit Task</button>
-                                        <button class="delete-task-btn block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100" data-task-id="{{ task.id }}">Delete Task</button>
-                                    </div>
-                                </div>
-                            </div>
-                            {% if task.description %}
-                            <p class="text-sm text-gray-500 mt-1">{{ task.description }}</p>
-                            {% endif %}
-                            {% if task.due_date %}
-                            <div class="mt-2 flex items-center text-xs text-gray-500">
-                                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                </svg>
-                                <span>{{ task.due_date|time_until }}</span>
-                            </div>
-                            {% endif %}
-                        </div>
+                        
+<div class="task-card bg-white p-3 rounded shadow mb-2 cursor-pointer" data-task-id="{{ task.id }}">
+    <div class="flex justify-between items-start">
+        <h4 class="font-medium text-gray-900">{{ task.title }}</h4>
+        <div class="task-actions relative">
+            <button class="task-menu-btn text-gray-400 hover:text-gray-600">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                </svg>
+            </button>
+            <div class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10 task-dropdown">
+                <button class="edit-task-btn block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-task-id="{{ task.id }}">Edit Task</button>
+                <button class="delete-task-btn block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100" data-task-id="{{ task.id }}">Delete Task</button>
+            </div>
+        </div>
+    </div>
+    {% if task.description %}
+    <p class="text-sm text-gray-500 mt-1">{{ task.description }}</p>
+    {% endif %}
+    
+<div class="mt-2 flex items-center justify-between">
+    {% if task.due_date %}
+    <div class="flex items-center text-xs text-gray-500">
+        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+        </svg>
+        <span>{{ task.due_date|time_until }}</span>
+    </div>
+    {% endif %}
+    {% if task.assignee %}
+    <div class="flex items-center">
+        <div class="h-5 w-5 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs" title="{{ task.assignee.username }}">
+            {{ task.assignee.username[:2]|upper }}
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+</div>
+
                         {% endfor %}
                         <div class="add-task-placeholder p-2 border-2 border-dashed border-gray-300 rounded mt-2 text-center text-sm text-gray-500 cursor-pointer hover:bg-gray-50" data-status="done">
                             <span>+ Add a task</span>
@@ -359,6 +411,17 @@
                     <label for="task-due-date" class="block text-sm font-medium text-gray-700 mb-1">Due Date (Optional)</label>
                     <input type="date" id="task-due-date" name="due_date" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
                 </div>
+                
+<div class="mb-4">
+    <label for="task-assignee" class="block text-sm font-medium text-gray-700 mb-1">Assign To (Optional)</label>
+    <select id="task-assignee" name="assigned_to" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <option value="">Unassigned</option>
+        {% for member in board_members %}
+        <option value="{{ member.id }}">{{ member.username }}</option>
+        {% endfor %}
+    </select>
+</div>
+
                 <div class="mb-6">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
                     <div class="grid grid-cols-4 gap-2">
@@ -410,6 +473,15 @@
                 <div class="mb-4">
                     <label for="edit-task-due-date" class="block text-sm font-medium text-gray-700 mb-1">Due Date (Optional)</label>
                     <input type="date" id="edit-task-due-date" name="due_date" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div class="mb-4">
+                    <label for="edit-task-assignee" class="block text-sm font-medium text-gray-700 mb-1">Assign To (Optional)</label>
+                    <select id="edit-task-assignee" name="assigned_to" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="">Unassigned</option>
+                        {% for member in board_members %}
+                        <option value="{{ member.id }}">{{ member.username }}</option>
+                        {% endfor %}
+                    </select>
                 </div>
                 <div class="mb-6">
                     <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
@@ -788,6 +860,60 @@
                 window.taskEndpointAdded = true;
             }
         });
+    // Add this to the existing script section
+    document.getElementById('board-settings-btn').addEventListener('click', () => {
+        window.location.href = `/board_settings/${board.id}`;
+    });
+    
+    // Update the Edit Task function to handle assignee
+    document.querySelectorAll('.edit-task-btn').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+            e.stopPropagation();
+            const taskId = btn.dataset.taskId;
+            
+            try {
+                const response = await fetch(`/api/tasks/${taskId}`);
+                if (!response.ok) throw new Error('Failed to fetch task data');
+                
+                const task = await response.json();
+                
+                // Set form action
+                document.getElementById('edit-task-form').action = `/update_task/${taskId}`;
+                
+                // Fill form fields
+                document.getElementById('edit-task-title').value = task.title;
+                document.getElementById('edit-task-description').value = task.description || '';
+                document.getElementById('edit-task-due-date').value = task.due_date ? task.due_date.split('T')[0] : '';
+                document.getElementById('edit-task-status-input').value = task.status;
+                
+                // Set assignee if available
+                if (document.getElementById('edit-task-assignee')) {
+                    document.getElementById('edit-task-assignee').value = task.assigned_to || '';
+                }
+                
+                // Set status selection
+                document.querySelectorAll('.edit-status-option').forEach(option => {
+                    option.classList.remove('bg-red-100', 'bg-yellow-100', 'bg-blue-100', 'bg-green-100', 'border-red-500', 'border-yellow-500', 'border-blue-500', 'border-green-500');
+                    
+                    if (option.dataset.status === task.status) {
+                        const statusColors = {
+                            'todo': ['bg-red-100', 'border-red-500'],
+                            'progress': ['bg-yellow-100', 'border-yellow-500'],
+                            'review': ['bg-blue-100', 'border-blue-500'],
+                            'done': ['bg-green-100', 'border-green-500']
+                        };
+                        
+                        option.classList.add(...statusColors[task.status]);
+                    }
+                });
+                
+                toggleModal(editTaskModal, true);
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to load task data');
+            }
+        });
+    });
     </script>
 </body>
 </html>

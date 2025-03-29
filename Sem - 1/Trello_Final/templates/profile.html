@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ user.username }} | TaskFlow</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 10px;
+        }
+
+        .tab-active {
+            border-bottom: 2px solid #3b82f6;
+            color: #3b82f6;
+        }
+
+        .modal-overlay {
+            opacity: 0;
+            transition: opacity 0.3s ease-out;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+        }
+
+        .modal-content {
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.3s ease-out;
+        }
+
+        .modal-content.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans">
+    <!-- Header -->
+    <header class="bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex">
+                    <div class="flex-shrink-0 flex items-center">
+                        <a href="/board_dashboard" class="text-blue-600 font-bold text-xl">TaskFlow</a>
+                    </div>
+                    <nav class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                        <a href="/board_dashboard" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Dashboard
+                        </a>
+                    </nav>
+                </div>
+                <div class="flex items-center">
+                    <div class="hidden md:ml-4 md:flex-shrink-0 md:flex md:items-center">
+                        <div class="ml-3 relative">
+                            <div>
+                                <button id="user-menu-button" class="bg-white rounded-full flex text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                    <span class="sr-only">Open user menu</span>
+                                    <div class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-medium">
+                                        {{ user.username[:2]|upper }}
+                                    </div>
+                                </button>
+                            </div>
+                            <div id="user-dropdown" class="hidden origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10">
+                                <a href="/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Your Profile</a>
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</a>
+                                <a href="/logout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sign out</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="bg-white shadow rounded-lg overflow-hidden">
+            <!-- Profile Header -->
+            <div class="bg-gradient-to-r from-blue-500 to-blue-600 p-6">
+                <div class="flex items-center">
+                    <div class="h-24 w-24 rounded-full bg-white flex items-center justify-center text-blue-600 text-3xl font-bold overflow-hidden">
+                        {% if user.avatar %}
+                            <img src="{{ user.avatar }}" alt="{{ user.username }}" class="h-full w-full object-cover">
+                        {% else %}
+                            {{ user.username[:2]|upper }}
+                        {% endif %}
+                    </div>
+                    <div class="ml-6 text-white">
+                        <h1 class="text-2xl font-bold">{{ user.full_name or user.username }}</h1>
+                        <p class="text-blue-100">{{ user.email }}</p>
+                        <p class="text-blue-100 mt-1">Member since {{ user.created_at.strftime('%B %d, %Y') }}</p>
+                    </div>
+                    <div class="ml-auto">
+                        <button id="edit-profile-btn" class="bg-white text-blue-600 px-4 py-2 rounded-md font-medium hover:bg-blue-50">
+                            Edit Profile
+                        </button>
+                    </div>
+                </div>
+                {% if user.bio %}
+                    <div class="mt-4 text-white">
+                        <p>{{ user.bio }}</p>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Profile Tabs -->
+            <div class="border-b border-gray-200">
+                <nav class="flex -mb-px">
+                    <button class="tab-button tab-active w-1/4 py-4 px-1 text-center border-b-2 font-medium text-sm" data-tab="boards">
+                        My Boards
+                    </button>
+                    <button class="tab-button w-1/4 py-4 px-1 text-center border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="shared">
+                        Shared With Me
+                    </button>
+                    <button class="tab-button w-1/4 py-4 px-1 text-center border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="tasks">
+                        My Tasks
+                    </button>
+                    <button class="tab-button w-1/4 py-4 px-1 text-center border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="assigned">
+                        Assigned To Me
+                    </button>
+                </nav>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="p-6">
+                <!-- My Boards Tab -->
+                <div id="boards-tab" class="tab-content">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {% for board in boards %}
+                        <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
+                            <div class="h-24 bg-gradient-to-r from-{{ board.color }}-500 to-{{ board.color }}-600 p-4">
+                                <h3 class="text-white font-semibold text-lg">{{ board.name }}</h3>
+                            </div>
+                            <div class="p-4">
+                                <div class="flex justify-between items-center mb-4">
+                                    <span class="text-sm text-gray-500">{{ board.tasks|length }} tasks</span>
+                                    <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
+                                        {{ 'Private' if board.is_private else 'Shared' }}
+                                    </span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <div class="flex -space-x-2">
+                                        <div class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs">
+                                            {{ board.owner.username[:2]|upper }}
+                                        </div>
+                                        {% for member in board.members[:3] %}
+                                        <div class="h-8 w-8 rounded-full bg-green-500 flex items-center justify-center text-white text-xs">
+                                            {{ member.user.username[:2]|upper }}
+                                        </div>
+                                        {% endfor %}
+                                        {% if board.members|length > 3 %}
+                                        <div class="h-8 w-8 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 text-xs">
+                                            +{{ board.members|length - 3 }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    <a href="/board-view?board_id={{ board.id }}" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                                        View Board
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% if not boards %}
+                    <div class="text-center py-8">
+                        <p class="text-gray-500">You haven't created any boards yet.</p>
+                        <a href="/board_dashboard" class="mt-2 inline-block text-blue-600 hover:text-blue-800">Go to Dashboard</a>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Shared With Me Tab -->
+                <div id="shared-tab" class="tab-content hidden">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {% for board in shared_boards %}
+        <div class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200">
+            <div class="h-24 bg-gradient-to-r from-{{ board.color }}-500 to-{{ board.color }}-600 p-4">
+                <h3 class="text-white font-semibold text-lg">{{ board.name }}</h3>
+            </div>
+            <div class="p-4">
+                <div class="flex justify-between items-center mb-4">
+                    <span class="text-sm text-gray-500">{{ board.tasks|length }} tasks</span>
+                    <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">
+                        Shared
+                    </span>
+                </div>
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center">
+                        <div class="h-8 w-8 rounded-full bg-purple-500 flex items-center justify-center text-white text-xs mr-2">
+                            {{ board.owner.username[:2]|upper }}
+                        </div>
+                        <span class="text-xs text-gray-500">Owned by {{ board.owner.username }}</span>
+                    </div>
+                    <a href="/board-view?board_id={{ board.id }}" class="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                        View Board
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% if not shared_boards %}
+    <div class="text-center py-8">
+        <p class="text-gray-500">No boards have been shared with you yet.</p>
+    </div>
+    {% endif %}
+</div>
+
+                <!-- My Tasks Tab -->
+                <div id="tasks-tab" class="tab-content hidden">
+                    <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+                        <table class="min-w-full divide-y divide-gray-300">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Task</th>
+                                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Board</th>
+                                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Status</th>
+                                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Due Date</th>
+                                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Assigned To</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200 bg-white">
+                                {% for task in created_tasks %}
+                                <tr>
+                                    <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">{{ task.title }}</td>
+                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ task.board.name }}</td>
+                                    <td class="whitespace-nowrap px-3 py-4 text-sm">
+                                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-{{ task.status_color }}-100 text-{{ task.status_color }}-800">
+                                            {{ task.status|title }}
+                                        </span>
+                                    </td>
+                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                        {% if task.due_date %}
+                                            {{ task.due_date.strftime('%b %d, %Y') }}
+                                        {% else %}
+                                            -
+                                        {% endif %}
+                                    </td>
+                                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                        {% if task.assignee %}
+                                            <div class="flex items-center">
+                                                <div class="h-6 w-6 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs mr-2">
+                                                    {{ task.assignee.username[:2]|upper }}
+                                                </div>
+                                                <span>{{ task.assignee.username }}</span>
+                                            </div>
+                                        {% else %}
+                                            Unassigned
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% if not created_tasks %}
+                    <div class="text-center py-8">
+                        <p class="text-gray-500">You haven't created any tasks yet.</p>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <!-- Assigned To Me Tab -->
+                <div id="assigned-tab" class="tab-content hidden">
+    <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+        <table class="min-w-full divide-y divide-gray-300">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Task</th>
+                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Board</th>
+                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Status</th>
+                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Due Date</th>
+                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Created By</th>
+                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200 bg-white">
+                {% for task in assigned_tasks %}
+                <tr>
+                    <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">{{ task.title }}</td>
+                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ task.board.name }}</td>
+                    <td class="whitespace-nowrap px-3 py-4 text-sm">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-{{ task.status_color }}-100 text-{{ task.status_color }}-800">
+                            {{ task.status|title }}
+                        </span>
+                    </td>
+                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                        {% if task.due_date %}
+                            {{ task.due_date.strftime('%b %d, %Y') }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                        <div class="flex items-center">
+                            <div class="h-6 w-6 rounded-full bg-green-500 flex items-center justify-center text-white text-xs mr-2">
+                                {{ task.creator.username[:2]|upper }}
+                            </div>
+                            <span>{{ task.creator.username }}</span>
+                        </div>
+                    </td>
+                    <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                        <a href="/board-view?board_id={{ task.board_id }}" class="text-blue-600 hover:text-blue-800">View Board</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% if not assigned_tasks %}
+    <div class="text-center py-8">
+        <p class="text-gray-500">No tasks have been assigned to you yet.</p>
+    </div>
+    {% endif %}
+</div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Edit Profile Modal -->
+    <div id="edit-profile-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
+        <div class="modal-overlay absolute inset-0 bg-black bg-opacity-50"></div>
+        <div class="modal-content bg-white rounded-lg shadow-xl w-full max-w-md mx-4 p-6 relative">
+            <button class="close-modal absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+            <h2 class="text-2xl font-bold text-gray-900 mb-6">Edit Profile</h2>
+            <form id="edit-profile-form" action="/update_profile" method="POST" enctype="multipart/form-data">
+                <div class="mb-4">
+                    <label for="full-name" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                    <input type="text" id="full-name" name="full_name" value="{{ user.full_name or '' }}" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div class="mb-4">
+                    <label for="bio" class="block text-sm font-medium text-gray-700 mb-1">Bio</label>
+                    <textarea id="bio" name="bio" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">{{ user.bio or '' }}</textarea>
+                </div>
+                <div class="mb-6">
+                    <label for="avatar" class="block text-sm font-medium text-gray-700 mb-1">Profile Picture</label>
+                    <input type="file" id="avatar" name="avatar" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-300">
+                    Save Changes
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // User Dropdown
+        const userMenuButton = document.getElementById('user-menu-button');
+        const userDropdown = document.getElementById('user-dropdown');
+        userMenuButton.addEventListener('click', () => userDropdown.classList.toggle('hidden'));
+        document.addEventListener('click', (e) => {
+            if (!userMenuButton.contains(e.target) && !userDropdown.contains(e.target)) {
+                userDropdown.classList.add('hidden');
+            }
+        });
+
+        // Tab Switching
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const tabName = button.dataset.tab;
+                
+                // Update active tab button
+                tabButtons.forEach(btn => {
+                    btn.classList.remove('tab-active');
+                    btn.classList.add('text-gray-500', 'border-transparent');
+                });
+                button.classList.add('tab-active');
+                button.classList.remove('text-gray-500', 'border-transparent');
+                
+                // Show active tab content
+                tabContents.forEach(content => {
+                    content.classList.add('hidden');
+                    if (content.id === `${tabName}-tab`) {
+                        content.classList.remove('hidden');
+                    }
+                });
+            });
+        });
+
+        // Modal Handling
+        const editProfileBtn = document.getElementById('edit-profile-btn');
+        const editProfileModal = document.getElementById('edit-profile-modal');
+        const closeModals = document.querySelectorAll('.close-modal');
+
+        function toggleModal(modal, show) {
+            const overlay = modal.querySelector('.modal-overlay');
+            const content = modal.querySelector('.modal-content');
+            if (show) {
+                modal.classList.remove('hidden');
+                setTimeout(() => {
+                    overlay.classList.add('active');
+                    content.classList.add('active');
+                }, 10);
+            } else {
+                overlay.classList.remove('active');
+                content.classList.remove('active');
+                setTimeout(() => modal.classList.add('hidden'), 300);
+            }
+        }
+
+        editProfileBtn.addEventListener('click', () => toggleModal(editProfileModal, true));
+
+        closeModals.forEach(btn => {
+            btn.addEventListener('click', () => {
+                toggleModal(btn.closest('.fixed'), false);
+            });
+        });
+
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal-overlay')) {
+                toggleModal(e.target.closest('.fixed'), false);
+            }
+        });
+    </script>
+</body>
+</html>
+

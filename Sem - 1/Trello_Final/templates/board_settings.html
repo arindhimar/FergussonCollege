@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ board.name }} Settings | TaskFlow</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 10px;
+        }
+
+        .tab-active {
+            border-bottom: 2px solid #3b82f6;
+            color: #3b82f6;
+        }
+
+        .modal-overlay {
+            opacity: 0;
+            transition: opacity 0.3s ease-out;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+        }
+
+        .modal-content {
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.3s ease-out;
+        }
+
+        .modal-content.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans">
+    <!-- Header -->
+    <header class="bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex">
+                    <div class="flex-shrink-0 flex items-center">
+                        <a href="/board_dashboard" class="text-blue-600 font-bold text-xl">TaskFlow</a>
+                    </div>
+                    <nav class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                        <a href="/board_dashboard" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Dashboard
+                        </a>
+                        <a href="/board-view?board_id={{ board.id }}" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Back to Board
+                        </a>
+                    </nav>
+                </div>
+                <div class="flex items-center">
+                    <div class="hidden md:ml-4 md:flex-shrink-0 md:flex md:items-center">
+                        <div class="ml-3 relative">
+                            <div>
+                                <button id="user-menu-button" class="bg-white rounded-full flex text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                    <span class="sr-only">Open user menu</span>
+                                    <div class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-medium">
+                                        {{ board.owner.username[:2]|upper }}
+                                    </div>
+                                </button>
+                            </div>
+                            <div id="user-dropdown" class="hidden origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10">
+                                <a href="/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Your Profile</a>
+                                <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</a>
+                                <a href="/logout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sign out</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="bg-white shadow rounded-lg overflow-hidden">
+            <!-- Board Settings Header -->
+            <div class="bg-gradient-to-r from-{{ board.color }}-500 to-{{ board.color }}-600 p-6">
+                <div class="flex items-center">
+                    <h1 class="text-2xl font-bold text-white">{{ board.name }} Settings</h1>
+                </div>
+            </div>
+
+            <!-- Settings Tabs -->
+            <div class="border-b border-gray-200">
+                <nav class="flex -mb-px">
+                    <button class="tab-button tab-active w-1/3 py-4 px-1 text-center border-b-2 font-medium text-sm" data-tab="general">
+                        General
+                    </button>
+                    <button class="tab-button w-1/3 py-4 px-1 text-center border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="members">
+                        Members
+                    </button>
+                    <button class="tab-button w-1/3 py-4 px-1 text-center border-b-2 border-transparent font-medium text-sm text-gray-500 hover:text-gray-700 hover:border-gray-300" data-tab="danger">
+                        Danger Zone
+                    </button>
+                </nav>
+            </div>
+
+            <!-- Tab Content -->
+            <div class="p-6">
+                <!-- General Settings Tab -->
+                <div id="general-tab" class="tab-content">
+                    <form action="/update_board/{{ board.id }}" method="POST">
+                        <div class="mb-4">
+                            <label for="board-name" class="block text-sm font-medium text-gray-700 mb-1">Board Name</label>
+                            <input type="text" id="board-name" name="name" value="{{ board.name }}" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                        </div>
+                        <div class="mb-6">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Background Color</label>
+                            <div class="grid grid-cols-5 gap-2">
+                                <div class="h-10 bg-blue-500 rounded cursor-pointer border-2 {{ 'border-white' if board.color == 'blue' else 'border-transparent hover:border-white' }}" data-color="blue"></div>
+                                <div class="h-10 bg-purple-500 rounded cursor-pointer border-2 {{ 'border-white' if board.color == 'purple' else 'border-transparent hover:border-white' }}" data-color="purple"></div>
+                                <div class="h-10 bg-green-500 rounded cursor-pointer border-2 {{ 'border-white' if board.color == 'green' else 'border-transparent hover:border-white' }}" data-color="green"></div>
+                                <div class="h-10 bg-red-500 rounded cursor-pointer border-2 {{ 'border-white' if board.color == 'red' else 'border-transparent hover:border-white' }}" data-color="red"></div>
+                                <div class="h-10 bg-yellow-500 rounded cursor-pointer border-2 {{ 'border-white' if board.color == 'yellow' else 'border-transparent hover:border-white' }}" data-color="yellow"></div>
+                            </div>
+                            <input type="hidden" id="color-input" name="color" value="{{ board.color }}">
+                        </div>
+                        <div class="flex items-center mb-6">
+                            <input type="checkbox" id="private-board" name="is_private" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" {{ 'checked' if board.is_private else '' }}>
+                            <label for="private-board" class="ml-2 block text-sm text-gray-900">Private Board</label>
+                            <span class="ml-1 text-xs text-gray-500">(Only invited members can access)</span>
+                        </div>
+                        <button type="submit" class="bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-300">
+                            Save Changes
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Members Tab -->
+                <div id="members-tab" class="tab-content hidden">
+                    <div class="mb-6">
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">Board Members</h3>
+                        <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+                            <table class="min-w-full divide-y divide-gray-300">
+                                <thead class="bg-gray-50">
+                                    <tr>
+                                        <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">User</th>
+                                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Role</th>
+                                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Added</th>
+                                        <th scope="col" class="relative py-3.5 pl-3 pr-4 sm:pr-6">
+                                            <span class="sr-only">Actions</span>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200 bg-white">
+                                    <!-- Board Owner -->
+                                    <tr>
+                                        <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6">
+                                            <div class="flex items-center">
+                                                <div class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-medium mr-3">
+                                                    {{ board.owner.username[:2]|upper }}
+                                                </div>
+                                                <div>
+                                                    <div class="font-medium text-gray-900">{{ board.owner.username }}</div>
+                                                    <div class="text-gray-500">{{ board.owner.email }}</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800">
+                                                Owner
+                                            </span>
+                                        </td>
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                            {{ board.created_at.strftime('%b %d, %Y') }}
+                                        </td>
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                            <!-- No actions for owner -->
+                                        </td>
+                                    </tr>
+                                    
+                                    <!-- Board Members -->
+                                    {% for member in board_members %}
+                                    <tr>
+                                        <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm sm:pl-6">
+                                            <div class="flex items-center">
+                                                <div class="h-8 w-8 rounded-full bg-green-500 flex items-center justify-center text-white font-medium mr-3">
+                                                    {{ member.user.username[:2]|upper }}
+                                                </div>
+                                                <div>
+                                                    <div class="font-medium text-gray-900">{{ member.user.username }}</div>
+                                                    <div class="text-gray-500">{{ member.user.email }}</div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                            <form action="/update_board_member_role/{{ board.id }}/{{ member.user_id }}" method="POST" class="inline-flex">
+                                                <select name="role" class="text-sm border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" onchange="this.form.submit()">
+                                                    <option value="VIEWER" {{ 'selected' if member.role.value == 'viewer' else '' }}>Viewer</option>
+                                                    <option value="EDITOR" {{ 'selected' if member.role.value == 'editor' else '' }}>Editor</option>
+                                                    <option value="ADMIN" {{ 'selected' if member.role.value == 'admin' else '' }}>Admin</option>
+                                                </select>
+                                            </form>
+                                        </td>
+                                        <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                            {{ member.created_at.strftime('%b %d, %Y') }}
+                                        </td>
+                                        <td class="whitespace-nowrap px-3 py-4 text-right text-sm font-medium">
+                                            <form action="/remove_board_member/{{ board.id }}/{{ member.user_id }}" method="POST" class="inline-block">
+                                                <button type="submit" class="text-red-600 hover:text-red-900">Remove</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-gray-200 pt-6">
+                        <h3 class="text-lg font-medium text-gray-900 mb-4">Add New Member</h3>
+                        <form action="/add_board_member/{{ board.id }}" method="POST">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div class="md:col-span-2">
+                                    <label for="user-select" class="block text-sm font-medium text-gray-700 mb-1">Select User</label>
+                                    <select id="user-select" name="user_id" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                                        <option value="">Select a user</option>
+                                        {% for user in users %}
+                                        <option value="{{ user.id }}">{{ user.username }} ({{ user.email }})</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="role-select" class="block text-sm font-medium text-gray-700 mb-1">Role</label>
+                                    <select id="role-select" name="role" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                                        <option value="VIEWER">Viewer</option>
+                                        <option value="EDITOR">Editor</option>
+                                        <option value="ADMIN">Admin</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button type="submit" class="mt-4 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-300">
+                                Add Member
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Danger Zone Tab -->
+                <div id="danger-tab" class="tab-content hidden">
+                    <div class="rounded-md bg-red-50 p-4 mb-6">
+                        <div class="flex">
+                            <div class="flex-shrink-0">
+                                <svg class="h-5 w-5 text-red-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                                </svg>
+                            </div>
+                            <div class="ml-3">
+                                <h3 class="text-sm font-medium text-red-800">Warning</h3>
+                                <div class="mt-2 text-sm text-red-700">
+                                    <p>Actions in this section are irreversible. Please proceed with caution.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border border-red-200 rounded-md p-4">
+                        <h3 class="text-lg font-medium text-gray-900 mb-2">Delete Board</h3>
+                        <p class="text-sm text-gray-500 mb-4">Once you delete a board, there is no going back. All tasks and data associated with this board will be permanently deleted.</p>
+                        <form action="/delete_board/{{ board.id }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this board? This action cannot be undone.')">
+                            <button type="submit" class="bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 transition duration-300">
+                                Delete Board
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // User Dropdown
+        const userMenuButton = document.getElementById('user-menu-button');
+        const userDropdown = document.getElementById('user-dropdown');
+        userMenuButton.addEventListener('click', () => userDropdown.classList.toggle('hidden'));
+        document.addEventListener('click', (e) => {
+            if (!userMenuButton.contains(e.target) && !userDropdown.contains(e.target)) {
+                userDropdown.classList.add('hidden');
+            }
+        });
+
+        // Tab Switching
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const tabName = button.dataset.tab;
+                
+                // Update active tab button
+                tabButtons.forEach(btn => {
+                    btn.classList.remove('tab-active');
+                    btn.classList.add('text-gray-500', 'border-transparent');
+                });
+                button.classList.add('tab-active');
+                button.classList.remove('text-gray-500', 'border-transparent');
+                
+                // Show active tab content
+                tabContents.forEach(content => {
+                    content.classList.add('hidden');
+                    if (content.id === `${tabName}-tab`) {
+                        content.classList.remove('hidden');
+                    }
+                });
+            });
+        });
+
+        // Color Selection
+        document.querySelectorAll('[data-color]').forEach(color => {
+            color.addEventListener('click', () => {
+                document.querySelectorAll('[data-color]').forEach(c => c.classList.remove('border-white'));
+                color.classList.add('border-white');
+                document.getElementById('color-input').value = color.dataset.color;
+            });
+        });
+    </script>
+</body>
+</html>
+
