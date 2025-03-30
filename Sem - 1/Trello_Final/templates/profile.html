@@ -382,41 +382,47 @@
             <table class="min-w-full divide-y divide-gray-300">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Task</th>
+                        <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">
+                            Task</th>
                         <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Board</th>
                         <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Status</th>
                         <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Due Date</th>
-                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Created By</th>
+                        <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Created By
+                        </th>
                         <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200 bg-white">
                     {% for task in assigned_tasks %}
                     <tr>
-                        <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">{{ task.title }}</td>
+                        <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">{{
+                            task.title }}</td>
                         <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{ task.board.name }}</td>
                         <td class="whitespace-nowrap px-3 py-4 text-sm">
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-{{ task.status_color }}-100 text-{{ task.status_color }}-800">
+                            <span
+                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-{{ task.status_color }}-100 text-{{ task.status_color }}-800">
                                 {{ task.status|title }}
                             </span>
                         </td>
                         <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                             {% if task.due_date %}
-                                {{ task.due_date.strftime('%b %d, %Y') }}
+                            {{ task.due_date.strftime('%b %d, %Y') }}
                             {% else %}
-                                -
+                            -
                             {% endif %}
                         </td>
                         <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                             <div class="flex items-center">
-                                <div class="h-6 w-6 rounded-full bg-green-500 flex items-center justify-center text-white text-xs mr-2">
+                                <div
+                                    class="h-6 w-6 rounded-full bg-green-500 flex items-center justify-center text-white text-xs mr-2">
                                     {{ task.creator.username[:2]|upper }}
                                 </div>
                                 <span>{{ task.creator.username }}</span>
                             </div>
                         </td>
                         <td class="whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                            <a href="/board-view?board_id={{ task.board_id }}" class="text-blue-600 hover:text-blue-800">View Board</a>
+                            <a href="/board-view?board_id={{ task.board_id }}"
+                                class="text-blue-600 hover:text-blue-800">View Board</a>
                         </td>
                     </tr>
                     {% endfor %}
@@ -429,8 +435,49 @@
         </div>
         {% endif %}
     </div>
-    
-    
+
+    <!-- Add Skills Section to Profile -->
+    <div class="mt-8">
+        <div class="flex items-center justify-between mb-6">
+            <h3 class="text-lg font-medium leading-6 text-gray-900">My Skills</h3>
+            <a href="/manage_skills"
+                class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                <svg class="-ml-0.5 mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                </svg>
+                Manage Skills
+            </a>
+        </div>
+
+        <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+            <div class="px-4 py-5 sm:p-6">
+                {% if user.skills %}
+                <div class="flex flex-wrap gap-2">
+                    {% for skill in user.skills %}
+                    <div class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium 
+                                {% if skill.proficiency == 5 %}bg-purple-100 text-purple-800
+                                {% elif skill.proficiency == 4 %}bg-blue-100 text-blue-800
+                                {% elif skill.proficiency == 3 %}bg-green-100 text-green-800
+                                {% elif skill.proficiency == 2 %}bg-yellow-100 text-yellow-800
+                                {% else %}bg-gray-100 text-gray-800{% endif %}">
+                        {{ skill.skill }}
+                        <span class="ml-1 text-xs opacity-75">
+                            {{ ['', 'Beginner', 'Basic', 'Intermediate', 'Advanced', 'Expert'][skill.proficiency] }}
+                        </span>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <p class="text-gray-500 text-center">You haven't added any skills yet. Click "Manage Skills" to add your
+                    technical expertise.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+
     <!-- Edit Profile Modal -->
     <div id="edit-profile-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
         <div class="modal-overlay absolute inset-0 bg-black bg-opacity-50"></div>

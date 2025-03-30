@@ -31,6 +31,16 @@ class User(db.Model):
     # Add relationship for board invitations
     received_invitations = db.relationship('BoardInvitation', backref='invitee', lazy=True, foreign_keys='BoardInvitation.invitee_id')
     sent_invitations = db.relationship('BoardInvitation', backref='inviter', lazy=True, foreign_keys='BoardInvitation.inviter_id')
+    skills = db.relationship('UserSkill', backref='user', lazy=True, cascade='all, delete-orphan')
+
+# Add UserSkill model after User model
+class UserSkill(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    skill = db.Column(db.String(50), nullable=False)
+    proficiency = db.Column(db.Integer, default=1)  # 1-5 scale
+    
+    __table_args__ = (db.UniqueConstraint('user_id', 'skill', name='unique_user_skill'),)
 
 # Add a BoardMember model for board sharing
 class BoardMemberRole(Enum):
@@ -77,6 +87,9 @@ class Board(db.Model):
     tasks = db.relationship('Task', backref='board', lazy=True, cascade='all, delete-orphan')
     members = db.relationship('BoardMember', backref='board', lazy=True, cascade='all, delete-orphan')
     is_private = db.Column(db.Boolean, default=True)
+    technologies = db.Column(db.String(255))
+    cost = db.Column(db.Float)
+    deadline = db.Column(db.DateTime)
     
     def get_members(self):
         return [member.user for member in self.members]
@@ -90,7 +103,9 @@ class Task(db.Model):
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     board_id = db.Column(db.Integer, db.ForeignKey('board.id'), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    assigned_to = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)
+    assigned_to = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=True)  # Keep for backward compatibility
+    priority = db.Column(db.String(20), default='medium')  # high, medium, low
+    technology = db.Column(db.String(50))
 
     @property
     def status_color(self):
@@ -101,6 +116,31 @@ class Task(db.Model):
             'done': 'green'
         }
         return colors.get(self.status, 'gray')
+        
+    @property
+    def priority_color(self):
+        colors = {
+            'high': 'red',
+            'medium': 'yellow',
+            'low': 'green'
+        }
+        return colors.get(self.priority, 'gray')
+        
+    @property
+    def assignees(self):
+        return [assignee.user for assignee in self.assignees_rel]
+
+# Add TaskAssignee model after Task model
+class TaskAssignee(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    task_id = db.Column(db.Integer, db.ForeignKey('task.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    assigned_at = db.Column(db.DateTime, default=datetime.utcnow)
+    
+    __table_args__ = (db.UniqueConstraint('task_id', 'user_id', name='unique_task_assignee'),)
+    
+    task = db.relationship('Task', backref='assignees_rel')
+    user = db.relationship('User')
 
 # Routes
 @app.route('/')
@@ -230,16 +270,38 @@ def board_dashboard():
       pending_invitations=pending_invitations
   )
 
+# Update create_board route to handle new fields
 @app.route('/create_board', methods=['POST'])
 def create_board():
     if 'user_id' not in session:
         return redirect(url_for('home'))
 
+    # Parse deadline if provided
+    deadline = None
+    if request.form.get('deadline'):
+        try:
+            deadline = datetime.strptime(request.form.get('deadline'), '%Y-%m-%d')
+        except ValueError:
+            flash('Invalid deadline format. Please use YYYY-MM-DD.', 'error')
+            return redirect(url_for('board_dashboard'))
+    
+    # Parse cost if provided
+    cost = None
+    if request.form.get('cost'):
+        try:
+            cost = float(request.form.get('cost'))
+        except ValueError:
+            flash('Invalid cost value. Please enter a number.', 'error')
+            return redirect(url_for('board_dashboard'))
+
     board = Board(
         name=request.form.get('name'),
         color=request.form.get('color', 'blue'),
         user_id=session['user_id'],
-        is_private=request.form.get('private') == 'on'
+        is_private=request.form.get('private') == 'on',
+        technologies=request.form.get('technologies'),
+        cost=cost,
+        deadline=deadline
     )
     
     db.session.add(board)
@@ -340,6 +402,7 @@ def get_board(board_id):
         'tasks': tasks_by_status
     })
 
+# Update create_task route to handle new fields and multiple assignees
 @app.route('/create_task', methods=['POST'])
 def create_task():
     if 'user_id' not in session:
@@ -357,25 +420,7 @@ def create_task():
     if request.form.get('due_date'):
         due_date = datetime.strptime(request.form.get('due_date'), '%Y-%m-%d')
     
-    assigned_to = request.form.get('assigned_to')
-    if assigned_to and assigned_to.isdigit():
-        assigned_to = int(assigned_to)
-        
-        # Verify the assignee is a member of the board
-        is_valid_assignee = False
-        if assigned_to == board.user_id:  # Board owner
-            is_valid_assignee = True
-        else:
-            board_member = BoardMember.query.filter_by(board_id=board_id, user_id=assigned_to).first()
-            if board_member:
-                is_valid_assignee = True
-        
-        if not is_valid_assignee:
-            flash('Error: Tasks can only be assigned to board members. Please add the user to the board first.', 'error')
-            return redirect(url_for('board_view', board_id=board_id))
-    else:
-        assigned_to = None
-    
+    # Create the task
     task = Task(
         title=request.form.get('title'),
         description=request.form.get('description'),
@@ -383,15 +428,43 @@ def create_task():
         due_date=due_date,
         board_id=board_id,
         user_id=session['user_id'],
-        assigned_to=assigned_to
+        priority=request.form.get('priority', 'medium'),
+        technology=request.form.get('technology')
     )
     
+    # Handle single assignee for backward compatibility
+    assigned_to = request.form.get('assigned_to')
+    if assigned_to and assigned_to.isdigit():
+        task.assigned_to = int(assigned_to)
+    
     db.session.add(task)
+    db.session.commit()
+    
+    # Handle multiple assignees
+    assignees = request.form.getlist('assignees[]')
+    for assignee_id in assignees:
+        if assignee_id and assignee_id.isdigit():
+            user_id = int(assignee_id)
+            
+            # Verify the assignee is a member of the board
+            is_valid_assignee = False
+            if user_id == board.user_id:  # Board owner
+                is_valid_assignee = True
+            else:
+                board_member = BoardMember.query.filter_by(board_id=board_id, user_id=user_id).first()
+                if board_member:
+                    is_valid_assignee = True
+            
+            if is_valid_assignee:
+                task_assignee = TaskAssignee(task_id=task.id, user_id=user_id)
+                db.session.add(task_assignee)
+    
     db.session.commit()
     
     flash('Task created successfully!', 'success')
     return redirect(url_for('board_view', board_id=board_id))
 
+# Update update_task route to handle new fields and multiple assignees
 @app.route('/update_task/<int:task_id>', methods=['POST'])
 def update_task(task_id):
     if 'user_id' not in session:
@@ -408,57 +481,47 @@ def update_task(task_id):
     task.title = request.form.get('title')
     task.description = request.form.get('description')
     task.status = request.form.get('status')
+    task.priority = request.form.get('priority', 'medium')
+    task.technology = request.form.get('technology')
     
     if request.form.get('due_date'):
         task.due_date = datetime.strptime(request.form.get('due_date'), '%Y-%m-%d')
     else:
         task.due_date = None
     
+    # Handle single assignee for backward compatibility
     assigned_to = request.form.get('assigned_to')
     if assigned_to and assigned_to.isdigit():
-        assigned_to = int(assigned_to)
-        
-        # Verify the assignee is a member of the board
-        is_valid_assignee = False
-        if assigned_to == board.user_id:  # Board owner
-            is_valid_assignee = True
-        else:
-            board_member = BoardMember.query.filter_by(board_id=task.board_id, user_id=assigned_to).first()
-            if board_member:
-                is_valid_assignee = True
-        
-        if is_valid_assignee:
-            task.assigned_to = assigned_to
-        else:
-            flash('Error: Tasks can only be assigned to board members. Please add the user to the board first.', 'error')
-            return redirect(url_for('board_view', board_id=task.board_id))
+        task.assigned_to = int(assigned_to)
     else:
         task.assigned_to = None
+    
+    # Handle multiple assignees - first remove existing assignees
+    TaskAssignee.query.filter_by(task_id=task.id).delete()
+    
+    # Add new assignees
+    assignees = request.form.getlist('assignees[]')
+    for assignee_id in assignees:
+        if assignee_id and assignee_id.isdigit():
+            user_id = int(assignee_id)
+            
+            # Verify the assignee is a member of the board
+            is_valid_assignee = False
+            if user_id == board.user_id:  # Board owner
+                is_valid_assignee = True
+            else:
+                board_member = BoardMember.query.filter_by(board_id=task.board_id, user_id=user_id).first()
+                if board_member:
+                    is_valid_assignee = True
+            
+            if is_valid_assignee:
+                task_assignee = TaskAssignee(task_id=task.id, user_id=user_id)
+                db.session.add(task_assignee)
     
     db.session.commit()
     
     flash('Task updated successfully!', 'success')
     return redirect(url_for('board_view', board_id=task.board_id))
-
-@app.route('/delete_task/<int:task_id>', methods=['POST'])
-def delete_task(task_id):
-    if 'user_id' not in session:
-        return redirect(url_for('home'))
-    
-    task = Task.query.get_or_404(task_id)
-    board = Board.query.get(task.board_id)
-    
-    # Check if user has access to this task
-    is_member = BoardMember.query.filter_by(board_id=task.board_id, user_id=session['user_id']).first()
-    if task.user_id != session['user_id'] and board.user_id != session['user_id'] and not is_member:
-        abort(403)
-    
-    board_id = task.board_id
-    db.session.delete(task)
-    db.session.commit()
-    
-    flash('Task deleted successfully!', 'success')
-    return redirect(url_for('board_view', board_id=board_id))
 
 # API endpoint to update task status (for drag and drop)
 @app.route('/api/tasks/<int:task_id>/status', methods=['PUT'])
@@ -505,7 +568,9 @@ def get_task(task_id):
         'status': task.status,
         'due_date': task.due_date.isoformat() if task.due_date else None,
         'board_id': task.board_id,
-        'assigned_to': task.assigned_to
+        'assigned_to': task.assigned_to,
+        'priority': task.priority,
+        'technology': task.technology
     })
 
 @app.route('/logout')
@@ -806,8 +871,87 @@ def profile():
         assigned_tasks=assigned_tasks
     )
 
+# Add route for managing user skills
+@app.route('/manage_skills', methods=['GET', 'POST'])
+def manage_skills():
+    if 'user_id' not in session:
+        return redirect(url_for('home'))
+    
+    user = User.query.get_or_404(session['user_id'])
+    
+    if request.method == 'POST':
+        # Clear existing skills
+        UserSkill.query.filter_by(user_id=user.id).delete()
+        
+        # Add new skills
+        skills = request.form.getlist('skill[]')
+        proficiencies = request.form.getlist('proficiency[]')
+        
+        for i in range(len(skills)):
+            if skills[i].strip():
+                skill = UserSkill(
+                    user_id=user.id,
+                    skill=skills[i].strip(),
+                    proficiency=int(proficiencies[i]) if i < len(proficiencies) else 1
+                )
+                db.session.add(skill)
+        
+        db.session.commit()
+        flash('Skills updated successfully!', 'success')
+        return redirect(url_for('profile'))
+    
+    # Common skills for dropdown suggestions
+    common_skills = ['Python', 'JavaScript', 'PHP', 'Java', 'C#', 'Ruby', 'Go', 'Swift', 
+                    'HTML', 'CSS', 'React', 'Angular', 'Vue', 'Node.js', 'Django', 
+                    'Flask', 'Laravel', 'Spring', 'ASP.NET', 'SQL', 'MongoDB', 'AWS', 
+                    'Docker', 'Kubernetes', 'DevOps', 'UI/UX Design', 'Project Management']
+    
+    return render_template(
+        'manage_skills.html',
+        user=user,
+        common_skills=common_skills
+    )
+
+# Add route to get users by skill for task assignment
+@app.route('/api/users_by_skill/<string:skill>', methods=['GET'])
+def get_users_by_skill(skill):
+    if 'user_id' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    board_id = request.args.get('board_id')
+    if not board_id:
+        return jsonify({'error': 'Board ID is required'}), 400
+    
+    board = Board.query.get_or_404(board_id)
+    
+    # Check if user has access to this board
+    is_member = BoardMember.query.filter_by(board_id=board_id, user_id=session['user_id']).first()
+    if board.user_id != session['user_id'] and not is_member:
+        return jsonify({'error': 'Forbidden'}), 403
+    
+    # Get all users who are members of the board and have the required skill
+    skilled_users = User.query.join(UserSkill).filter(
+        UserSkill.skill == skill,
+        User.id.in_([board.user_id] + [member.user_id for member in board.members])
+    ).all()
+    
+    # Get all other users who are members of the board
+    other_users = User.query.filter(
+        User.id.in_([board.user_id] + [member.user_id for member in board.members]),
+        ~User.id.in_([user.id for user in skilled_users])
+    ).all()
+    
+    # Format the response
+    result = {
+        'skilled_users': [{'id': user.id, 'username': user.username, 'proficiency': next((s.proficiency for s in user.skills if s.skill == skill), 0)} for user in skilled_users],
+        'other_users': [{'id': user.id, 'username': user.username} for user in other_users]
+    }
+    
+    return jsonify(result)
+
 if __name__ == '__main__':
     with app.app_context():
+        db.drop_all()
         db.create_all()
     app.run(debug=True)
 

@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Task | TaskFlow</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans">
+    <!-- Header -->
+    <header class="bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex">
+                    <div class="flex-shrink-0 flex items-center">
+                        <a href="/board_dashboard" class="text-blue-600 font-bold text-xl">TaskFlow</a>
+                    </div>
+                    <nav class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                        <a href="/board_dashboard" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Dashboard
+                        </a>
+                        <a href="/board-view?board_id={{ board.id }}" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Back to Board
+                        </a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+            <div class="px-4 py-5 sm:px-6">
+                <h1 class="text-lg leading-6 font-medium text-gray-900">Create New Task</h1>
+                <p class="mt-1 max-w-2xl text-sm text-gray-500">Add a new task to {{ board.name }}</p>
+            </div>
+            <div class="border-t border-gray-200 px-4 py-5 sm:p-6">
+                <form action="/create_task" method="POST">
+                    <input type="hidden" name="board_id" value="{{ board.id }}">
+                    <input type="hidden" name="status" id="task-status-input" value="todo">
+                    
+                    <div class="grid grid-cols-1 gap-6 sm:grid-cols-6">
+                        <div class="sm:col-span-6">
+                            <label for="task-title" class="block text-sm font-medium text-gray-700">Task Title</label>
+                            <input type="text" name="title" id="task-title" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" required>
+                        </div>
+
+                        <div class="sm:col-span-6">
+                            <label for="task-description" class="block text-sm font-medium text-gray-700">Description (Optional)</label>
+                            <textarea id="task-description" name="description" rows="3" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"></textarea>
+                        </div>
+
+                        <div class="sm:col-span-3">
+                            <label for="task-technology" class="block text-sm font-medium text-gray-700">Technology/Skill Required</label>
+                            <select id="task-technology" name="technology" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                <option value="">Select a technology</option>
+                                {% if board.technologies %}
+                                    {% for tech in board.technologies.split(',') %}
+                                        <option value="{{ tech.strip() }}">{{ tech.strip() }}</option>
+                                    {% endfor %}
+                                {% endif %}
+                                <option value="Python">Python</option>
+                                <option value="JavaScript">JavaScript</option>
+                                <option value="PHP">PHP</option>
+                                <option value="Java">Java</option>
+                                <option value="C#">C#</option>
+                                <option value="Ruby">Ruby</option>
+                                <option value="Go">Go</option>
+                                <option value="HTML/CSS">HTML/CSS</option>
+                                <option value="React">React</option>
+                                <option value="Angular">Angular</option>
+                                <option value="Vue">Vue</option>
+                                <option value="Node.js">Node.js</option>
+                                <option value="Django">Django</option>
+                                <option value="Flask">Flask</option>
+                                <option value="Laravel">Laravel</option>
+                                <option value="SQL">SQL</option>
+                                <option value="MongoDB">MongoDB</option>
+                                <option value="DevOps">DevOps</option>
+                                <option value="UI/UX Design">UI/UX Design</option>
+                                <option value="Project Management">Project Management</option>
+                            </select>
+                        </div>
+
+                        <div class="sm:col-span-3">
+                            <label for="task-priority" class="block text-sm font-medium text-gray-700">Priority</label>
+                            <select id="task-priority" name="priority" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                                <option value="low">Low</option>
+                                <option value="medium" selected>Medium</option>
+                                <option value="high">High</option>
+                            </select>
+                        </div>
+
+                        <div class="sm:col-span-3">
+                            <label for="task-due-date" class="block text-sm font-medium text-gray-700">Due Date (Optional)</label>
+                            <input type="date" name="due_date" id="task-due-date" class="mt-1 focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+                        </div>
+
+                        <div class="sm:col-span-3">
+                            <label class="block text-sm font-medium text-gray-700">Status</label>
+                            <div class="mt-1 grid grid-cols-4 gap-2">
+                                <div class="status-option flex items-center p-2 border rounded cursor-pointer bg-red-100 border-red-500" data-status="todo">
+                                    <span class="h-3 w-3 rounded-full bg-red-500 mr-2"></span>
+                                    <span class="text-sm">To Do</span>
+                                </div>
+                                <div class="status-option flex items-center p-2 border rounded cursor-pointer" data-status="progress">
+                                    <span class="h-3 w-3 rounded-full bg-yellow-500 mr-2"></span>
+                                    <span class="text-sm">Progress</span>
+                                </div>
+                                <div class="status-option flex items-center p-2 border rounded cursor-pointer" data-status="review">
+                                    <span class="h-3 w-3 rounded-full bg-blue-500 mr-2"></span>
+                                    <span class="text-sm">Review</span>
+                                </div>
+                                <div class="status-option flex items-center p-2 border rounded cursor-pointer" data-status="done">
+                                    <span class="h-3 w-3 rounded-full bg-green-500 mr-2"></span>
+                                    <span class="text-sm">Done</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="sm:col-span-6">
+                            <label class="block text-sm font-medium text-gray-700">Assign To (Optional)</label>
+                            <p class="text-xs text-gray-500 mt-1 mb-2">Select one or more team members to assign this task to.</p>
+                            
+                            <div id="assignees-container" class="space-y-2">
+                                <div class="flex flex-wrap gap-2 mb-2" id="selected-assignees">
+                                    <!-- Selected assignees will be displayed here -->
+                                </div>
+                                
+                                <div class="relative">
+                                    <input type="text" id="assignee-search" class="focus:ring-blue-500 focus:border-blue-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" placeholder="Search for team members...">
+                                    <div id="assignee-dropdown" class="hidden absolute z-10 mt-1 w-full bg-white shadow-lg max-h-60 rounded-md py-1 text-base overflow-auto focus:outline-none sm:text-sm">
+                                        <!-- Dropdown options will be populated here -->
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Hidden input for backward compatibility -->
+                            <input type="hidden" name="assigned_to" id="primary-assignee">
+                            
+                            <!-- Hidden inputs for multiple assignees -->
+                            <div id="assignee-inputs">
+                                <!-- Will be populated with hidden inputs for each selected assignee -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 border-t border-gray-200 pt-6">
+                        <div class="flex justify-end">
+                            <a href="/board-view?board_id={{ board.id }}" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 mr-3">
+                                Cancel
+                            </a>
+                            <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                Create Task
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Status Selection
+        document.querySelectorAll('.status-option').forEach(option => {
+            option.addEventListener('click', () => {
+                const status = option.dataset.status;
+                document.getElementById('task-status-input').value = status;
+                
+                document.querySelectorAll('.status-option').forEach(opt => {
+                    opt.classList.remove('bg-red-100', 'bg-yellow-100', 'bg-blue-100', 'bg-green-100', 'border-red-500', 'border-yellow-500', 'border-blue-500', 'border-green-500');
+                });
+                
+                const statusColors = {
+                    'todo': ['bg-red-100', 'border-red-500'],
+                    'progress': ['bg-yellow-100', 'border-yellow-500'],
+                    'review': ['bg-blue-100', 'border-blue-500'],
+                    'done': ['bg-green-100', 'border-green-500']
+                };
+                
+                option.classList.add(...statusColors[status]);
+            });
+        });
+
+        // Technology Selection and Assignee Filtering
+        const technologySelect = document.getElementById('task-technology');
+        const assigneeSearch = document.getElementById('assignee-search');
+        const assigneeDropdown = document.getElementById('assignee-dropdown');
+        const selectedAssignees = document.getElementById('selected-assignees');
+        const assigneeInputs = document.getElementById('assignee-inputs');
+        const primaryAssignee = document.getElementById('primary-assignee');
+        
+        let boardMembers = [
+            {% if board.owner.id == session['user_id'] %}
+                { id: {{ board.owner.id }}, username: "{{ board.owner.username }} (You - Owner)" },
+            {% else %}
+                { id: {{ board.owner.id }}, username: "{{ board.owner.username }} (Owner)" },
+            {% endif %}
+            {% for member in board.members %}
+                {% if member.user.id == session['user_id'] %}
+                    { id: {{ member.user.id }}, username: "{{ member.user.username }} (You)" },
+                {% else %}
+                    { id: {{ member.user.id }}, username: "{{ member.user.username }}" },
+                {% endif %}
+            {% endfor %}
+        ];
+        
+        let selectedUsers = [];
+        
+        // Filter assignees based on technology
+        technologySelect.addEventListener('change', async () => {
+            const technology = technologySelect.value;
+            if (!technology) return;
+            
+            try {
+                const response = await fetch(`/api/users_by_skill/${technology}?board_id={{ board.id }}`);
+                if (!response.ok) throw new Error('Failed to fetch users by skill');
+                
+                const data = await response.json();
+                
+                // Update boardMembers with skill information
+                boardMembers = [
+                    ...data.skilled_users.map(user => ({ 
+                        id: user.id, 
+                        username: user.username + (user.id == {{ session['user_id'] }} ? ' (You)' : '') + (user.id == {{ board.owner.id }} ? ' (Owner)' : ''),
+                        skilled: true,
+                        proficiency: user.proficiency
+                    })),
+                    ...data.other_users.map(user => ({ 
+                        id: user.id, 
+                        username: user.username + (user.id == {{ session['user_id'] }} ? ' (You)' : '') + (user.id == {{ board.owner.id }} ? ' (Owner)' : ''),
+                        skilled: false
+                    }))
+                ];
+                
+                // If dropdown is open, refresh it
+                if (!assigneeDropdown.classList.contains('hidden')) {
+                    showAssigneeDropdown();
+                }
+                
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        });
+        
+        // Assignee search and selection
+        assigneeSearch.addEventListener('focus', () => {
+            showAssigneeDropdown();
+        });
+        
+        assigneeSearch.addEventListener('input', () => {
+            showAssigneeDropdown();
+        });
+        
+        document.addEventListener('click', (e) => {
+            if (!assigneeSearch.contains(e.target) && !assigneeDropdown.contains(e.target)) {
+                assigneeDropdown.classList.add('hidden');
+            }
+        });
+        
+        function showAssigneeDropdown() {
+            const searchTerm = assigneeSearch.value.toLowerCase();
+            
+            // Filter members based on search term
+            const filteredMembers = boardMembers.filter(member => 
+                member.username.toLowerCase().includes(searchTerm) && 
+                !selectedUsers.some(user => user.id === member.id)
+            );
+            
+            // Sort members - skilled users first, then by proficiency
+            filteredMembers.sort((a, b) => {
+                if (a.skilled && !b.skilled) return -1;
+                if (!a.skilled && b.skilled) return 1;
+                if (a.skilled && b.skilled) {
+                    return b.proficiency - a.proficiency;
+                }
+                return a.username.localeCompare(b.username);
+            });
+            
+            // Clear dropdown
+            assigneeDropdown.innerHTML = '';
+            
+            // Add filtered members to dropdown
+            filteredMembers.forEach(member => {
+                const option = document.createElement('div');
+                option.className = 'cursor-pointer select-none relative py-2 pl-3 pr-9 hover:bg-gray-100';
+                
+                let skillBadge = '';
+                if (member.skilled) {
+                    const proficiencyText = ['', 'Beginner', 'Basic', 'Intermediate', 'Advanced', 'Expert'][member.proficiency];
+                    skillBadge = `<span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800 ml-2">${proficiencyText}</span>`;
+                }
+                
+                option.innerHTML = `
+                    <div class="flex items-center">
+                        <span class="font-normal block truncate">${member.username}</span>
+                        ${skillBadge}
+                    </div>
+                `;
+                
+                option.addEventListener('click', () => {
+                    addAssignee(member);
+                    assigneeDropdown.classList.add('hidden');
+                    assigneeSearch.value = '';
+                });
+                
+                assigneeDropdown.appendChild(option);
+            });
+            
+            if (filteredMembers.length === 0) {
+                const noResults = document.createElement('div');
+                noResults.className = 'cursor-default select-none relative py-2 pl-3 pr-9 text-gray-500';
+                noResults.textContent = 'No matching team members found';
+                assigneeDropdown.appendChild(noResults);
+            }
+            
+            assigneeDropdown.classList.remove('hidden');
+        }
+        
+        function addAssignee(user) {
+            selectedUsers.push(user);
+            
+            // Create badge for selected user
+            const badge = document.createElement('div');
+            badge.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-sm font-medium bg-blue-100 text-blue-800';
+            badge.innerHTML = `
+                ${user.username}
+                <button type="button" class="ml-1.5 inline-flex items-center justify-center h-4 w-4 rounded-full text-blue-400 hover:bg-blue-200 hover:text-blue-500 focus:outline-none focus:bg-blue-500 focus:text-white">
+                    <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            `;
+            
+            // Add remove functionality
+            badge.querySelector('button').addEventListener('click', () => {
+                selectedUsers = selectedUsers.filter(u => u.id !== user.id);
+                badge.remove();
+                updateAssigneeInputs();
+                
+                // If dropdown is open, refresh it
+                if (!assigneeDropdown.classList.contains('hidden')) {
+                    showAssigneeDropdown();
+                }
+            });
+            
+            selectedAssignees.appendChild(badge);
+            updateAssigneeInputs();
+        }
+        
+        function updateAssigneeInputs() {
+            // Clear existing inputs
+            assigneeInputs.innerHTML = '';
+            
+            // Set primary assignee for backward compatibility
+            primaryAssignee.value = selectedUsers.length > 0 ? selectedUsers[0].id : '';
+            
+            // Create hidden inputs for all selected users
+            selectedUsers.forEach(user => {
+                const input = document.createElement('input');
+                input.type = 'hidden';
+                input.name = 'assignees[]';
+                input.value = user.id;
+                assigneeInputs.appendChild(input);
+            });
+        }
+    </script>
+</body>
+</html>
+

@@ -178,6 +178,7 @@
                     </div>
                     <div class="p-2 max-h-[calc(100vh-220px)] overflow-y-auto custom-scrollbar task-column" data-status="todo">
                         {% for task in tasks_by_status['todo'] %}
+                        <!-- Task Card Template -->
                         <div class="task-card bg-white p-3 rounded shadow mb-2 cursor-pointer" data-task-id="{{ task.id }}">
                             <div class="flex justify-between items-start">
                                 <h4 class="font-medium text-gray-900">{{ task.title }}</h4>
@@ -196,22 +197,50 @@
                             {% if task.description %}
                             <p class="text-sm text-gray-500 mt-1">{{ task.description }}</p>
                             {% endif %}
-                            <div class="mt-2 flex items-center justify-between">
-                                {% if task.due_date %}
-                                <div class="flex items-center text-xs text-gray-500">
-                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                    </svg>
-                                    <span>{{ task.due_date|time_until }}</span>
-                                </div>
-                                {% endif %}
-                                {% if task.assignee %}
+                            <div class="mt-2 flex flex-wrap items-center justify-between gap-y-2">
                                 <div class="flex items-center">
-                                    <div class="h-5 w-5 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs" title="{{ task.assignee.username }}">
-                                        {{ task.assignee.username[:2]|upper }}
-                                    </div>
+                                    {% if task.priority %}
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium 
+                                        {% if task.priority == 'high' %}bg-red-100 text-red-800{% elif task.priority == 'medium' %}bg-yellow-100 text-yellow-800{% else %}bg-green-100 text-green-800{% endif %} mr-2">
+                                        {{ task.priority|capitalize }}
+                                    </span>
+                                    {% endif %}
+                                    {% if task.technology %}
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
+                                        {{ task.technology }}
+                                    </span>
+                                    {% endif %}
                                 </div>
-                                {% endif %}
+                                <div class="flex items-center space-x-2">
+                                    {% if task.due_date %}
+                                    <div class="flex items-center text-xs text-gray-500">
+                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                        <span>{{ task.due_date|time_until }}</span>
+                                    </div>
+                                    {% endif %}
+                                    {% if task.assignees %}
+                                    <div class="flex -space-x-1 overflow-hidden">
+                                        {% for assignee in task.assignees[:3] %}
+                                        <div class="h-5 w-5 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs ring-1 ring-white" title="{{ assignee.username }}">
+                                            {{ assignee.username[:2]|upper }}
+                                        </div>
+                                        {% endfor %}
+                                        {% if task.assignees|length > 3 %}
+                                        <div class="h-5 w-5 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 text-xs ring-1 ring-white">
+                                            +{{ task.assignees|length - 3 }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    {% elif task.assignee %}
+                                    <div class="flex items-center">
+                                        <div class="h-5 w-5 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs" title="{{ task.assignee.username }}">
+                                            {{ task.assignee.username[:2]|upper }}
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                </div>
                             </div>
                         </div>
                         {% endfor %}
@@ -233,6 +262,7 @@
                     </div>
                     <div class="p-2 max-h-[calc(100vh-220px)] overflow-y-auto custom-scrollbar task-column" data-status="progress">
                         {% for task in tasks_by_status['progress'] %}
+                        <!-- Task Card Template -->
                         <div class="task-card bg-white p-3 rounded shadow mb-2 cursor-pointer" data-task-id="{{ task.id }}">
                             <div class="flex justify-between items-start">
                                 <h4 class="font-medium text-gray-900">{{ task.title }}</h4>
@@ -251,22 +281,50 @@
                             {% if task.description %}
                             <p class="text-sm text-gray-500 mt-1">{{ task.description }}</p>
                             {% endif %}
-                            <div class="mt-2 flex items-center justify-between">
-                                {% if task.due_date %}
-                                <div class="flex items-center text-xs text-gray-500">
-                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                    </svg>
-                                    <span>{{ task.due_date|time_until }}</span>
-                                </div>
-                                {% endif %}
-                                {% if task.assignee %}
+                            <div class="mt-2 flex flex-wrap items-center justify-between gap-y-2">
                                 <div class="flex items-center">
-                                    <div class="h-5 w-5 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs" title="{{ task.assignee.username }}">
-                                        {{ task.assignee.username[:2]|upper }}
-                                    </div>
+                                    {% if task.priority %}
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium 
+                                        {% if task.priority == 'high' %}bg-red-100 text-red-800{% elif task.priority == 'medium' %}bg-yellow-100 text-yellow-800{% else %}bg-green-100 text-green-800{% endif %} mr-2">
+                                        {{ task.priority|capitalize }}
+                                    </span>
+                                    {% endif %}
+                                    {% if task.technology %}
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
+                                        {{ task.technology }}
+                                    </span>
+                                    {% endif %}
                                 </div>
-                                {% endif %}
+                                <div class="flex items-center space-x-2">
+                                    {% if task.due_date %}
+                                    <div class="flex items-center text-xs text-gray-500">
+                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                        <span>{{ task.due_date|time_until }}</span>
+                                    </div>
+                                    {% endif %}
+                                    {% if task.assignees %}
+                                    <div class="flex -space-x-1 overflow-hidden">
+                                        {% for assignee in task.assignees[:3] %}
+                                        <div class="h-5 w-5 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs ring-1 ring-white" title="{{ assignee.username }}">
+                                            {{ assignee.username[:2]|upper }}
+                                        </div>
+                                        {% endfor %}
+                                        {% if task.assignees|length > 3 %}
+                                        <div class="h-5 w-5 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 text-xs ring-1 ring-white">
+                                            +{{ task.assignees|length - 3 }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    {% elif task.assignee %}
+                                    <div class="flex items-center">
+                                        <div class="h-5 w-5 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs" title="{{ task.assignee.username }}">
+                                            {{ task.assignee.username[:2]|upper }}
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                </div>
                             </div>
                         </div>
                         {% endfor %}
@@ -288,6 +346,7 @@
                     </div>
                     <div class="p-2 max-h-[calc(100vh-220px)] overflow-y-auto custom-scrollbar task-column" data-status="review">
                         {% for task in tasks_by_status['review'] %}
+                        <!-- Task Card Template -->
                         <div class="task-card bg-white p-3 rounded shadow mb-2 cursor-pointer" data-task-id="{{ task.id }}">
                             <div class="flex justify-between items-start">
                                 <h4 class="font-medium text-gray-900">{{ task.title }}</h4>
@@ -306,22 +365,50 @@
                             {% if task.description %}
                             <p class="text-sm text-gray-500 mt-1">{{ task.description }}</p>
                             {% endif %}
-                            <div class="mt-2 flex items-center justify-between">
-                                {% if task.due_date %}
-                                <div class="flex items-center text-xs text-gray-500">
-                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                    </svg>
-                                    <span>{{ task.due_date|time_until }}</span>
-                                </div>
-                                {% endif %}
-                                {% if task.assignee %}
+                            <div class="mt-2 flex flex-wrap items-center justify-between gap-y-2">
                                 <div class="flex items-center">
-                                    <div class="h-5 w-5 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs" title="{{ task.assignee.username }}">
-                                        {{ task.assignee.username[:2]|upper }}
-                                    </div>
+                                    {% if task.priority %}
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium 
+                                        {% if task.priority == 'high' %}bg-red-100 text-red-800{% elif task.priority == 'medium' %}bg-yellow-100 text-yellow-800{% else %}bg-green-100 text-green-800{% endif %} mr-2">
+                                        {{ task.priority|capitalize }}
+                                    </span>
+                                    {% endif %}
+                                    {% if task.technology %}
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
+                                        {{ task.technology }}
+                                    </span>
+                                    {% endif %}
                                 </div>
-                                {% endif %}
+                                <div class="flex items-center space-x-2">
+                                    {% if task.due_date %}
+                                    <div class="flex items-center text-xs text-gray-500">
+                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                        <span>{{ task.due_date|time_until }}</span>
+                                    </div>
+                                    {% endif %}
+                                    {% if task.assignees %}
+                                    <div class="flex -space-x-1 overflow-hidden">
+                                        {% for assignee in task.assignees[:3] %}
+                                        <div class="h-5 w-5 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs ring-1 ring-white" title="{{ assignee.username }}">
+                                            {{ assignee.username[:2]|upper }}
+                                        </div>
+                                        {% endfor %}
+                                        {% if task.assignees|length > 3 %}
+                                        <div class="h-5 w-5 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 text-xs ring-1 ring-white">
+                                            +{{ task.assignees|length - 3 }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    {% elif task.assignee %}
+                                    <div class="flex items-center">
+                                        <div class="h-5 w-5 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs" title="{{ task.assignee.username }}">
+                                            {{ task.assignee.username[:2]|upper }}
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                </div>
                             </div>
                         </div>
                         {% endfor %}
@@ -343,6 +430,7 @@
                     </div>
                     <div class="p-2 max-h-[calc(100vh-220px)] overflow-y-auto custom-scrollbar task-column" data-status="done">
                         {% for task in tasks_by_status['done'] %}
+                        <!-- Task Card Template -->
                         <div class="task-card bg-white p-3 rounded shadow mb-2 cursor-pointer" data-task-id="{{ task.id }}">
                             <div class="flex justify-between items-start">
                                 <h4 class="font-medium text-gray-900">{{ task.title }}</h4>
@@ -361,22 +449,50 @@
                             {% if task.description %}
                             <p class="text-sm text-gray-500 mt-1">{{ task.description }}</p>
                             {% endif %}
-                            <div class="mt-2 flex items-center justify-between">
-                                {% if task.due_date %}
-                                <div class="flex items-center text-xs text-gray-500">
-                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                    </svg>
-                                    <span>{{ task.due_date|time_until }}</span>
-                                </div>
-                                {% endif %}
-                                {% if task.assignee %}
+                            <div class="mt-2 flex flex-wrap items-center justify-between gap-y-2">
                                 <div class="flex items-center">
-                                    <div class="h-5 w-5 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs" title="{{ task.assignee.username }}">
-                                        {{ task.assignee.username[:2]|upper }}
-                                    </div>
+                                    {% if task.priority %}
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium 
+                                        {% if task.priority == 'high' %}bg-red-100 text-red-800{% elif task.priority == 'medium' %}bg-yellow-100 text-yellow-800{% else %}bg-green-100 text-green-800{% endif %} mr-2">
+                                        {{ task.priority|capitalize }}
+                                    </span>
+                                    {% endif %}
+                                    {% if task.technology %}
+                                    <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-800">
+                                        {{ task.technology }}
+                                    </span>
+                                    {% endif %}
                                 </div>
-                                {% endif %}
+                                <div class="flex items-center space-x-2">
+                                    {% if task.due_date %}
+                                    <div class="flex items-center text-xs text-gray-500">
+                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                        <span>{{ task.due_date|time_until }}</span>
+                                    </div>
+                                    {% endif %}
+                                    {% if task.assignees %}
+                                    <div class="flex -space-x-1 overflow-hidden">
+                                        {% for assignee in task.assignees[:3] %}
+                                        <div class="h-5 w-5 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs ring-1 ring-white" title="{{ assignee.username }}">
+                                            {{ assignee.username[:2]|upper }}
+                                        </div>
+                                        {% endfor %}
+                                        {% if task.assignees|length > 3 %}
+                                        <div class="h-5 w-5 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 text-xs ring-1 ring-white">
+                                            +{{ task.assignees|length - 3 }}
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                    {% elif task.assignee %}
+                                    <div class="flex items-center">
+                                        <div class="h-5 w-5 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs" title="{{ task.assignee.username }}">
+                                            {{ task.assignee.username[:2]|upper }}
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                </div>
                             </div>
                         </div>
                         {% endfor %}
@@ -411,453 +527,232 @@
                     <textarea id="task-description" name="description" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
                 </div>
                 <div class="mb-4">
-                    <label for="task-due-date" class="block text-sm font-medium text-gray-700 mb-1">Due Date (Optional)</label>
-                    <input type="date" id="task-due-date" name="due_date" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                </div>
-                <div class="mb-4">
-                    <label for="task-assignee" class="block text-sm font-medium text-gray-700 mb-1">Assign To (Optional)</label>
-                    <select id="task-assignee" name="assigned_to" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <option value="">Unassigned</option>
-                        {% if board.owner.id == session['user_id'] %}
-                            <option value="{{ board.owner.id }}">{{ board.owner.username }} (You - Owner)</option>
-                        {% else %}
-                            <option value="{{ board.owner.id }}">{{ board.owner.username }} (Owner)</option>
-                        {% endif %}
-                        {% for member in board.members %}
-                            {% if member.user.id == session['user_id'] %}
-                                <option value="{{ member.user.id }}">{{ member.user.username }} (You)</option>
-                            {% else %}
-                                <option value="{{ member.user.id }}">{{ member.user.username }}</option>
-                            {% endif %}
+                    <label for="task-technology" class="block text-sm font-medium text-gray-700 mb-1">Technology/Skill Required</label>
+                    <select id="task-technology" name="technology" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="">Select a technology</option>
+                        {% if board.technologies %}
+                            {% for tech in board.technologies.split(',') %}
+                                <option value="{{ tech.strip() }}">{{ tech.strip() }}</option>
                         {% endfor %}
-                    </select>
+                    {% endif %}
+                    <option value="Python">Python</option>
+                    <option value="JavaScript">JavaScript</option>
+                    <option value="PHP">PHP</option>
+                    <option value="Java">Java</option>
+                    <option value="C#">C#</option>
+                    <option value="HTML/CSS">HTML/CSS</option>
+                    <option value="React">React</option>
+                    <option value="Node.js">Node.js</option>
+                </select>
+            </div>
+            <div class="mb-4">
+                <label for="task-priority" class="block text-sm font-medium text-gray-700 mb-1">Priority</label>
+                <select id="task-priority" name="priority" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="low">Low</option>
+                    <option value="medium" selected>Medium</option>
+                    <option value="high">High</option>
+                </select>
+            </div>
+            <div class="mb-4">
+                <label for="task-due-date" class="block text-sm font-medium text-gray-700 mb-1">Due Date (Optional)</label>
+                <input type="date" id="task-due-date" name="due_date" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+            </div>
+            <div class="mb-4">
+                <label for="task-assignees" class="block text-sm font-medium text-gray-700 mb-1">Assign To (Optional)</label>
+                <div id="selected-assignees" class="flex flex-wrap gap-2 mb-2">
+                    <!-- Selected assignees will appear here -->
                 </div>
-                <div class="mb-6">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                    <div class="grid grid-cols-4 gap-2">
-                        <div class="status-option flex items-center p-2 border rounded cursor-pointer bg-red-100 border-red-500" data-status="todo">
-                            <span class="h-3 w-3 rounded-full bg-red-500 mr-2"></span>
-                            <span class="text-sm">To Do</span>
-                        </div>
-                        <div class="status-option flex items-center p-2 border rounded cursor-pointer" data-status="progress">
-                            <span class="h-3 w-3 rounded-full bg-yellow-500 mr-2"></span>
-                            <span class="text-sm">Progress</span>
-                        </div>
-                        <div class="status-option flex items-center p-2 border rounded cursor-pointer" data-status="review">
-                            <span class="h-3 w-3 rounded-full bg-blue-500 mr-2"></span>
-                            <span class="text-sm">Review</span>
-                        </div>
-                        <div class="status-option flex items-center p-2 border rounded cursor-pointer" data-status="done">
-                            <span class="h-3 w-3 rounded-full bg-green-500 mr-2"></span>
-                            <span class="text-sm">Done</span>
-                        </div>
+                <select id="task-assignees" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <option value="">Select team members</option>
+                    {% if board.owner.id == session['user_id'] %}
+                        <option value="{{ board.owner.id }}">{{ board.owner.username }} (You - Owner)</option>
+                    {% else %}
+                        <option value="{{ board.owner.id }}">{{ board.owner.username }} (Owner)</option>
+                    {% endif %}
+                    {% for member in board.members %}
+                        {% if member.user.id == session['user_id'] %}
+                            <option value="{{ member.user.id }}">{{ member.user.username }} (You)</option>
+                        {% else %}
+                            <option value="{{ member.user.id }}">{{ member.user.username }}</option>
+                        {% endif %}
+                    {% endfor %}
+                </select>
+                <div id="assignee-inputs">
+                    <!-- Hidden inputs for assignees will be added here -->
+                </div>
+                <!-- For backward compatibility -->
+                <input type="hidden" id="task-assignee" name="assigned_to">
+            </div>
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                <div class="grid grid-cols-4 gap-2">
+                    <div class="status-option flex items-center p-2 border rounded cursor-pointer bg-red-100 border-red-500" data-status="todo">
+                        <span class="h-3 w-3 rounded-full bg-red-500 mr-2"></span>
+                        <span class="text-sm">To Do</span>
+                    </div>
+                    <div class="status-option flex items-center p-2 border rounded cursor-pointer" data-status="progress">
+                        <span class="h-3 w-3 rounded-full bg-yellow-500 mr-2"></span>
+                        <span class="text-sm">Progress</span>
+                    </div>
+                    <div class="status-option flex items-center p-2 border rounded cursor-pointer" data-status="review">
+                        <span class="h-3 w-3 rounded-full bg-blue-500 mr-2"></span>
+                        <span class="text-sm">Review</span>
+                    </div>
+                    <div class="status-option flex items-center p-2 border rounded cursor-pointer" data-status="done">
+                        <span class="h-3 w-3 rounded-full bg-green-500 mr-2"></span>
+                        <span class="text-sm">Done</span>
                     </div>
                 </div>
-                <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-300">
-                    Create Task
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Edit Task Modal -->
-    <div id="edit-task-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
-        <div class="modal-overlay absolute inset-0 bg-black bg-opacity-50"></div>
-        <div class="modal-content bg-white rounded-lg shadow-xl w-full max-w-md mx-4 p-6 relative">
-            <button class="close-modal absolute top-4 right-4 text-gray-400 hover:text-gray-600">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                </svg>
+            </div>
+            <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-300">
+                Create Task
             </button>
-            <h2 class="text-2xl font-bold text-gray-900 mb-6">Edit Task</h2>
-            <form id="edit-task-form" action="" method="POST">
-                <input type="hidden" name="status" id="edit-task-status-input" value="">
-                <div class="mb-4">
-                    <label for="edit-task-title" class="block text-sm font-medium text-gray-700 mb-1">Task Title</label>
-                    <input type="text" id="edit-task-title" name="title" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                </div>
-                <div class="mb-4">
-                    <label for="edit-task-description" class="block text-sm font-medium text-gray-700 mb-1">Description (Optional)</label>
-                    <textarea id="edit-task-description" name="description" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
-                </div>
-                <div class="mb-4">
-                    <label for="edit-task-due-date" class="block text-sm font-medium text-gray-700 mb-1">Due Date (Optional)</label>
-                    <input type="date" id="edit-task-due-date" name="due_date" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                </div>
-                <div class="mb-4">
-                    <label for="edit-task-assignee" class="block text-sm font-medium text-gray-700 mb-1">Assign To (Optional)</label>
-                    <select id="edit-task-assignee" name="assigned_to" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <option value="">Unassigned</option>
-                        {% if board.owner.id == session['user_id'] %}
-                            <option value="{{ board.owner.id }}">{{ board.owner.username }} (You - Owner)</option>
-                        {% else %}
-                            <option value="{{ board.owner.id }}">{{ board.owner.username }} (Owner)</option>
-                        {% endif %}
-                        {% for member in board.members %}
-                            {% if member.user.id == session['user_id'] %}
-                                <option value="{{ member.user.id }}">{{ member.user.username }} (You)</option>
-                            {% else %}
-                                <option value="{{ member.user.id }}">{{ member.user.username }}</option>
-                            {% endif %}
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="mb-6">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                    <div class="grid grid-cols-4 gap-2">
-                        <div class="edit-status-option flex items-center p-2 border rounded cursor-pointer" data-status="todo">
-                            <span class="h-3 w-3 rounded-full bg-red-500 mr-2"></span>
-                            <span class="text-sm">To Do</span>
-                        </div>
-                        <div class="edit-status-option flex items-center p-2 border rounded cursor-pointer" data-status="progress">
-                            <span class="h-3 w-3 rounded-full bg-yellow-500 mr-2"></span>
-                            <span class="text-sm">Progress</span>
-                        </div>
-                        <div class="edit-status-option flex items-center p-2 border rounded cursor-pointer" data-status="review">
-                            <span class="h-3 w-3 rounded-full bg-blue-500 mr-2"></span>
-                            <span class="text-sm">Review</span>
-                        </div>
-                        <div class="edit-status-option flex items-center p-2 border rounded cursor-pointer" data-status="done">
-                            <span class="h-3 w-3 rounded-full bg-green-500 mr-2"></span>
-                            <span class="text-sm">Done</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="flex space-x-3">
-                    <button type="submit" class="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-300">
-                        Save Changes
-                    </button>
-                    <button type="button" id="delete-task-confirm" class="bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 transition duration-300">
-                        Delete
-                    </button>
-                </div>
-            </form>
-        </div>
+        </form>
     </div>
+</div>
 
-    <!-- Delete Task Confirmation Modal -->
-    <div id="delete-task-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
-        <div class="modal-overlay absolute inset-0 bg-black bg-opacity-50"></div>
-        <div class="modal-content bg-white rounded-lg shadow-xl w-full max-w-md mx-4 p-6 relative">
-            <button class="close-modal absolute top-4 right-4 text-gray-400 hover:text-gray-600">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                </svg>
-            </button>
-            <h2 class="text-2xl font-bold text-gray-900 mb-2">Delete Task</h2>
-            <p class="text-gray-600 mb-6">Are you sure you want to delete this task? This action cannot be undone.</p>
-            <form id="delete-task-form" action="" method="POST">
-                <div class="flex space-x-3">
-                    <button type="button" class="close-modal flex-1 bg-gray-200 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-300 transition duration-300">
-                        Cancel
-                    </button>
-                    <button type="submit" class="flex-1 bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 transition duration-300">
-                        Delete
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <script>
-        // User Dropdown
-        const userMenuButton = document.getElementById('user-menu-button');
-        const userDropdown = document.getElementById('user-dropdown');
-
-        userMenuButton.addEventListener('click', () => userDropdown.classList.toggle('hidden'));
-        document.addEventListener('click', (e) => {
-            if (!userMenuButton.contains(e.target) && !userDropdown.contains(e.target)) {
-                userDropdown.classList.add('hidden');
-            }
-        });
-
-        // Modal Handling
-        const createTaskBtn = document.getElementById('create-task-btn');
-        const createTaskModal = document.getElementById('create-task-modal');
-        const editTaskModal = document.getElementById('edit-task-modal');
-        const deleteTaskModal = document.getElementById('delete-task-modal');
-        const closeModals = document.querySelectorAll('.close-modal');
-
-        function toggleModal(modal, show) {
-            const overlay = modal.querySelector('.modal-overlay');
-            const content = modal.querySelector('.modal-content');
-            if (show) {
-                modal.classList.remove('hidden');
-                setTimeout(() => {
-                    overlay.classList.add('active');
-                    content.classList.add('active');
-                }, 10);
-            } else {
-                overlay.classList.remove('active');
-                content.classList.remove('active');
-                setTimeout(() => modal.classList.add('hidden'), 300);
-            }
-        }
-
-        // Open Create Task Modal
-        createTaskBtn.addEventListener('click', () => {
-            document.getElementById('task-status-input').value = 'todo';
-            document.querySelectorAll('.status-option').forEach(option => {
-                option.classList.remove('bg-red-100', 'bg-yellow-100', 'bg-blue-100', 'bg-green-100', 'border-red-500', 'border-yellow-500', 'border-blue-500', 'border-green-500');
-                if (option.dataset.status === 'todo') {
-                    option.classList.add('bg-red-100', 'border-red-500');
-                }
-            });
-            toggleModal(createTaskModal, true);
-        });
-
-        // Add Task Placeholders
-        document.querySelectorAll('.add-task-placeholder').forEach(placeholder => {
-            placeholder.addEventListener('click', () => {
-                const status = placeholder.dataset.status;
-                document.getElementById('task-status-input').value = status;
-                
-                document.querySelectorAll('.status-option').forEach(option => {
-                    option.classList.remove('bg-red-100', 'bg-yellow-100', 'bg-blue-100', 'bg-green-100', 'border-red-500', 'border-yellow-500', 'border-blue-500', 'border-green-500');
-                    
-                    if (option.dataset.status === status) {
-                        const statusColors = {
-                            'todo': ['bg-red-100', 'border-red-500'],
-                            'progress': ['bg-yellow-100', 'border-yellow-500'],
-                            'review': ['bg-blue-100', 'border-blue-500'],
-                            'done': ['bg-green-100', 'border-green-500']
-                        };
-                        
-                        option.classList.add(...statusColors[status]);
-                    }
-                });
-                
-                toggleModal(createTaskModal, true);
-            });
-        });
-
-        // Close Modals
-        closeModals.forEach(btn => {
-            btn.addEventListener('click', () => {
-                toggleModal(btn.closest('.fixed'), false);
-            });
-        });
-
-        // Status Selection in Create Task Modal
-        document.querySelectorAll('.status-option').forEach(option => {
-            option.addEventListener('click', () => {
-                const status = option.dataset.status;
-                document.getElementById('task-status-input').value = status;
-                
-                document.querySelectorAll('.status-option').forEach(opt => {
-                    opt.classList.remove('bg-red-100', 'bg-yellow-100', 'bg-blue-100', 'bg-green-100', 'border-red-500', 'border-yellow-500', 'border-blue-500', 'border-green-500');
-                });
-                
-                const statusColors = {
-                    'todo': ['bg-red-100', 'border-red-500'],
-                    'progress': ['bg-yellow-100', 'border-yellow-500'],
-                    'review': ['bg-blue-100', 'border-blue-500'],
-                    'done': ['bg-green-100', 'border-green-500']
-                };
-                
-                option.classList.add(...statusColors[status]);
-            });
-        });
-
-        // Status Selection in Edit Task Modal
-        document.querySelectorAll('.edit-status-option').forEach(option => {
-            option.addEventListener('click', () => {
-                const status = option.dataset.status;
-                document.getElementById('edit-task-status-input').value = status;
-                
-                document.querySelectorAll('.edit-status-option').forEach(opt => {
-                    opt.classList.remove('bg-red-100', 'bg-yellow-100', 'bg-blue-100', 'bg-green-100', 'border-red-500', 'border-yellow-500', 'border-blue-500', 'border-green-500');
-                });
-                
-                const statusColors = {
-                    'todo': ['bg-red-100', 'border-red-500'],
-                    'progress': ['bg-yellow-100', 'border-yellow-500'],
-                    'review': ['bg-blue-100', 'border-blue-500'],
-                    'done': ['bg-green-100', 'border-green-500']
-                };
-                
-                option.classList.add(...statusColors[status]);
-            });
-        });
-
-        // Task Menu Dropdowns
-        document.querySelectorAll('.task-menu-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const dropdown = btn.nextElementSibling;
-                
-                // Close all other dropdowns first
-                document.querySelectorAll('.task-dropdown').forEach(d => {
-                    if (d !== dropdown) d.classList.add('hidden');
-                });
-                
-                dropdown.classList.toggle('hidden');
-            });
-        });
-
-        // Close dropdowns when clicking outside
-        document.addEventListener('click', () => {
-            document.querySelectorAll('.task-dropdown').forEach(dropdown => {
-                dropdown.classList.add('hidden');
-            });
-        });
-
-        // Edit Task
-        document.querySelectorAll('.edit-task-btn').forEach(btn => {
-            btn.addEventListener('click', async (e) => {
-                e.stopPropagation();
-                const taskId = btn.dataset.taskId;
-                
-                try {
-                    const response = await fetch(`/api/tasks/${taskId}`);
-                    if (!response.ok) throw new Error('Failed to fetch task data');
-                    
-                    const task = await response.json();
-                    
-                    // Set form action
-                    document.getElementById('edit-task-form').action = `/update_task/${taskId}`;
-                    
-                    // Fill form fields
-                    document.getElementById('edit-task-title').value = task.title;
-                    document.getElementById('edit-task-description').value = task.description || '';
-                    document.getElementById('edit-task-due-date').value = task.due_date ? task.due_date.split('T')[0] : '';
-                    document.getElementById('edit-task-status-input').value = task.status;
-                    
-                    // Set assignee if available
-                    if (document.getElementById('edit-task-assignee')) {
-                        document.getElementById('edit-task-assignee').value = task.assigned_to || '';
-                    }
-                    
-                    // Set status selection
-                    document.querySelectorAll('.edit-status-option').forEach(option => {
-                        option.classList.remove('bg-red-100', 'bg-yellow-100', 'bg-blue-100', 'bg-green-100', 'border-red-500', 'border-yellow-500', 'border-blue-500', 'border-green-500');
-                        
-                        if (option.dataset.status === task.status) {
-                            const statusColors = {
-                                'todo': ['bg-red-100', 'border-red-500'],
-                                'progress': ['bg-yellow-100', 'border-yellow-500'],
-                                'review': ['bg-blue-100', 'border-blue-500'],
-                                'done': ['bg-green-100', 'border-green-500']
-                            };
-                            
-                            option.classList.add(...statusColors[task.status]);
-                        }
-                    });
-                    
-                    toggleModal(editTaskModal, true);
-                } catch (error) {
-                    console.error('Error:', error);
-                    alert('Failed to load task data');
-                }
-            });
-        });
-
-        // Delete Task Button in Edit Modal
-        document.getElementById('delete-task-confirm').addEventListener('click', () => {
-            const taskId = new URL(document.getElementById('edit-task-form').action).pathname.split('/').pop();
-            document.getElementById('delete-task-form').action = `/delete_task/${taskId}`;
-            
-            toggleModal(editTaskModal, false);
-            setTimeout(() => toggleModal(deleteTaskModal, true), 300);
-        });
-
-        // Delete Task Button in Dropdown
-        document.querySelectorAll('.delete-task-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const taskId = btn.dataset.taskId;
-                document.getElementById('delete-task-form').action = `/delete_task/${taskId}`;
-                toggleModal(deleteTaskModal, true);
-            });
-        });
-
-        // Drag and Drop Functionality
-        document.addEventListener('DOMContentLoaded', () => {
-            let draggedTask = null;
-            let draggedTaskId = null;
-
-            // Initialize draggable tasks
-            function initDraggable() {
-                document.querySelectorAll('.task-card').forEach(task => {
-                    task.setAttribute('draggable', 'true');
-                    
-                    task.addEventListener('dragstart', (e) => {
-                        draggedTask = task;
-                        draggedTaskId = task.dataset.taskId;
-                        setTimeout(() => {
-                            task.classList.add('dragging');
-                        }, 0);
-                        e.dataTransfer.setData('text/plain', task.dataset.taskId);
-                    });
-                    
-                    task.addEventListener('dragend', () => {
-                        task.classList.remove('dragging');
-                    });
-                });
-            }
-
-            // Initialize drop zones
-            document.querySelectorAll('.task-column').forEach(column => {
-                column.addEventListener('dragover', (e) => {
-                    e.preventDefault();
-                    column.classList.add('bg-gray-200');
-                });
-                
-                column.addEventListener('dragleave', () => {
-                    column.classList.remove('bg-gray-200');
-                });
-                
-                column.addEventListener('drop', async (e) => {
-                    e.preventDefault();
-                    column.classList.remove('bg-gray-200');
-                    
-                    const taskId = e.dataTransfer.getData('text/plain');
-                    if (!taskId) return;
-                    
-                    const newStatus = column.dataset.status;
-                    
-                    try {
-                        const response = await fetch(`/api/tasks/${taskId}/status`, {
-                            method: 'PUT',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            body: JSON.stringify({ status: newStatus }),
-                        });
-                        
-                        if (!response.ok) throw new Error('Failed to update task status');
-                        
-                        // Instead of moving the DOM element directly, refresh the page to show updated state
-                        // This is more reliable than DOM manipulation for complex updates
-                        window.location.reload();
-                    } catch (error) {
-                        console.error('Error:', error);
-                        alert('Failed to update task status');
-                    }
-                });
-            });
-
-            // Initialize draggable tasks on page load
-            initDraggable();
-        });
-
-        // Helper function to update column counts
-        function updateColumnCounts() {
-            document.querySelectorAll('.task-column').forEach(column => {
-                const status = column.dataset.status;
-                const count = column.querySelectorAll('.task-card').length;
-                const countElement = column.parentElement.querySelector('.rounded-full');
-                if (countElement) {
-                    countElement.textContent = count;
-                }
-            });
+<script>
+    // Multiple assignees functionality
+    const taskAssigneesSelect = document.getElementById('task-assignees');
+    const selectedAssigneesDiv = document.getElementById('selected-assignees');
+    const assigneeInputsDiv = document.getElementById('assignee-inputs');
+    const singleAssigneeInput = document.getElementById('task-assignee');
+    
+    let selectedAssignees = [];
+    
+    taskAssigneesSelect.addEventListener('change', function() {
+        const userId = this.value;
+        if (!userId) return;
+        
+        const userName = this.options[this.selectedIndex].text;
+        
+        // Check if already selected
+        if (!selectedAssignees.some(a => a.id === userId)) {
+            selectedAssignees.push({ id: userId, name: userName });
+            updateAssigneesDisplay();
         }
         
-        // Board settings button
-        document.getElementById('board-settings-btn').addEventListener('click', () => {
-            window.location.href = `/board_settings/${board.id}`;
+        // Reset select
+        this.value = '';
+    });
+    
+    function updateAssigneesDisplay() {
+        // Clear current display
+        selectedAssigneesDiv.innerHTML = '';
+        assigneeInputsDiv.innerHTML = '';
+        
+        // Set first assignee as primary (for backward compatibility)
+        if (selectedAssignees.length > 0) {
+            singleAssigneeInput.value = selectedAssignees[0].id;
+        } else {
+            singleAssigneeInput.value = '';
+        }
+        
+        // Add badges for each assignee
+        selectedAssignees.forEach(assignee => {
+            // Create badge
+            const badge = document.createElement('div');
+            badge.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800';
+            badge.innerHTML = `
+                ${assignee.name}
+                <button type="button" class="ml-1.5 inline-flex items-center justify-center h-4 w-4 rounded-full text-blue-400 hover:bg-blue-200 hover:text-blue-500 focus:outline-none focus:bg-blue-500 focus:text-white">
+                    <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            `;
+            
+            // Add remove functionality
+            badge.querySelector('button').addEventListener('click', () => {
+                selectedAssignees = selectedAssignees.filter(a => a.id !== assignee.id);
+                updateAssigneesDisplay();
+            });
+            
+            selectedAssigneesDiv.appendChild(badge);
+            
+            // Create hidden input
+            const input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = 'assignees[]';
+            input.value = assignee.id;
+            assigneeInputsDiv.appendChild(input);
         });
-    </script>
+    }
+    
+    // Technology selection to filter assignees by skill
+    const taskTechnologySelect = document.getElementById('task-technology');
+    
+    taskTechnologySelect.addEventListener('change', async function() {
+        const technology = this.value;
+        if (!technology) return;
+        
+        try {
+            const response = await fetch(`/api/users_by_skill/${technology}?board_id={{ board.id }}`);
+            if (!response.ok) throw new Error('Failed to fetch users by skill');
+            
+            const data = await response.json();
+            
+            // Clear current options
+            while (taskAssigneesSelect.options.length > 1) {
+                taskAssigneesSelect.remove(1);
+            }
+            
+            // Add skilled users first with proficiency indicator
+            if (data.skilled_users.length > 0) {
+                const skilledOptgroup = document.createElement('optgroup');
+                skilledOptgroup.label = `Team members with ${technology} skills`;
+                
+                data.skilled_users.forEach(user => {
+                    const option = document.createElement('option');
+                    option.value = user.id;
+                    
+                    const proficiencyText = ['', 'Beginner', 'Basic', 'Intermediate', 'Advanced', 'Expert'][user.proficiency];
+                    let displayName = user.username;
+                    
+                    if (user.id == {{ session['user_id'] }}) {
+                        displayName += ' (You)';
+                    }
+                    if (user.id == {{ board.owner.id }}) {
+                        displayName += ' (Owner)';
+                    }
+                    
+                    option.text = `${displayName} - ${proficiencyText}`;
+                    skilledOptgroup.appendChild(option);
+                });
+                
+                taskAssigneesSelect.appendChild(skilledOptgroup);
+            }
+            
+            // Add other users
+            if (data.other_users.length > 0) {
+                const otherOptgroup = document.createElement('optgroup');
+                otherOptgroup.label = 'Other team members';
+                
+                data.other_users.forEach(user => {
+                    const option = document.createElement('option');
+                    option.value = user.id;
+                    
+                    let displayName = user.username;
+                    
+                    if (user.id == {{ session['user_id'] }}) {
+                        displayName += ' (You)';
+                    }
+                    if (user.id == {{ board.owner.id }}) {
+                        displayName += ' (Owner)';
+                    }
+                    
+                    option.text = displayName;
+                    otherOptgroup.appendChild(option);
+                });
+                
+                taskAssigneesSelect.appendChild(otherOptgroup);
+            }
+            
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    });
+</script>
 </body>
 </html>
 
