@@ -10,6 +10,11 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'IaB8kqagM3TeF6pUP9jw9bH9FZPbj3ml'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:root@localhost/trello'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['UPLOAD_FOLDER'] = 'static/uploads'
+app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max upload size
+
+# Ensure upload directory exists
+os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 db = SQLAlchemy(app)
 
@@ -321,6 +326,22 @@ def update_board(board_id):
     board.color = request.form.get('color', 'blue')
     board.is_private = request.form.get('is_private') == 'on'
     
+    # Update new fields
+    if request.form.get('technologies'):
+        board.technologies = request.form.get('technologies')
+        
+    if request.form.get('deadline'):
+        try:
+            board.deadline = datetime.strptime(request.form.get('deadline'), '%Y-%m-%d')
+        except ValueError:
+            flash('Invalid deadline format. Please use YYYY-MM-DD.', 'error')
+            
+    if request.form.get('cost'):
+        try:
+            board.cost = float(request.form.get('cost'))
+        except ValueError:
+            flash('Invalid cost value. Please enter a number.', 'error')
+    
     db.session.commit()
     return redirect(url_for('board_dashboard'))
 
@@ -522,6 +543,37 @@ def update_task(task_id):
     
     flash('Task updated successfully!', 'success')
     return redirect(url_for('board_view', board_id=task.board_id))
+
+# Add a route for deleting tasks
+@app.route('/delete_task/<int:task_id>', methods=['POST'])
+def delete_task(task_id):
+    if 'user_id' not in session:
+        return redirect(url_for('home'))
+    
+    task = Task.query.get_or_404(task_id)
+    board_id = task.board_id
+    board = Board.query.get(board_id)
+    
+    # Check if user has permission to delete this task
+    is_admin = BoardMember.query.filter_by(
+        board_id=board_id, 
+        user_id=session['user_id'], 
+        role=BoardMemberRole.ADMIN
+    ).first()
+    
+    if task.user_id != session['user_id'] and board.user_id != session['user_id'] and not is_admin:
+        flash('You do not have permission to delete this task', 'error')
+        return redirect(url_for('board_view', board_id=board_id))
+    
+    # Delete task assignees first
+    TaskAssignee.query.filter_by(task_id=task_id).delete()
+    
+    # Delete the task
+    db.session.delete(task)
+    db.session.commit()
+    
+    flash('Task deleted successfully', 'success')
+    return redirect(url_for('board_view', board_id=board_id))
 
 # API endpoint to update task status (for drag and drop)
 @app.route('/api/tasks/<int:task_id>/status', methods=['PUT'])
@@ -871,6 +923,36 @@ def profile():
         assigned_tasks=assigned_tasks
     )
 
+# Add route for updating user profile
+@app.route('/update_profile', methods=['POST'])
+def update_profile():
+    if 'user_id' not in session:
+        return redirect(url_for('home'))
+    
+    user = User.query.get_or_404(session['user_id'])
+    
+    # Update user information
+    user.full_name = request.form.get('full_name')
+    user.bio = request.form.get('bio')
+    
+    # Handle avatar upload
+    if 'avatar' in request.files and request.files['avatar'].filename:
+        avatar_file = request.files['avatar']
+        if avatar_file:
+            # Generate a secure filename
+            filename = secure_filename(f"{user.username}_{int(datetime.utcnow().timestamp())}.jpg")
+            filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            
+            # Save the file
+            avatar_file.save(filepath)
+            
+            # Update user avatar path
+            user.avatar = f"/static/uploads/{filename}"
+    
+    db.session.commit()
+    flash('Profile updated successfully!', 'success')
+    return redirect(url_for('profile'))
+
 # Add route for managing user skills
 @app.route('/manage_skills', methods=['GET', 'POST'])
 def manage_skills():
@@ -951,7 +1033,6 @@ def get_users_by_skill(skill):
 
 if __name__ == '__main__':
     with app.app_context():
-        db.drop_all()
         db.create_all()
     app.run(debug=True)
 

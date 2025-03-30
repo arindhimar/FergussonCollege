@@ -94,9 +94,15 @@
                             <div>
                                 <button id="user-menu-button" class="bg-white rounded-full flex text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                                     <span class="sr-only">Open user menu</span>
+                                    {% if user.avatar %}
+                                    <div class="h-8 w-8 rounded-full overflow-hidden">
+                                        <img src="{{ user.avatar }}" alt="{{ user.username }}" class="h-full w-full object-cover">
+                                    </div>
+                                    {% else %}
                                     <div class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-medium">
                                         {{ user.username[:2]|upper }}
                                     </div>
+                                    {% endif %}
                                     {% if pending_invitations %}
                                     <span class="notification-badge">{{ pending_invitations|length }}</span>
                                     {% endif %}
@@ -522,10 +528,43 @@
                 </div>
                 <input type="hidden" id="board-color" name="color" value="blue">
             </div>
-            <div class="mb-4">
-                <label for="board-technologies" class="block text-sm font-medium text-gray-700 mb-1">Technologies Required</label>
-                <input type="text" id="board-technologies" name="technologies" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="e.g., Python, PHP, JavaScript">
-            </div>
+            
+<div class="mb-4">
+    <label for="board-technologies" class="block text-sm font-medium text-gray-700 mb-1">Technologies Required</label>
+    <div class="relative">
+        <select id="board-technologies" name="technologies[]" multiple class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" style="min-height: 120px;">
+            <option value="" disabled>Select technologies</option>
+            <optgroup label="Your Skills">
+                {% for skill in user.skills %}
+                    <option value="{{ skill.skill }}">{{ skill.skill }} ({{ ['', 'Beginner', 'Basic', 'Intermediate', 'Advanced', 'Expert'][skill.proficiency] }})</option>
+                {% endfor %}
+            </optgroup>
+            <optgroup label="Common Technologies">
+                <option value="Python">Python</option>
+                <option value="JavaScript">JavaScript</option>
+                <option value="PHP">PHP</option>
+                <option value="Java">Java</option>
+                <option value="C#">C#</option>
+                <option value="Ruby">Ruby</option>
+                <option value="Go">Go</option>
+                <option value="HTML/CSS">HTML/CSS</option>
+                <option value="React">React</option>
+                <option value="Angular">Angular</option>
+                <option value="Vue">Vue</option>
+                <option value="Node.js">Node.js</option>
+                <option value="Django">Django</option>
+                <option value="Flask">Flask</option>
+                <option value="Laravel">Laravel</option>
+                <option value="SQL">SQL</option>
+                <option value="MongoDB">MongoDB</option>
+                <option value="DevOps">DevOps</option>
+                <option value="UI/UX Design">UI/UX Design</option>
+                <option value="Project Management">Project Management</option>
+            </optgroup>
+        </select>
+        <p class="mt-1 text-xs text-gray-500">Hold Ctrl/Cmd to select multiple technologies</p>
+    </div>
+</div>
             <div class="mb-4">
                 <label for="board-cost" class="block text-sm font-medium text-gray-700 mb-1">Project Cost (Optional)</label>
                 <div class="mt-1 relative rounded-md shadow-sm">
@@ -554,4 +593,334 @@
         </form>
     </div>
 </div>
+
+    <script>
+    // User Dropdown
+    const userMenuButton = document.getElementById('user-menu-button');
+    const userDropdown = document.getElementById('user-dropdown');
+
+    userMenuButton.addEventListener('click', () => userDropdown.classList.toggle('hidden'));
+    document.addEventListener('click', (e) => {
+        if (!userMenuButton.contains(e.target) && !userDropdown.contains(e.target)) {
+            userDropdown.classList.add('hidden');
+        }
+    });
+
+    // Board Menu Dropdowns
+    document.querySelectorAll('.board-menu-btn').forEach(button => {
+        button.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const dropdown = button.nextElementSibling;
+            dropdown.classList.toggle('hidden');
+        });
+    });
+
+    document.addEventListener('click', (e) => {
+        document.querySelectorAll('.board-dropdown').forEach(dropdown => {
+            if (!dropdown.classList.contains('hidden') && !dropdown.previousElementSibling.contains(e.target)) {
+                dropdown.classList.add('hidden');
+            }
+        });
+    });
+
+    // Create Board Modal
+    const createBoardModal = document.getElementById('create-board-modal');
+    const createBoardBtns = document.querySelectorAll('#create-board-btn, #create-board-btn-2, #create-board-btn-3');
+    const closeModals = document.querySelectorAll('.close-modal');
+
+    function toggleModal(modal, show) {
+        const overlay = modal.querySelector('.modal-overlay');
+        const content = modal.querySelector('.modal-content');
+        if (show) {
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                overlay.classList.add('active');
+                content.classList.add('active');
+            }, 10);
+        } else {
+            overlay.classList.remove('active');
+            content.classList.remove('active');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+    }
+
+    createBoardBtns.forEach(btn => {
+        btn.addEventListener('click', () => toggleModal(createBoardModal, true));
+    });
+
+    closeModals.forEach(btn => {
+        btn.addEventListener('click', () => {
+            toggleModal(btn.closest('.fixed'), false);
+        });
+    });
+
+    document.addEventListener('click', (e) => {
+        if (e.target.classList.contains('modal-overlay')) {
+            toggleModal(e.target.closest('.fixed'), false);
+        }
+    });
+
+    // Color Selection
+    const colorOptions = document.querySelectorAll('.color-option');
+    const boardColorInput = document.getElementById('board-color');
+
+    colorOptions.forEach(option => {
+        option.addEventListener('click', () => {
+            colorOptions.forEach(opt => {
+                opt.innerHTML = '';
+                opt.classList.remove('border-2');
+            });
+            
+            option.classList.add('border-2');
+            option.innerHTML = `
+                <svg class="h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                </svg>
+            `;
+            
+            boardColorInput.value = option.dataset.color;
+        });
+    });
+
+    // Edit Board Button
+    document.querySelectorAll('.edit-board-btn').forEach(button => {
+        button.addEventListener('click', async () => {
+        const boardId = button.dataset.boardId;
+        const boardName = button.dataset.boardName;
+        const boardColor = button.dataset.boardColor;
+        const boardPrivate = button.dataset.boardPrivate === 'True';
+        
+        // Fetch board data to get technologies, deadline, and cost
+        try {
+            const response = await fetch(`/api/boards/${boardId}`);
+            if (!response.ok) throw new Error('Failed to fetch board data');
+            
+            const boardData = await response.json();
+            
+            // Create a form for editing
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = `/update_board/${boardId}`;
+            form.innerHTML = `
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Board Name</label>
+                    <input type="text" name="name" value="${boardName}" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Board Color</label>
+                    <div class="grid grid-cols-5 gap-2">
+                        <div class="color-option flex items-center justify-center h-8 bg-blue-500 rounded-md cursor-pointer ${boardColor === 'blue' ? 'border-2 border-blue-500' : ''}" data-color="blue">
+                            ${boardColor === 'blue' ? '<svg class="h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>' : ''}
+                        </div>
+                        <div class="color-option flex items-center justify-center h-8 bg-green-500 rounded-md cursor-pointer ${boardColor === 'green' ? 'border-2 border-green-500' : ''}" data-color="green">
+                            ${boardColor === 'green' ? '<svg class="h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>' : ''}
+                        </div>
+                        <div class="color-option flex items-center justify-center h-8 bg-red-500 rounded-md cursor-pointer ${boardColor === 'red' ? 'border-2 border-red-500' : ''}" data-color="red">
+                            ${boardColor === 'red' ? '<svg class="h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>' : ''}
+                        </div>
+                        <div class="color-option flex items-center justify-center h-8 bg-yellow-500 rounded-md cursor-pointer ${boardColor === 'yellow' ? 'border-2 border-yellow-500' : ''}" data-color="yellow">
+                            ${boardColor === 'yellow' ? '<svg class="h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>' : ''}
+                        </div>
+                        <div class="color-option flex items-center justify-center h-8 bg-purple-500 rounded-md cursor-pointer ${boardColor === 'purple' ? 'border-2 border-purple-500' : ''}" data-color="purple">
+                            ${boardColor === 'purple' ? '<svg class="h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>' : ''}
+                        </div>
+                    </div>
+                    <input type="hidden" name="color" value="${boardColor}">
+                </div>
+                <div class="mb-4">
+                    <label for="edit-board-technologies" class="block text-sm font-medium text-gray-700 mb-1">Technologies Required</label>
+                    <div class="relative">
+                        <select id="edit-board-technologies" name="technologies[]" multiple class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" style="min-height: 120px;">
+                            <option value="" disabled>Select technologies</option>
+                            <optgroup label="Your Skills">
+                                {% for skill in user.skills %}
+                                    <option value="{{ skill.skill }}" ${boardData.technologies && boardData.technologies.includes('{{ skill.skill }}') ? 'selected' : ''}>{{ skill.skill }} ({{ ['', 'Beginner', 'Basic', 'Intermediate', 'Advanced', 'Expert'][skill.proficiency] }})</option>
+                                {% endfor %}
+                            </optgroup>
+                            <optgroup label="Common Technologies">
+                                <option value="Python" ${boardData.technologies && boardData.technologies.includes('Python') ? 'selected' : ''}>Python</option>
+                                <option value="JavaScript" ${boardData.technologies && boardData.technologies.includes('JavaScript') ? 'selected' : ''}>JavaScript</option>
+                                <option value="PHP" ${boardData.technologies && boardData.technologies.includes('PHP') ? 'selected' : ''}>PHP</option>
+                                <option value="Java" ${boardData.technologies && boardData.technologies.includes('Java') ? 'selected' : ''}>Java</option>
+                                <option value="C#" ${boardData.technologies && boardData.technologies.includes('C#') ? 'selected' : ''}>C#</option>
+                                <option value="HTML/CSS" ${boardData.technologies && boardData.technologies.includes('HTML/CSS') ? 'selected' : ''}>HTML/CSS</option>
+                                <option value="React" ${boardData.technologies && boardData.technologies.includes('React') ? 'selected' : ''}>React</option>
+                                <option value="Node.js" ${boardData.technologies && boardData.technologies.includes('Node.js') ? 'selected' : ''}>Node.js</option>
+                            </optgroup>
+                        </select>
+                        <p class="mt-1 text-xs text-gray-500">Hold Ctrl/Cmd to select multiple technologies</p>
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label for="edit-board-cost" class="block text-sm font-medium text-gray-700 mb-1">Project Cost (Optional)</label>
+                    <div class="mt-1 relative rounded-md shadow-sm">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <span class="text-gray-500 sm:text-sm">$</span>
+                        </div>
+                        <input type="number" id="edit-board-cost" name="cost" value="${boardData.cost || ''}" class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-7 pr-12 sm:text-sm border-gray-300 rounded-md" placeholder="0.00" step="0.01">
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label for="edit-board-deadline" class="block text-sm font-medium text-gray-700 mb-1">Project Deadline (Optional)</label>
+                    <input type="date" id="edit-board-deadline" name="deadline" value="${boardData.deadline ? boardData.deadline.split('T')[0] : ''}" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div class="mb-6">
+                    <div class="flex items-center">
+                        <input id="edit-board-private" name="is_private" type="checkbox" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" ${boardPrivate ? 'checked' : ''}>
+                        <label for="edit-board-private" class="ml-2 block text-sm text-gray-900">
+                            Private Board
+                        </label>
+                    </div>
+                    <p class="mt-1 text-xs text-gray-500">Private boards are only visible to you and people you invite.</p>
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" class="cancel-edit-btn px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        Cancel
+                    </button>
+                    <button type="submit" class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        Save Changes
+                    </button>
+                </div>
+            `;
+
+            // Create a modal for the edit form
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 z-50 flex items-center justify-center';
+            modal.innerHTML = `
+                <div class="modal-overlay absolute inset-0 bg-black bg-opacity-50"></div>
+                <div class="modal-content bg-white rounded-lg shadow-xl w-full max-w-md mx-4 p-6 relative opacity-0 transform -translate-y-4">
+                    <button class="close-modal absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">Edit Board</h2>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            const modalContent = modal.querySelector('.modal-content');
+            modalContent.appendChild(form);
+            
+            // Show the modal
+            setTimeout(() => {
+                modal.querySelector('.modal-overlay').classList.add('active');
+                modalContent.classList.add('active');
+                modalContent.classList.remove('opacity-0', 'transform', '-translate-y-4');
+            }, 10);
+            
+            // Add event listeners for the modal
+            modal.querySelector('.close-modal').addEventListener('click', () => {
+                closeEditModal(modal);
+            });
+            
+            modal.querySelector('.cancel-edit-btn').addEventListener('click', () => {
+                closeEditModal(modal);
+            });
+            
+            modal.querySelector('.modal-overlay').addEventListener('click', () => {
+                closeEditModal(modal);
+            });
+            
+            // Add event listeners for color selection
+            modal.querySelectorAll('.color-option').forEach(option => {
+                option.addEventListener('click', () => {
+                    modal.querySelectorAll('.color-option').forEach(opt => {
+                        opt.innerHTML = '';
+                        opt.classList.remove('border-2');
+                    });
+                    
+                    const color = option.dataset.color;
+                    option.classList.add('border-2', `border-${color}-500`);
+                    option.innerHTML = `
+                        <svg class="h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                        </svg>
+                    `;
+                    
+                    form.querySelector('input[name="color"]').value = color;
+                });
+            });
+        } catch (error) {
+            console.error('Error fetching board data:', error);
+            // Handle error appropriately (e.g., display an error message)
+        }
+    });
+});
+
+    // Delete Board Button
+    document.querySelectorAll('.delete-board-btn').forEach(button => {
+        button.addEventListener('click', () => {
+            const boardId = button.dataset.boardId;
+            const boardName = button.dataset.boardName;
+            
+            // Create a confirmation modal
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 z-50 flex items-center justify-center';
+            modal.innerHTML = `
+                <div class="modal-overlay absolute inset-0 bg-black bg-opacity-50"></div>
+                <div class="modal-content bg-white rounded-lg shadow-xl w-full max-w-md mx-4 p-6 relative opacity-0 transform -translate-y-4">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-4">Delete Board</h2>
+                    <p class="text-gray-600 mb-6">Are you sure you want to delete the board "${boardName}"? This action cannot be undone.</p>
+                    <div class="flex justify-end space-x-3">
+                        <button class="cancel-delete-btn px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            Cancel
+                        </button>
+                        <form action="/delete_board/${boardId}" method="POST">
+                            <button type="submit" class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
+                                Delete
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // Show the modal
+            setTimeout(() => {
+                modal.querySelector('.modal-overlay').classList.add('active');
+                modal.querySelector('.modal-content').classList.add('active');
+                modal.querySelector('.modal-content').classList.remove('opacity-0', 'transform', '-translate-y-4');
+            }, 10);
+            
+            // Add event listeners for the modal
+            modal.querySelector('.cancel-delete-btn').addEventListener('click', () => {
+                closeDeleteModal(modal);
+            });
+            
+            modal.querySelector('.modal-overlay').addEventListener('click', () => {
+                closeDeleteModal(modal);
+            });
+        });
+    });
+
+    function closeEditModal(modal) {
+        const overlay = modal.querySelector('.modal-overlay');
+        const content = modal.querySelector('.modal-content');
+        
+        overlay.classList.remove('active');
+        content.classList.remove('active');
+        content.classList.add('opacity-0', 'transform', '-translate-y-4');
+        
+        setTimeout(() => {
+            document.body.removeChild(modal);
+        }, 300);
+    }
+
+    function closeDeleteModal(modal) {
+        const overlay = modal.querySelector('.modal-overlay');
+        const content = modal.querySelector('.modal-content');
+        
+        overlay.classList.remove('active');
+        content.classList.remove('active');
+        content.classList.add('opacity-0', 'transform', '-translate-y-4');
+        
+        setTimeout(() => {
+            document.body.removeChild(modal);
+        }, 300);
+    }
+</script>
+</body>
+</html>
 
