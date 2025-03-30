@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TaskFlow Dashboard</title>
+    <title>Board Dashboard | TaskFlow</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         .custom-scrollbar::-webkit-scrollbar {
@@ -22,38 +21,12 @@
             border-radius: 10px;
         }
 
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: #a8a8a8;
-        }
-
         .board-card {
-            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+            transition: all 0.2s ease;
         }
 
         .board-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-        }
-
-        .task-card.dragging {
-            opacity: 0.5;
-            transform: rotate(2deg);
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .animate-fade-in {
-            animation: fadeIn 0.3s ease-out forwards;
+            transform: translateY(-4px);
         }
 
         .modal-overlay {
@@ -76,47 +49,42 @@
             transform: translateY(0);
         }
 
-        .progress-ring-circle {
-            transition: stroke-dashoffset 0.35s;
-            transform: rotate(-90deg);
-            transform-origin: 50% 50%;
-        }
-
-        .board-actions-btn {
-            transition: all 0.2s ease;
-        }
-
-        .board-actions-btn:hover {
-            transform: scale(1.1);
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: #ef4444;
+            color: white;
+            border-radius: 9999px;
+            padding: 0.1rem 0.4rem;
+            font-size: 0.75rem;
+            font-weight: 600;
         }
     </style>
 </head>
-
 <body class="bg-gray-100 font-sans">
+    <!-- Header -->
     <header class="bg-white shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-16">
                 <div class="flex">
                     <div class="flex-shrink-0 flex items-center">
-                        <span class="text-blue-600 font-bold text-xl">TaskFlow</span>
+                        <a href="/board_dashboard" class="text-blue-600 font-bold text-xl">TaskFlow</a>
                     </div>
                     <nav class="hidden sm:ml-6 sm:flex sm:space-x-8">
-                        <a href="#"
-                            class="border-blue-500 text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Boards</a>
-                        <a href="#"
-                            class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Templates</a>
-                        <a href="#"
-                            class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">Team</a>
+                        <a href="/board_dashboard" class="border-blue-500 text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Dashboard
+                        </a>
+                        <a href="/profile" class="border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Profile
+                        </a>
                     </nav>
                 </div>
                 <div class="flex items-center">
                     <div class="flex-shrink-0">
-                        <button id="create-board-btn"
-                            class="relative inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                            <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 4v16m8-8H4" />
+                        <button id="create-board-btn" class="relative inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                             </svg>
                             <span>Create Board</span>
                         </button>
@@ -124,22 +92,20 @@
                     <div class="hidden md:ml-4 md:flex-shrink-0 md:flex md:items-center">
                         <div class="ml-3 relative">
                             <div>
-                                <button id="user-menu-button"
-                                    class="bg-white rounded-full flex text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                <button id="user-menu-button" class="bg-white rounded-full flex text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                                     <span class="sr-only">Open user menu</span>
-                                    <div
-                                        class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-medium">
+                                    <div class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-medium">
                                         {{ user.username[:2]|upper }}
                                     </div>
+                                    {% if pending_invitations %}
+                                    <span class="notification-badge">{{ pending_invitations|length }}</span>
+                                    {% endif %}
                                 </button>
                             </div>
-                            <div id="user-dropdown"
-                                class="hidden origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10">
-                                <a href="/profile.html" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Your
-                                    Profile</a>
+                            <div id="user-dropdown" class="hidden origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10">
+                                <a href="/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Your Profile</a>
                                 <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Settings</a>
-                                <a href="/logout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sign
-                                    out</a>
+                                <a href="/logout" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Sign out</a>
                             </div>
                         </div>
                     </div>
@@ -148,258 +114,497 @@
         </div>
     </header>
 
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div class="mb-10">
-            <div class="flex items-center justify-between mb-6">
-                <h2 class="text-2xl font-bold text-gray-900">Task Analytics</h2>
-                <div class="flex space-x-2">
-                    <select id="time-filter"
-                        class="bg-white border border-gray-300 rounded-md text-sm px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <option value="week">This Week</option>
-                        <option value="month">This Month</option>
-                        <option value="quarter">This Quarter</option>
-                    </select>
-                </div>
-            </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div class="bg-white rounded-lg shadow-md p-6">
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <p class="text-sm text-gray-500 mb-1">Task Completion</p>
-                            <h3 class="text-2xl font-bold text-gray-900">{{ completion_percent }}%</h3>
-                            <p class="text-xs text-green-600 flex items-center mt-1">
-                                <svg class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M5 10l7-7m0 0l7 7m-7-7v18" />
-                                </svg>
-                                {{ (completion_percent - (completion_percent - 12))|abs }}% from last week
-                            </p>
-                        </div>
-                        <div class="relative h-16 w-16">
-                            <svg class="h-16 w-16" viewBox="0 0 36 36">
-                                <circle cx="18" cy="18" r="16" fill="none" stroke="#f3f4f6" stroke-width="2"></circle>
-                                <circle class="progress-ring-circle" cx="18" cy="18" r="16" fill="none" stroke="#3b82f6"
-                                    stroke-width="2" stroke-dasharray="100"
-                                    stroke-dashoffset="{{ 100 - completion_percent }}"></circle>
-                            </svg>
-                            <div
-                                class="absolute top-0 left-0 h-16 w-16 flex items-center justify-center text-xs font-medium">
-                                {{ completion_percent }}%
-                            </div>
-                        </div>
+    <!-- Flash Messages -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-2">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="{% if category == 'error' %}bg-red-100 border-red-400 text-red-700{% else %}bg-green-100 border-green-400 text-green-700{% endif %} border px-4 py-3 rounded relative mb-4">
+                        <span class="block sm:inline">{{ message }}</span>
                     </div>
-                </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
 
-                <div class="bg-white rounded-lg shadow-md p-6">
-                    <p class="text-sm text-gray-500 mb-3">Tasks By Status</p>
-                    <div class="space-y-2">
-                        {% for status in ['todo', 'progress', 'review', 'done'] %}
-                        <div>
-                            <div class="flex justify-between text-xs mb-1">
-                                <span>{{ status|title }}</span>
-                                <span class="font-medium">{{ status_counts[status] }}</span>
-                            </div>
-                            <div class="h-2 bg-gray-200 rounded-full">
-                                <div class="h-2 bg-{{ status|status_color }}-500 rounded-full"
-                                    style="width: {{ (status_counts[status]/total_tasks * 100) if total_tasks > 0 else 0 }}%">
+    <!-- Pending Invitations Alert -->
+    {% if pending_invitations %}
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-6">
+        <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-md">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    <svg class="h-5 w-5 text-blue-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                    </svg>
+                </div>
+                <div class="ml-3">
+                    <h3 class="text-sm font-medium text-blue-800">
+                        You have {{ pending_invitations|length }} pending board invitation(s)
+                    </h3>
+                    <div class="mt-2 text-sm text-blue-700">
+                        <div class="space-y-2">
+                            {% for invitation in pending_invitations %}
+                            <div class="bg-white p-3 rounded shadow-sm">
+                                <p class="font-medium">{{ invitation.board.name }}</p>
+                                <p class="text-sm text-gray-600">Invited by: {{ invitation.inviter.username }}</p>
+                                <p class="text-sm text-gray-600">Role: {{ invitation.role.value|capitalize }}</p>
+                                <div class="mt-2 flex space-x-2">
+                                    <form action="/respond_to_invitation/{{ invitation.id }}/accept" method="POST" class="inline-block">
+                                        <button type="submit" class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded text-sm">Accept</button>
+                                    </form>
+                                    <form action="/respond_to_invitation/{{ invitation.id }}/reject" method="POST" class="inline-block">
+                                        <button type="submit" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-sm">Reject</button>
+                                    </form>
                                 </div>
                             </div>
-                        </div>
-                        {% endfor %}
-                    </div>
-                </div>
-
-                <div class="bg-white rounded-lg shadow-md p-6">
-                    <p class="text-sm text-gray-500 mb-3">Upcoming Deadlines</p>
-                    <ul class="space-y-3">
-                        {% for task in upcoming %}
-                        <li class="flex items-center text-sm">
-                            <span class="h-2 w-2 bg-{{ task.status_color }}                            -500 rounded-full mr-2"></span>
-
-                            <span class="truncate flex-1">{{ task.title }}</span>
-                            <span class="text-xs text-gray-500">{{ task.due_date|time_until }}</span>
-                        </li>
-                        {% endfor %}
-                    </ul>
-                </div>
-
-                <div class="bg-white rounded-lg shadow-md p-6">
-                    <p class="text-sm text-gray-500 mb-3">Team Productivity</p>
-                    {% for member in team_productivity %}
-                    <div class="flex items-center justify-between mb-4">
-                        <div class="flex items-center">
-                            <div
-                                class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs mr-2">
-                                {{ member.initials }}
-                            </div>
-                            <span class="text-sm">{{ member.name }}</span>
-                        </div>
-                        <div class="w-24 h-2 bg-gray-200 rounded-full">
-                            <div class="h-2 bg-blue-500 rounded-full" style="width: {{ member.productivity }}%"></div>
+                            {% endfor %}
                         </div>
                     </div>
-                    {% endfor %}
                 </div>
             </div>
         </div>
+    </div>
+    {% endif %}
 
-        <div class="mb-10">
-            <div class="flex items-center justify-between mb-6">
-                <h2 class="text-2xl font-bold text-gray-900">Recent Boards</h2>
-                <button class="text-blue-600 hover:text-blue-800 text-sm font-medium">View all</button>
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+        <div class="md:flex md:items-center md:justify-between mb-6">
+            <div class="flex-1 min-w-0">
+                <h2 class="text-2xl font-bold leading-7 text-gray-900 sm:text-3xl sm:truncate">
+                    Welcome, {{ user.username }}!
+                </h2>
             </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="boards-container">
-                {% for board in boards %}
-                <div class="board-card bg-white rounded-lg shadow-md overflow-hidden relative"
-                    data-board-id="{{ board.id }}">
-                    <div class="absolute top-2 right-2">
-                        <button
-                            class="board-actions-btn text-gray-400 hover:text-gray-600 p-1 rounded-full bg-white shadow-sm">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
-                            </svg>
-                        </button>
-                        <div
-                            class="hidden origin-top-right absolute right-0 mt-1 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10">
-                            <button
-                                class="edit-board-btn block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                data-board-id="{{ board.id }}" data-board-name="{{ board.name }}"
-                                data-board-color="{{ board.color }}"
-                                data-board-private="{{ 'true' if board.private else 'false' }}">
-                                Edit Board
-                            </button>
-                            <button
-                                class="delete-board-btn block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100"
-                                data-board-id="{{ board.id }}">
-                                Delete Board
-                            </button>
-                        </div>
+        </div>
+
+        <!-- Dashboard Grid - Update to have all metrics in a single row -->
+<div class="grid grid-cols-1 gap-6 lg:grid-cols-12">
+    <!-- Task Analytics -->
+    <div class="bg-white overflow-hidden shadow rounded-lg lg:col-span-4">
+        <div class="px-4 py-5 sm:p-6">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-medium leading-6 text-gray-900">Task Completion</h3>
+                <span class="inline-flex items-center px-2.5 py-0.5 rounded-md text-sm font-medium bg-green-100 text-green-800">
+                    <svg class="-ml-1 mr-1.5 h-4 w-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+                    </svg>
+                    12% from last week
+                </span>
+            </div>
+            
+            <div class="flex items-center">
+                <div class="w-16 h-16 rounded-full border-4 border-blue-100 flex items-center justify-center">
+                    <span class="text-lg font-bold text-blue-600">{{ completion_percent }}%</span>
+                </div>
+                <div class="ml-4">
+                    <div class="w-full bg-gray-200 rounded-full h-2 mb-1">
+                        <div class="bg-blue-600 h-2 rounded-full" style="width: {{ completion_percent }}%"></div>
                     </div>
-                    <div class="h-24 bg-gradient-to-r from-{{ board.color }}-500 to-{{ board.color }}-600 p-4">
-                        <h3 class="text-white font-semibold text-lg">{{ board.name }}</h3>
+                    <div class="text-xs text-gray-500">{{ status_counts.done }} of {{ total_tasks }} tasks completed</div>
+                </div>
+            </div>
+            
+            <div class="mt-4">
+                <div class="grid grid-cols-4 gap-2">
+                    <div class="bg-red-50 rounded p-1 text-center">
+                        <div class="text-sm font-bold text-red-600">{{ status_counts.todo }}</div>
+                        <div class="text-xs text-gray-500">Todo</div>
                     </div>
-                    <div class="p-4">
-                        <div class="flex justify-between items-center mb-4">
-                            <span class="text-sm text-gray-500">{{ board.tasks|length }} tasks</span>
-                            <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
-                                {{ 'Active' if board.tasks else 'New' }}
-                            </span>
+                    <div class="bg-yellow-50 rounded p-1 text-center">
+                        <div class="text-sm font-bold text-yellow-600">{{ status_counts.progress }}</div>
+                        <div class="text-xs text-gray-500">Progress</div>
+                    </div>
+                    <div class="bg-blue-50 rounded p-1 text-center">
+                        <div class="text-sm font-bold text-blue-600">{{ status_counts.review }}</div>
+                        <div class="text-xs text-gray-500">Review</div>
+                    </div>
+                    <div class="bg-green-50 rounded p-1 text-center">
+                        <div class="text-sm font-bold text-green-600">{{ status_counts.done }}</div>
+                        <div class="text-xs text-gray-500">Done</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Upcoming Deadlines -->
+    <div class="bg-white overflow-hidden shadow rounded-lg lg:col-span-4">
+        <div class="px-4 py-5 sm:p-6">
+            <h3 class="text-lg font-medium leading-6 text-gray-900 mb-3">Upcoming Deadlines</h3>
+            <div class="flow-root">
+                <ul class="-my-2 divide-y divide-gray-200">
+                    {% if upcoming %}
+                        {% for task in upcoming %}
+                        <li class="py-2">
+                            <div class="flex items-center space-x-2">
+                                <div class="flex-shrink-0">
+                                    <span class="h-6 w-6 rounded-full bg-{{ task.status_color }}-100 flex items-center justify-center">
+                                        <span class="h-2 w-2 rounded-full bg-{{ task.status_color }}-500"></span>
+                                    </span>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-xs font-medium text-gray-900 truncate">
+                                        {{ task.title }}
+                                    </p>
+                                    <p class="text-xs text-gray-500 truncate">
+                                        {{ task.board.name }}
+                                    </p>
+                                </div>
+                                <div>
+                                    <span class="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium {{ 'bg-red-100 text-red-800' if task.due_date|time_until == 'Today' or task.due_date|time_until == 'Tomorrow' else 'bg-gray-100 text-gray-800' }}">
+                                        {{ task.due_date|time_until }}
+                                    </span>
+                                </div>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    {% else %}
+                        <li class="py-2">
+                            <p class="text-sm text-gray-500 text-center">No upcoming deadlines</p>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Team Productivity Section -->
+    <div class="bg-white overflow-hidden shadow rounded-lg lg:col-span-4">
+        <div class="px-4 py-5 sm:p-6">
+            <h3 class="text-lg font-medium leading-6 text-gray-900 mb-3">Team Productivity</h3>
+            <div class="space-y-3">
+                {% for member in team_productivity %}
+                <div>
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <div class="h-6 w-6 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs">
+                                {{ member.initials }}
+                            </div>
                         </div>
-                        <div class="flex -space-x-2">
-                            <div
-                                class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center text-white text-xs">
-                                {{ board.owner.username[:2]|upper }}                            </div>
+                        <div class="ml-2 flex-1">
+                            <div class="flex items-center justify-between">
+                                <p class="text-xs font-medium text-gray-900">{{ member.name }}</p>
+                                <div class="flex items-center">
+                                    <span class="text-xs font-medium {{ 'text-green-600' if member.productivity >= 50 else 'text-yellow-600' if member.productivity >= 25 else 'text-red-600' }}">
+                                        {{ member.productivity }}%
+                                    </span>
+                                    {% if member.trend == 'up' %}
+                                    <svg class="ml-1 h-3 w-3 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+                                    </svg>
+                                    {% elif member.trend == 'down' %}
+                                    <svg class="ml-1 h-3 w-3 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                                    </svg>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="mt-1 w-full bg-gray-200 rounded-full h-1.5">
+                                <div class="{{ 'bg-green-500' if member.productivity >= 50 else 'bg-yellow-500' if member.productivity >= 25 else 'bg-red-500' }} h-1.5 rounded-full" style="width: {{ member.productivity }}%"></div>
+                            </div>
+                            <div class="mt-0.5 flex justify-between text-xs text-gray-500">
+                                <span>{{ member.completed }} completed</span>
+                                <span>{{ member.total }} total</span>
+                            </div>
                         </div>
                     </div>
                 </div>
                 {% endfor %}
+                {% if not team_productivity %}
+                <p class="text-sm text-gray-500 text-center">No team productivity data available</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
 
-                <div class="board-card bg-white rounded-lg shadow-md overflow-hidden border-2 border-dashed border-gray-300 flex items-center justify-center cursor-pointer hover:border-blue-500"
-                    id="create-board-card">
-                    <div class="text-center p-6">
-                        <div
-                            class="h-12 w-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 mx-auto mb-4">
-                            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 4v16m8-8H4" />
-                            </svg>
-                        </div>
-                        <p class="text-gray-700 font-medium">Create New Board</p>
+        <!-- Boards Section -->
+        <div class="mt-8">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-lg font-medium leading-6 text-gray-900">Your Boards</h3>
+                <button id="create-board-btn-2" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    <svg class="-ml-0.5 mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                    New Board
+                </button>
+            </div>
+
+            
+{% if boards %}
+<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+    {% for board in boards %}
+    <div class="board-card bg-white overflow-hidden shadow rounded-lg">
+        <div class="h-2 bg-{{ board.color }}-500"></div>
+        <div class="px-4 py-5 sm:p-6">
+            <div class="flex items-center justify-between">
+                <h4 class="text-lg font-medium text-gray-900">{{ board.name }}</h4>
+                <div class="relative" data-board-id="{{ board.id }}">
+                    <button class="board-menu-btn text-gray-400 hover:text-gray-600">
+                        <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+                        </svg>
+                    </button>
+                    <div class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10 board-dropdown">
+                        {% if board.user_id == user.id %}
+                        <button class="edit-board-btn block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" data-board-id="{{ board.id }}" data-board-name="{{ board.name }}" data-board-color="{{ board.color }}" data-board-private="{{ board.is_private }}">Edit Board</button>
+                        <button class="delete-board-btn block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100" data-board-id="{{ board.id }}" data-board-name="{{ board.name }}">Delete Board</button>
+                        {% endif %}
+                        <a href="/board-view?board_id={{ board.id }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">View Board</a>
                     </div>
                 </div>
             </div>
+            
+            <div class="flex items-center mt-2">
+                <span class="text-xs text-gray-500 flex items-center">
+                    <svg class="h-4 w-4 mr-1 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    {{ board.created_at.strftime('%b %d, %Y') }}
+                </span>
+                <span class="mx-2 text-gray-300">|</span>
+                <span class="text-xs text-gray-500 flex items-center">
+                    <svg class="h-4 w-4 mr-1 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+                    </svg>
+                    {{ board.tasks|length }} tasks
+                </span>
+            </div>
+            
+            <!-- Task preview -->
+            {% if board.tasks %}
+            <div class="mt-3 space-y-2">
+                {% for task in board.tasks[:2] %}
+                <div class="bg-gray-50 rounded p-2 text-sm">
+                    <div class="flex items-center">
+                        <span class="h-2 w-2 rounded-full bg-{{ task.status_color }}-500 mr-2"></span>
+                        <span class="font-medium text-gray-800 truncate">{{ task.title }}</span>
+                    </div>
+                </div>
+                {% endfor %}
+                {% if board.tasks|length > 2 %}
+                <div class="text-xs text-gray-500 text-center">+ {{ board.tasks|length - 2 }} more tasks</div>
+                {% endif %}
+            </div>
+            {% else %}
+            <div class="mt-3 text-xs text-gray-500 italic">No tasks yet</div>
+            {% endif %}
+            
+            <!-- Team members -->
+            <div class="mt-4">
+                <div class="flex -space-x-2 overflow-hidden">
+                    <div class="h-7 w-7 rounded-full bg-{{ board.color }}-500 flex items-center justify-center text-white text-xs ring-2 ring-white">
+                        {{ board.owner.username[:2]|upper }}
+                    </div>
+                    {% for member in board.members[:3] %}
+                    <div class="h-7 w-7 rounded-full bg-gray-400 flex items-center justify-center text-white text-xs ring-2 ring-white">
+                        {{ member.user.username[:2]|upper }}
+                    </div>
+                    {% endfor %}
+                    {% if board.members|length > 3 %}
+                    <div class="h-7 w-7 rounded-full bg-gray-300 flex items-center justify-center text-gray-600 text-xs ring-2 ring-white">
+                        +{{ board.members|length - 3 }}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="mt-4">
+                <a href="/board-view?board_id={{ board.id }}" class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    Open Board
+                </a>
+            </div>
         </div>
-    </main>
+    </div>
+    {% endfor %}
+</div>
+{% else %}
+<div class="bg-white overflow-hidden shadow rounded-lg">
+    <div class="px-4 py-5 sm:p-6 text-center">
+        <svg class="mx-auto h-12 w-12 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2" />
+        </svg>
+        <h3 class="mt-2 text-sm font-medium text-gray-900">No boards</h3>
+        <p class="mt-1 text-sm text-gray-500">
+            Get started by creating a new board.
+        </p>
+        <div class="mt-6">
+            <button id="create-board-btn-3" class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                Create Board
+            </button>
+        </div>
+    </div>
+</div>
+{% endif %}
 
+        </div>
+
+        <!-- Team Productivity Section -->
+        
+<div class="mt-8">
+    <h3 class="text-lg font-medium leading-6 text-gray-900 mb-6">Team Productivity</h3>
+    <div class="bg-white overflow-hidden shadow rounded-lg">
+        <div class="px-4 py-5 sm:p-6">
+            <div class="space-y-4">
+                {% for member in team_productivity %}
+                <div>
+                    <div class="flex items-center">
+                        <div class="flex-shrink-0">
+                            <div class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-medium">
+                                {{ member.initials }}
+                            </div>
+                        </div>
+                        <div class="ml-3 flex-1">
+                            <div class="flex items-center justify-between">
+                                <p class="text-sm font-medium text-gray-900">{{ member.name }}</p>
+                                <div class="flex items-center">
+                                    <span class="text-sm font-medium {{ 'text-green-600' if member.productivity >= 50 else 'text-yellow-600' if member.productivity >= 25 else 'text-red-600' }}">
+                                        {{ member.productivity }}%
+                                    </span>
+                                    {% if member.trend == 'up' %}
+                                    <svg class="ml-1 h-4 w-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18"></path>
+                                    </svg>
+                                    {% elif member.trend == 'down' %}
+                                    <svg class="ml-1 h-4 w-4 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                                    </svg>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="mt-1 w-full bg-gray-200 rounded-full h-2">
+                                <div class="{{ 'bg-green-500' if member.productivity >= 50 else 'bg-yellow-500' if member.productivity >= 25 else 'bg-red-500' }} h-2 rounded-full" style="width: {{ member.productivity }}%"></div>
+                            </div>
+                            <div class="mt-1 flex justify-between text-xs text-gray-500">
+                                <span>{{ member.completed }} completed</span>
+                                <span>{{ member.total }} total tasks</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+    </div>
+
+    <!-- Create Board Modal -->
     <div id="create-board-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
         <div class="modal-overlay absolute inset-0 bg-black bg-opacity-50"></div>
         <div class="modal-content bg-white rounded-lg shadow-xl w-full max-w-md mx-4 p-6 relative">
             <button class="close-modal absolute top-4 right-4 text-gray-400 hover:text-gray-600">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
-                    </path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
             </button>
             <h2 class="text-2xl font-bold text-gray-900 mb-6">Create New Board</h2>
-            <form id="create-board-form">
+            <form id="create-board-form" action="/create_board" method="POST">
                 <div class="mb-4">
                     <label for="board-name" class="block text-sm font-medium text-gray-700 mb-1">Board Name</label>
-                    <input type="text" id="board-name" name="name"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        required>
+                    <input type="text" id="board-name" name="name" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Board Color</label>
+                    <div class="grid grid-cols-5 gap-2">
+                        <div class="color-option flex items-center justify-center h-8 bg-blue-500 rounded-md cursor-pointer border-2 border-blue-500" data-color="blue">
+                            <svg class="h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                        </div>
+                        <div class="color-option flex items-center justify-center h-8 bg-green-500 rounded-md cursor-pointer" data-color="green"></div>
+                        <div class="color-option flex items-center justify-center h-8 bg-red-500 rounded-md cursor-pointer" data-color="red"></div>
+                        <div class="color-option flex items-center justify-center h-8 bg-yellow-500 rounded-md cursor-pointer" data-color="yellow"></div>
+                        <div class="color-option flex items-center justify-center h-8 bg-purple-500 rounded-md cursor-pointer" data-color="purple"></div>
+                    </div>
+                    <input type="hidden" id="board-color" name="color" value="blue">
                 </div>
                 <div class="mb-6">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Background</label>
-                    <div class="grid grid-cols-5 gap-2">
-                        <div class="h-10 bg-blue-500 rounded cursor-pointer border-2 border-white" data-color="blue">
-                        </div>
-                        <div class="h-10 bg-purple-500 rounded cursor-pointer border-2 border-transparent hover:border-white"
-                            data-color="purple"></div>
-                        <div class="h-10 bg-green-500 rounded cursor-pointer border-2 border-transparent hover:border-white"
-                            data-color="green"></div>
-                        <div class="h-10 bg-red-500 rounded cursor-pointer border-2 border-transparent hover:border-white"
-                            data-color="red"></div>
-                        <div class="h-10 bg-yellow-500 rounded cursor-pointer border-2 border-transparent hover:border-white"
-                            data-color="yellow"></div>
+                    <div class="flex items-center">
+                        <input id="board-private" name="private" type="checkbox" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                        <label for="board-private" class="ml-2 block text-sm text-gray-900">
+                            Private Board
+                        </label>
                     </div>
+                    <p class="mt-1 text-xs text-gray-500">Private boards are only visible to you and people you invite.</p>
                 </div>
-                <div class="flex items-center mb-4">
-                    <input type="checkbox" id="private-board" name="private"
-                        class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                    <label for="private-board" class="ml-2 block text-sm text-gray-900">Private Board</label>
-                </div>
-                <button type="submit"
-                    class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-300">
+                <button type="submit" class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-300">
                     Create Board
                 </button>
             </form>
         </div>
     </div>
 
+    <!-- Edit Board Modal -->
     <div id="edit-board-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
         <div class="modal-overlay absolute inset-0 bg-black bg-opacity-50"></div>
         <div class="modal-content bg-white rounded-lg shadow-xl w-full max-w-md mx-4 p-6 relative">
             <button class="close-modal absolute top-4 right-4 text-gray-400 hover:text-gray-600">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
-                    </path>
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                 </svg>
             </button>
             <h2 class="text-2xl font-bold text-gray-900 mb-6">Edit Board</h2>
-            <form id="edit-board-form">
-                <input type="hidden" id="edit-board-id" name="board_id">
+            <form id="edit-board-form" action="" method="POST">
                 <div class="mb-4">
                     <label for="edit-board-name" class="block text-sm font-medium text-gray-700 mb-1">Board Name</label>
-                    <input type="text" id="edit-board-name" name="name"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        required>
+                    <input type="text" id="edit-board-name" name="name" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Board Color</label>
+                    <div class="grid grid-cols-5 gap-2">
+                        <div class="edit-color-option flex items-center justify-center h-8 bg-blue-500 rounded-md cursor-pointer" data-color="blue"></div>
+                        <div class="edit-color-option flex items-center justify-center h-8 bg-green-500 rounded-md cursor-pointer" data-color="green"></div>
+                        <div class="edit-color-option flex items-center justify-center h-8 bg-red-500 rounded-md cursor-pointer" data-color="red"></div>
+                        <div class="edit-color-option flex items-center justify-center h-8 bg-yellow-500 rounded-md cursor-pointer" data-color="yellow"></div>
+                        <div class="edit-color-option flex items-center justify-center h-8 bg-purple-500 rounded-md cursor-pointer" data-color="purple"></div>
+                    </div>
+                    <input type="hidden" id="edit-board-color" name="color" value="">
                 </div>
                 <div class="mb-6">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Background</label>
-                    <div class="grid grid-cols-5 gap-2">
-                        <div class="h-10 bg-blue-500 rounded cursor-pointer border-2 border-white" data-color="blue">
-                        </div>
-                        <div class="h-10 bg-purple-500 rounded cursor-pointer border-2 border-transparent hover:border-white"
-                            data-color="purple"></div>
-                        <div class="h-10 bg-green-500 rounded cursor-pointer border-2 border-transparent hover:border-white"
-                            data-color="green"></div>
-                        <div class="h-10 bg-red-500 rounded cursor-pointer border-2 border-transparent hover:border-white"
-                            data-color="red"></div>
-                        <div class="h-10 bg-yellow-500 rounded cursor-pointer border-2 border-transparent hover:border-white"
-                            data-color="yellow"></div>
+                    <div class="flex items-center">
+                        <input id="edit-board-private" name="is_private" type="checkbox" class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
+                        <label for="edit-board-private" class="ml-2 block text-sm text-gray-900">
+                            Private Board
+                        </label>
                     </div>
+                    <p class="mt-1 text-xs text-gray-500">Private boards are only visible to you and people you invite.</p>
                 </div>
-                <div class="flex items-center mb-4">
-                    <input type="checkbox" id="edit-private-board" name="private"
-                        class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded">
-                    <label for="edit-private-board" class="ml-2 block text-sm text-gray-900">Private Board</label>
+                <div class="flex space-x-3">
+                    <button type="submit" class="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-300">
+                        Save Changes
+                    </button>
+                    <button type="button" id="delete-board-confirm" class="bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 transition duration-300">
+                        Delete
+                    </button>
                 </div>
-                <button type="submit"
-                    class="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition duration-300">
-                    Save Changes
-                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Board Confirmation Modal -->
+    <div id="delete-board-modal" class="fixed inset-0 z-50 flex items-center justify-center hidden">
+        <div class="modal-overlay absolute inset-0 bg-black bg-opacity-50"></div>
+        <div class="modal-content bg-white rounded-lg shadow-xl w-full max-w-md mx-4 p-6 relative">
+            <button class="close-modal absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+            <h2 class="text-2xl font-bold text-gray-900 mb-2">Delete Board</h2>
+            <p class="text-gray-600 mb-6">Are you sure you want to delete "<span id="delete-board-name" class="font-medium"></span>"? This action cannot be undone and all tasks will be permanently deleted.</p>
+            <form id="delete-board-form" action="" method="POST">
+                <div class="flex space-x-3">
+                    <button type="button" class="close-modal flex-1 bg-gray-200 text-gray-800 py-2 px-4 rounded-md hover:bg-gray-300 transition duration-300">
+                        Cancel
+                    </button>
+                    <button type="submit" class="flex-1 bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 transition duration-300">
+                        Delete
+                    </button>
+                </div>
             </form>
         </div>
     </div>
@@ -408,6 +613,7 @@
         // User Dropdown
         const userMenuButton = document.getElementById('user-menu-button');
         const userDropdown = document.getElementById('user-dropdown');
+
         userMenuButton.addEventListener('click', () => userDropdown.classList.toggle('hidden'));
         document.addEventListener('click', (e) => {
             if (!userMenuButton.contains(e.target) && !userDropdown.contains(e.target)) {
@@ -416,10 +622,9 @@
         });
 
         // Modal Handling
-        const createBoardBtn = document.getElementById('create-board-btn');
-        const createBoardCard = document.getElementById('create-board-card');
         const createBoardModal = document.getElementById('create-board-modal');
         const editBoardModal = document.getElementById('edit-board-modal');
+        const deleteBoardModal = document.getElementById('delete-board-modal');
         const closeModals = document.querySelectorAll('.close-modal');
 
         function toggleModal(modal, show) {
@@ -438,153 +643,142 @@
             }
         }
 
-        [createBoardBtn, createBoardCard].forEach(element => {
-            element.addEventListener('click', () => toggleModal(createBoardModal, true));
+        // Open Create Board Modal
+        document.querySelectorAll('#create-board-btn, #create-board-btn-2, #create-board-btn-3').forEach(btn => {
+            btn.addEventListener('click', () => {
+                toggleModal(createBoardModal, true);
+            });
         });
 
+        // Close Modals
         closeModals.forEach(btn => {
             btn.addEventListener('click', () => {
                 toggleModal(btn.closest('.fixed'), false);
             });
         });
 
-        // Color Selection
-        document.querySelectorAll('[data-color]').forEach(color => {
-            color.addEventListener('click', () => {
-                document.querySelectorAll('[data-color]').forEach(c => c.classList.remove('border-white'));
-                color.classList.add('border-white');
-            });
-        });
-
-        // Form Submissions
-        document.getElementById('create-board-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const formData = new FormData(e.target);
-            const selectedColor = document.querySelector('[data-color].border-white').dataset.color;
-            formData.append('color', selectedColor);
-
-            try {
-                const response = await fetch('/create_board', {
-                    method: 'POST',
-                    body: formData
-                });
-
-                if (response.ok) {
-                    window.location.reload();
-                } else {
-                    alert('Error creating board');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Failed to create board');
-            }
-        });
-
-        // Board Navigation
-        document.querySelectorAll('.board-card').forEach(card => {
-            if (!card.id.includes('create-board-card')) {
-                card.addEventListener('click', () => {
-                    const boardId = card.dataset.boardId;
-                    window.location.href = `/board-view?board_id=${boardId}`;
-                });
-            }
-        });
-
-        // Board Actions
-        document.querySelectorAll('.board-actions-btn').forEach(btn => {
-            const dropdown = btn.nextElementSibling;
+        // Board Menu Dropdowns
+        document.querySelectorAll('.board-menu-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 e.stopPropagation();
+                const dropdown = btn.nextElementSibling;
+                
+                // Close all other dropdowns first
+                document.querySelectorAll('.board-dropdown').forEach(d => {
+                    if (d !== dropdown) d.classList.add('hidden');
+                });
+                
                 dropdown.classList.toggle('hidden');
             });
+        });
 
-            document.addEventListener('click', (e) => {
-                if (!btn.contains(e.target) && !dropdown.contains(e.target)) {
-                    dropdown.classList.add('hidden');
-                }
+        // Close dropdowns when clicking outside
+        document.addEventListener('click', () => {
+            document.querySelectorAll('.board-dropdown').forEach(dropdown => {
+                dropdown.classList.add('hidden');
             });
         });
 
-        // Edit Board Handling
+        // Color Selection in Create Board Modal
+        document.querySelectorAll('.color-option').forEach(option => {
+            option.addEventListener('click', () => {
+                const color = option.dataset.color;
+                document.getElementById('board-color').value = color;
+                
+                document.querySelectorAll('.color-option').forEach(opt => {
+                    opt.innerHTML = '';
+                    opt.classList.remove('border-2', `border-${opt.dataset.color}-500`);
+                });
+                
+                option.classList.add('border-2', `border-${color}-500`);
+                option.innerHTML = `
+                    <svg class="h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                `;
+            });
+        });
+
+        // Color Selection in Edit Board Modal
+        document.querySelectorAll('.edit-color-option').forEach(option => {
+            option.addEventListener('click', () => {
+                const color = option.dataset.color;
+                document.getElementById('edit-board-color').value = color;
+                
+                document.querySelectorAll('.edit-color-option').forEach(opt => {
+                    opt.innerHTML = '';
+                    opt.classList.remove('border-2', `border-${opt.dataset.color}-500`);
+                });
+                
+                option.classList.add('border-2', `border-${color}-500`);
+                option.innerHTML = `
+                    <svg class="h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                    </svg>
+                `;
+            });
+        });
+
+        // Edit Board
         document.querySelectorAll('.edit-board-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.stopPropagation();
+            btn.addEventListener('click', () => {
                 const boardId = btn.dataset.boardId;
                 const boardName = btn.dataset.boardName;
                 const boardColor = btn.dataset.boardColor;
-                const isPrivate = btn.dataset.boardPrivate === 'true';
-
-                document.getElementById('edit-board-id').value = boardId;
+                const boardPrivate = btn.dataset.boardPrivate === 'True';
+                
+                // Set form action
+                document.getElementById('edit-board-form').action = `/update_board/${boardId}`;
+                
+                // Fill form fields
                 document.getElementById('edit-board-name').value = boardName;
-                document.getElementById('edit-private-board').checked = isPrivate;
-
-                document.querySelectorAll('#edit-board-modal [data-color]').forEach(color => {
-                    color.classList.remove('border-white');
-                    if (color.dataset.color === boardColor) {
-                        color.classList.add('border-white');
+                document.getElementById('edit-board-color').value = boardColor;
+                document.getElementById('edit-board-private').checked = boardPrivate;
+                
+                // Set color selection
+                document.querySelectorAll('.edit-color-option').forEach(option => {
+                    option.innerHTML = '';
+                    option.classList.remove('border-2', `border-${option.dataset.color}-500`);
+                    
+                    if (option.dataset.color === boardColor) {
+                        option.classList.add('border-2', `border-${boardColor}-500`);
+                        option.innerHTML = `
+                            <svg class="h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                        `;
                     }
                 });
-
+                
                 toggleModal(editBoardModal, true);
             });
         });
 
-        // Edit Form Submission
-        document.getElementById('edit-board-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const formData = new FormData(e.target);
-            const boardId = document.getElementById('edit-board-id').value;
-            const selectedColor = document.querySelector('#edit-board-modal [data-color].border-white').dataset.color;
-
-            formData.append('color', selectedColor);
-            formData.append('private', document.getElementById('edit-private-board').checked ? 'on' : '');
-
-            try {
-                const response = await fetch(`/update_board/${boardId}`, {
-                    method: 'POST',
-                    body: formData
-                });
-
-                if (response.ok) {
-                    window.location.reload();
-                } else {
-                    alert('Error updating board');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Failed to update board');
-            }
+        // Delete Board Button in Edit Modal
+        document.getElementById('delete-board-confirm').addEventListener('click', () => {
+            const boardId = new URL(document.getElementById('edit-board-form').action).pathname.split('/').pop();
+            const boardName = document.getElementById('edit-board-name').value;
+            
+            document.getElementById('delete-board-form').action = `/delete_board/${boardId}`;
+            document.getElementById('delete-board-name').textContent = boardName;
+            
+            toggleModal(editBoardModal, false);
+            setTimeout(() => toggleModal(deleteBoardModal, true), 300);
         });
-        // Delete Board Handling
+
+        // Delete Board Button in Dropdown
         document.querySelectorAll('.delete-board-btn').forEach(btn => {
-            btn.addEventListener('click', async (e) => {
-                e.stopPropagation();
+            btn.addEventListener('click', () => {
                 const boardId = btn.dataset.boardId;
-
-                if (confirm('Are you sure you want to delete this board?')) {
-                    try {
-                        const response = await fetch(`/delete_board/${boardId}`, {
-                            method: 'POST',
-                        });
-
-                        if (response.ok) {
-                            window.location.reload();
-                        } else {
-                            alert('Error deleting board');
-                        }
-                    } catch (error) {
-                        console.error('Error:', error);
-                        alert('Failed to delete board');
-                    }
-                }
+                const boardName = btn.dataset.boardName;
+                
+                document.getElementById('delete-board-form').action = `/delete_board/${boardId}`;
+                document.getElementById('delete-board-name').textContent = boardName;
+                
+                toggleModal(deleteBoardModal, true);
             });
-        });
-        // Initialize color pickers
-        document.addEventListener('DOMContentLoaded', () => {
-            document.querySelector('[data-color="blue"]').click();
-            document.querySelector('#edit-board-modal [data-color="blue"]').click();
         });
     </script>
 </body>
-
 </html>
+

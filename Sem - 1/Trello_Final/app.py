@@ -2,9 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, flash, ses
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
-# Add these imports at the top
 from enum import Enum
-from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 import os
 from werkzeug.utils import secure_filename
 
@@ -16,8 +14,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 # Database Models
-# Update the User model to include more profile information
-class User(db.Model, UserMixin):
+class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
@@ -31,12 +28,35 @@ class User(db.Model, UserMixin):
     assigned_tasks = db.relationship('Task', backref='assignee', lazy=True, foreign_keys='Task.assigned_to')
     # Add relationship for board memberships
     board_memberships = db.relationship('BoardMember', backref='user', lazy=True)
+    # Add relationship for board invitations
+    received_invitations = db.relationship('BoardInvitation', backref='invitee', lazy=True, foreign_keys='BoardInvitation.invitee_id')
+    sent_invitations = db.relationship('BoardInvitation', backref='inviter', lazy=True, foreign_keys='BoardInvitation.inviter_id')
 
 # Add a BoardMember model for board sharing
 class BoardMemberRole(Enum):
     VIEWER = 'viewer'
     EDITOR = 'editor'
     ADMIN = 'admin'
+
+class BoardInvitationStatus(Enum):
+    PENDING = 'pending'
+    ACCEPTED = 'accepted'
+    REJECTED = 'rejected'
+
+class BoardInvitation(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    board_id = db.Column(db.Integer, db.ForeignKey('board.id'), nullable=False)
+    inviter_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    invitee_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    role = db.Column(db.Enum(BoardMemberRole), default=BoardMemberRole.VIEWER)
+    status = db.Column(db.Enum(BoardInvitationStatus), default=BoardInvitationStatus.PENDING)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    # Define unique constraint to prevent duplicate invitations
+    __table_args__ = (db.UniqueConstraint('board_id', 'invitee_id', name='unique_board_invitation'),)
+    
+    board = db.relationship('Board', backref='invitations')
 
 class BoardMember(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -48,7 +68,6 @@ class BoardMember(db.Model):
     # Define unique constraint to prevent duplicate memberships
     __table_args__ = (db.UniqueConstraint('board_id', 'user_id', name='unique_board_member'),)
 
-# Update the Board model to include members
 class Board(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
@@ -62,7 +81,6 @@ class Board(db.Model):
     def get_members(self):
         return [member.user for member in self.members]
 
-# Update the Task model to include assignment
 class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(100), nullable=False)
@@ -127,73 +145,90 @@ def login():
     flash('Login successful!', 'success')
     return redirect(url_for('board_dashboard'))
 
-# Update the board_dashboard route to include shared boards
+# Update the board_dashboard route to include more detailed metrics
 @app.route('/board_dashboard')
 def board_dashboard():
-    if 'user_id' not in session:
-        return redirect(url_for('home'))
+  if 'user_id' not in session:
+      return redirect(url_for('home'))
 
-    user = User.query.get(session['user_id'])
-    
-    if not user:
-        session.pop('user_id', None)
-        flash('Session expired. Please login again.', 'error')
-        return redirect(url_for('home'))
-    
-    # Get boards owned by the user
-    owned_boards = Board.query.filter_by(user_id=user.id).all()
-    
-    # Get boards shared with the user
-    shared_boards = Board.query.join(BoardMember).filter(BoardMember.user_id == user.id).all()
-    
-    # Combine owned and shared boards
-    all_boards = owned_boards + [board for board in shared_boards if board not in owned_boards]
-    
-    # Calculate task analytics
-    tasks = Task.query.filter_by(user_id=user.id).all()
-    total_tasks = len(tasks)
-    
-    status_counts = {
-        'todo': len([t for t in tasks if t.status == 'todo']),
-        'progress': len([t for t in tasks if t.status == 'progress']),
-        'review': len([t for t in tasks if t.status == 'progress']),
-        'done': len([t for t in tasks if t.status == 'review']),
-        'done': len([t for t in tasks if t.status == 'done'])
-    }
-    
-    completion_percent = int((status_counts['done'] / total_tasks * 100)) if total_tasks else 0
-    
-    # Get upcoming deadlines
-    upcoming = Task.query.filter(
-        Task.user_id == user.id,
-        Task.due_date >= datetime.utcnow()
-    ).order_by(Task.due_date.asc()).limit(4).all()
-    
-    # Add team productivity data
-    team_productivity = []
-    if owned_boards:
-        for board in owned_boards:
-            for member in board.get_members():
-                member_tasks = Task.query.filter_by(board_id=board.id, assigned_to=member.id).all()
-                if member_tasks:
-                    completed = len([t for t in member_tasks if t.status == 'done'])
-                    productivity = int((completed / len(member_tasks) * 100)) if member_tasks else 0
-                    team_productivity.append({
-                        'name': member.username,
-                        'initials': member.username[:2].upper(),
-                        'productivity': productivity
-                    })
-    
-    return render_template(
-        'board_dashboard.html',
-        user=user,
-        boards=all_boards,
-        status_counts=status_counts,
-        total_tasks=total_tasks,
-        completion_percent=completion_percent,
-        upcoming=upcoming,
-        team_productivity=team_productivity
-    )
+  user = User.query.get(session['user_id'])
+  
+  if not user:
+      session.pop('user_id', None)
+      flash('Session expired. Please login again.', 'error')
+      return redirect(url_for('home'))
+  
+  # Get boards owned by the user
+  owned_boards = Board.query.filter_by(user_id=user.id).all()
+  
+  # Get boards shared with the user
+  shared_boards = Board.query.join(BoardMember).filter(BoardMember.user_id == user.id).all()
+  
+  # Combine owned and shared boards
+  all_boards = owned_boards + [board for board in shared_boards if board not in owned_boards]
+  
+  # Get pending invitations
+  pending_invitations = BoardInvitation.query.filter_by(
+      invitee_id=user.id, 
+      status=BoardInvitationStatus.PENDING
+  ).all()
+  
+  # Calculate task analytics - include both created tasks AND assigned tasks
+  created_tasks = Task.query.filter_by(user_id=user.id).all()
+  assigned_tasks = Task.query.filter_by(assigned_to=user.id).all()
+  
+  # Combine tasks without duplicates
+  all_user_tasks = created_tasks + [task for task in assigned_tasks if task not in created_tasks]
+  total_tasks = len(all_user_tasks)
+  
+  status_counts = {
+      'todo': len([t for t in all_user_tasks if t.status == 'todo']),
+      'progress': len([t for t in all_user_tasks if t.status == 'progress']),
+      'review': len([t for t in all_user_tasks if t.status == 'review']),
+      'done': len([t for t in all_user_tasks if t.status == 'done'])
+  }
+  
+  completion_percent = int((status_counts['done'] / total_tasks * 100)) if total_tasks else 0
+  
+  # Get upcoming deadlines - include both created and assigned tasks
+  upcoming = Task.query.filter(
+      ((Task.user_id == user.id) | (Task.assigned_to == user.id)),
+      Task.due_date >= datetime.utcnow()
+  ).order_by(Task.due_date.asc()).limit(4).all()
+  
+  # Add team productivity data with enhanced metrics
+  team_productivity = []
+  if owned_boards:
+      for board in owned_boards:
+          for member in board.get_members():
+              member_tasks = Task.query.filter_by(board_id=board.id, assigned_to=member.id).all()
+              if member_tasks:
+                  completed = len([t for t in member_tasks if t.status == 'done'])
+                  productivity = int((completed / len(member_tasks) * 100)) if member_tasks else 0
+                  
+                  # Calculate trend (mock data - in a real app, you'd compare with historical data)
+                  trend = 'up' if productivity > 50 else ('down' if productivity < 25 else None)
+                  
+                  team_productivity.append({
+                      'name': member.username,
+                      'initials': member.username[:2].upper(),
+                      'productivity': productivity,
+                      'completed': completed,
+                      'total': len(member_tasks),
+                      'trend': trend
+                  })
+  
+  return render_template(
+      'board_dashboard.html',
+      user=user,
+      boards=all_boards,
+      status_counts=status_counts,
+      total_tasks=total_tasks,
+      completion_percent=completion_percent,
+      upcoming=upcoming,
+      team_productivity=team_productivity,
+      pending_invitations=pending_invitations
+  )
 
 @app.route('/create_board', methods=['POST'])
 def create_board():
@@ -203,13 +238,13 @@ def create_board():
     board = Board(
         name=request.form.get('name'),
         color=request.form.get('color', 'blue'),
-        user_id=session['user_id']
+        user_id=session['user_id'],
+        is_private=request.form.get('private') == 'on'
     )
     
     db.session.add(board)
     db.session.commit()
     return redirect(url_for('board_dashboard'))
-
 
 @app.route('/update_board/<int:board_id>', methods=['POST'])
 def update_board(board_id):
@@ -222,6 +257,7 @@ def update_board(board_id):
 
     board.name = request.form.get('name')
     board.color = request.form.get('color', 'blue')
+    board.is_private = request.form.get('is_private') == 'on'
     
     db.session.commit()
     return redirect(url_for('board_dashboard'))
@@ -265,24 +301,11 @@ def board_view():
         'done': Task.query.filter_by(board_id=board_id, status='done').all()
     }
     
-    # Get board members for task assignment
-    board_members = []
-    
-    # Add the owner
-    owner = User.query.get(board.user_id)
-    board_members.append(owner)
-    
-    # Add all members
-    for member in board.members:
-        member_user = User.query.get(member.user_id)
-        if member_user and member_user not in board_members:
-            board_members.append(member_user)
-    
     return render_template(
         'board-view.html',
         board=board,
         tasks_by_status=tasks_by_status,
-        board_members=board_members
+        session=session
     )
 
 # API endpoints for board data
@@ -294,7 +317,8 @@ def get_board(board_id):
     board = Board.query.get_or_404(board_id)
     
     # Check if user has access to this board
-    if board.user_id != session['user_id']:
+    is_member = BoardMember.query.filter_by(board_id=board_id, user_id=session['user_id']).first()
+    if board.user_id != session['user_id'] and not is_member:
         return jsonify({'error': 'Forbidden'}), 403
     
     # Get tasks grouped by status
@@ -316,44 +340,6 @@ def get_board(board_id):
         'tasks': tasks_by_status
     })
 
-# Add a new route to get board members for a specific board
-@app.route('/api/boards/<int:board_id>/members', methods=['GET'])
-def get_board_members(board_id):
-    if 'user_id' not in session:
-        return jsonify({'error': 'Unauthorized'}), 401
-    
-    board = Board.query.get_or_404(board_id)
-    
-    # Check if user has access to this board
-    is_member = BoardMember.query.filter_by(board_id=board_id, user_id=session['user_id']).first()
-    if board.user_id != session['user_id'] and not is_member:
-        return jsonify({'error': 'Forbidden'}), 403
-    
-    # Get the owner
-    owner = User.query.get(board.user_id)
-    
-    # Get all members
-    members = []
-    members.append({
-        'id': owner.id,
-        'username': owner.username,
-        'email': owner.email,
-        'role': 'owner'
-    })
-    
-    for member in board.members:
-        user = User.query.get(member.user_id)
-        if user:
-            members.append({
-                'id': user.id,
-                'username': user.username,
-                'email': user.email,
-                'role': member.role.value
-            })
-    
-    return jsonify(members)
-
-# Update the create_task route to properly handle task assignment
 @app.route('/create_task', methods=['POST'])
 def create_task():
     if 'user_id' not in session:
@@ -385,7 +371,7 @@ def create_task():
                 is_valid_assignee = True
         
         if not is_valid_assignee:
-            flash('Invalid assignee selected', 'error')
+            flash('Error: Tasks can only be assigned to board members. Please add the user to the board first.', 'error')
             return redirect(url_for('board_view', board_id=board_id))
     else:
         assigned_to = None
@@ -403,10 +389,9 @@ def create_task():
     db.session.add(task)
     db.session.commit()
     
-    # Redirect back to board view
+    flash('Task created successfully!', 'success')
     return redirect(url_for('board_view', board_id=board_id))
 
-# Update the update_task route to properly handle task assignment
 @app.route('/update_task/<int:task_id>', methods=['POST'])
 def update_task(task_id):
     if 'user_id' not in session:
@@ -445,13 +430,14 @@ def update_task(task_id):
         if is_valid_assignee:
             task.assigned_to = assigned_to
         else:
-            flash('Invalid assignee selected', 'error')
+            flash('Error: Tasks can only be assigned to board members. Please add the user to the board first.', 'error')
+            return redirect(url_for('board_view', board_id=task.board_id))
     else:
         task.assigned_to = None
     
     db.session.commit()
     
-    # Redirect back to board view
+    flash('Task updated successfully!', 'success')
     return redirect(url_for('board_view', board_id=task.board_id))
 
 @app.route('/delete_task/<int:task_id>', methods=['POST'])
@@ -460,16 +446,18 @@ def delete_task(task_id):
         return redirect(url_for('home'))
     
     task = Task.query.get_or_404(task_id)
+    board = Board.query.get(task.board_id)
     
     # Check if user has access to this task
-    if task.user_id != session['user_id']:
+    is_member = BoardMember.query.filter_by(board_id=task.board_id, user_id=session['user_id']).first()
+    if task.user_id != session['user_id'] and board.user_id != session['user_id'] and not is_member:
         abort(403)
     
     board_id = task.board_id
     db.session.delete(task)
     db.session.commit()
     
-    # Redirect back to board view
+    flash('Task deleted successfully!', 'success')
     return redirect(url_for('board_view', board_id=board_id))
 
 # API endpoint to update task status (for drag and drop)
@@ -485,9 +473,11 @@ def update_task_status(task_id):
         return jsonify({'error': 'Status is required'}), 400
     
     task = Task.query.get_or_404(task_id)
+    board = Board.query.get(task.board_id)
     
     # Check if user has access to this task
-    if task.user_id != session['user_id']:
+    is_member = BoardMember.query.filter_by(board_id=task.board_id, user_id=session['user_id']).first()
+    if task.user_id != session['user_id'] and board.user_id != session['user_id'] and not is_member:
         return jsonify({'error': 'Forbidden'}), 403
     
     task.status = new_status
@@ -495,43 +485,28 @@ def update_task_status(task_id):
     
     return jsonify({'success': True})
 
-# Add a new route to handle task assignment via API
-@app.route('/api/tasks/<int:task_id>/assign', methods=['POST'])
-def assign_task(task_id):
+@app.route('/api/tasks/<int:task_id>', methods=['GET'])
+def get_task(task_id):
     if 'user_id' not in session:
         return jsonify({'error': 'Unauthorized'}), 401
-    
-    data = request.json
-    assignee_id = data.get('assignee_id')
     
     task = Task.query.get_or_404(task_id)
     board = Board.query.get(task.board_id)
     
-    # Check if user has permission to assign tasks
+    # Check if user has access to this task
     is_member = BoardMember.query.filter_by(board_id=task.board_id, user_id=session['user_id']).first()
     if task.user_id != session['user_id'] and board.user_id != session['user_id'] and not is_member:
         return jsonify({'error': 'Forbidden'}), 403
     
-    if assignee_id:
-        # Verify the assignee is a member of the board
-        is_valid_assignee = False
-        if int(assignee_id) == board.user_id:  # Board owner
-            is_valid_assignee = True
-        else:
-            board_member = BoardMember.query.filter_by(board_id=task.board_id, user_id=assignee_id).first()
-            if board_member:
-                is_valid_assignee = True
-        
-        if is_valid_assignee:
-            task.assigned_to = int(assignee_id)
-        else:
-            return jsonify({'error': 'Invalid assignee'}), 400
-    else:
-        task.assigned_to = None
-    
-    db.session.commit()
-    
-    return jsonify({'success': True})
+    return jsonify({
+        'id': task.id,
+        'title': task.title,
+        'description': task.description,
+        'status': task.status,
+        'due_date': task.due_date.isoformat() if task.due_date else None,
+        'board_id': task.board_id,
+        'assigned_to': task.assigned_to
+    })
 
 @app.route('/logout')
 def logout():
@@ -539,161 +514,177 @@ def logout():
     flash('You have been logged out.', 'success')
     return redirect(url_for('home'))
 
-# Add these routes for user profile and settings
-
-# Update the profile route to properly handle user data
-@app.route('/profile')
-def profile():
-    if 'user_id' not in session:
-        return redirect(url_for('home'))
-    
-    user = User.query.get(session['user_id'])
-    
-    # Get user's boards
-    boards = Board.query.filter_by(user_id=user.id).all()
-    
-    # Get boards shared with the user through board memberships
-    shared_boards_query = db.session.query(Board).join(BoardMember).filter(BoardMember.user_id == user.id)
-    shared_boards = shared_boards_query.all()
-    
-    # Get tasks created by the user
-    created_tasks = Task.query.filter_by(user_id=user.id).all()
-    
-    # Get tasks assigned to the user
-    assigned_tasks = Task.query.filter_by(assigned_to=user.id).all()
-    
-    return render_template(
-        'profile.html',
-        user=user,
-        boards=boards,
-        shared_boards=shared_boards,
-        created_tasks=created_tasks,
-        assigned_tasks=assigned_tasks
-    )
-
-# Update the update_profile route to handle file uploads properly
-@app.route('/update_profile', methods=['POST'])
-def update_profile():
-    if 'user_id' not in session:
-        return redirect(url_for('home'))
-    
-    user = User.query.get(session['user_id'])
-    
-    user.full_name = request.form.get('full_name', user.full_name)
-    user.bio = request.form.get('bio', user.bio)
-    
-    # Handle avatar upload if provided
-    if 'avatar' in request.files:
-        avatar = request.files['avatar']
-        if avatar and avatar.filename:
-            # Create directory if it doesn't exist
-            avatar_dir = os.path.join('static', 'avatars')
-            if not os.path.exists(avatar_dir):
-                os.makedirs(avatar_dir)
-            
-            # Save avatar to a directory and update user.avatar
-            filename = secure_filename(f"{user.id}_{avatar.filename}")
-            avatar_path = os.path.join(avatar_dir, filename)
-            avatar.save(avatar_path)
-            user.avatar = f'/static/avatars/{filename}'
-    
-    db.session.commit()
-    flash('Profile updated successfully!', 'success')
-    return redirect(url_for('profile'))
-
-@app.route('/board_settings/<int:board_id>')
-def board_settings(board_id):
+# Board Members Management
+@app.route('/manage_members/<int:board_id>')
+def manage_members(board_id):
     if 'user_id' not in session:
         return redirect(url_for('home'))
     
     board = Board.query.get_or_404(board_id)
     
     # Check if user is the owner or admin
-    if board.user_id != session['user_id'] and not any(
-        member.user_id == session['user_id'] and member.role == BoardMemberRole.ADMIN
-        for member in board.members
-    ):
-        abort(403)
+    is_admin = BoardMember.query.filter_by(
+        board_id=board_id, 
+        user_id=session['user_id'], 
+        role=BoardMemberRole.ADMIN
+    ).first()
     
-    # Get all users for member selection
-    users = User.query.filter(User.id != session['user_id']).all()
+    if board.user_id != session['user_id'] and not is_admin:
+        flash('You do not have permission to manage members for this board', 'error')
+        return redirect(url_for('board_view', board_id=board_id))
     
-    # Get current board members
-    board_members = BoardMember.query.filter_by(board_id=board_id).all()
+    # Get all users except the current user and existing members
+    existing_member_ids = [member.user_id for member in board.members]
+    existing_member_ids.append(board.user_id)  # Add the owner
+    
+    # Also exclude users with pending invitations
+    pending_invitation_user_ids = [
+        inv.invitee_id for inv in BoardInvitation.query.filter_by(
+            board_id=board_id, 
+            status=BoardInvitationStatus.PENDING
+        ).all()
+    ]
+    
+    excluded_user_ids = list(set(existing_member_ids + pending_invitation_user_ids))
+    
+    available_users = User.query.filter(User.id.notin_(excluded_user_ids)).all()
+    
+    # Get pending invitations for this board
+    pending_invitations = BoardInvitation.query.filter_by(
+        board_id=board_id, 
+        status=BoardInvitationStatus.PENDING
+    ).all()
     
     return render_template(
-        'board_settings.html',
+        'manage_members.html',
         board=board,
-        users=users,
-        board_members=board_members
+        available_users=available_users,
+        pending_invitations=pending_invitations
     )
 
-@app.route('/add_board_member/<int:board_id>', methods=['POST'])
-def add_board_member(board_id):
+@app.route('/invite_board_member/<int:board_id>', methods=['POST'])
+def invite_board_member(board_id):
     if 'user_id' not in session:
         return redirect(url_for('home'))
     
     board = Board.query.get_or_404(board_id)
     
     # Check if user is the owner or admin
-    if board.user_id != session['user_id'] and not any(
-        member.user_id == session['user_id'] and member.role == BoardMemberRole.ADMIN
-        for member in board.members
-    ):
-        abort(403)
+    is_admin = BoardMember.query.filter_by(
+        board_id=board_id, 
+        user_id=session['user_id'], 
+        role=BoardMemberRole.ADMIN
+    ).first()
+    
+    if board.user_id != session['user_id'] and not is_admin:
+        flash('You do not have permission to invite members to this board', 'error')
+        return redirect(url_for('board_view', board_id=board_id))
     
     user_id = request.form.get('user_id')
-    role = request.form.get('role', 'VIEWER')
+    role = request.form.get('role', 'viewer')
+    
+    if not user_id:
+        flash('Please select a user to invite', 'error')
+        return redirect(url_for('manage_members', board_id=board_id))
     
     # Check if user exists
     user = User.query.get(user_id)
     if not user:
         flash('User not found', 'error')
-        return redirect(url_for('board_settings', board_id=board_id))
+        return redirect(url_for('manage_members', board_id=board_id))
     
     # Check if user is already a member
     existing_member = BoardMember.query.filter_by(board_id=board_id, user_id=user_id).first()
     if existing_member:
         flash('User is already a member of this board', 'error')
-        return redirect(url_for('board_settings', board_id=board_id))
+        return redirect(url_for('manage_members', board_id=board_id))
     
-    # Add user as a member
-    member = BoardMember(
+    # Check if there's already a pending invitation
+    existing_invitation = BoardInvitation.query.filter_by(
+        board_id=board_id, 
+        invitee_id=user_id,
+        status=BoardInvitationStatus.PENDING
+    ).first()
+    
+    if existing_invitation:
+        flash('An invitation has already been sent to this user', 'error')
+        return redirect(url_for('manage_members', board_id=board_id))
+    
+    # Create a new invitation
+    role_value = role.lower() if role else 'viewer'
+    invitation = BoardInvitation(
         board_id=board_id,
-        user_id=user_id,
-        role=BoardMemberRole(role)
+        inviter_id=session['user_id'],
+        invitee_id=user_id,
+        role=BoardMemberRole(role_value),
+        status=BoardInvitationStatus.PENDING
     )
     
-    db.session.add(member)
+    db.session.add(invitation)
     db.session.commit()
     
-    flash(f'{user.username} has been added to the board', 'success')
-    return redirect(url_for('board_settings', board_id=board_id))
+    flash(f'Invitation sent to {user.username}', 'success')
+    return redirect(url_for('manage_members', board_id=board_id))
 
-@app.route('/remove_board_member/<int:board_id>/<int:user_id>', methods=['POST'])
-def remove_board_member(board_id, user_id):
+@app.route('/cancel_invitation/<int:invitation_id>', methods=['POST'])
+def cancel_invitation(invitation_id):
     if 'user_id' not in session:
         return redirect(url_for('home'))
     
-    board = Board.query.get_or_404(board_id)
+    invitation = BoardInvitation.query.get_or_404(invitation_id)
+    board = Board.query.get(invitation.board_id)
     
-    # Check if user is the owner or admin
-    if board.user_id != session['user_id'] and not any(
-        member.user_id == session['user_id'] and member.role == BoardMemberRole.ADMIN
-        for member in board.members
-    ):
-        abort(403)
+    # Check if user is the owner, admin, or the one who sent the invitation
+    is_admin = BoardMember.query.filter_by(
+        board_id=invitation.board_id, 
+        user_id=session['user_id'], 
+        role=BoardMemberRole.ADMIN
+    ).first()
     
-    # Remove the member
-    member = BoardMember.query.filter_by(board_id=board_id, user_id=user_id).first()
-    if member:
-        db.session.delete(member)
+    if board.user_id != session['user_id'] and invitation.inviter_id != session['user_id'] and not is_admin:
+        flash('You do not have permission to cancel this invitation', 'error')
+        return redirect(url_for('board_view', board_id=invitation.board_id))
+    
+    db.session.delete(invitation)
+    db.session.commit()
+    
+    flash('Invitation cancelled successfully', 'success')
+    return redirect(url_for('manage_members', board_id=invitation.board_id))
+
+@app.route('/respond_to_invitation/<int:invitation_id>/<string:action>', methods=['POST'])
+def respond_to_invitation(invitation_id, action):
+    if 'user_id' not in session:
+        return redirect(url_for('home'))
+    
+    invitation = BoardInvitation.query.get_or_404(invitation_id)
+    
+    # Check if the current user is the invitee
+    if invitation.invitee_id != session['user_id']:
+        flash('You do not have permission to respond to this invitation', 'error')
+        return redirect(url_for('board_dashboard'))
+    
+    if action == 'accept':
+        # Create a new board member
+        member = BoardMember(
+            board_id=invitation.board_id,
+            user_id=invitation.invitee_id,
+            role=invitation.role
+        )
+        
+        db.session.add(member)
+        invitation.status = BoardInvitationStatus.ACCEPTED
         db.session.commit()
-        flash('Member removed successfully', 'success')
+        
+        flash('You have joined the board successfully!', 'success')
+    elif action == 'reject':
+        invitation.status = BoardInvitationStatus.REJECTED
+        db.session.commit()
+        
+        flash('Invitation rejected', 'success')
     else:
-        flash('Member not found', 'error')
+        flash('Invalid action', 'error')
     
-    return redirect(url_for('board_settings', board_id=board_id))
+    return redirect(url_for('board_dashboard'))
 
 @app.route('/update_board_member_role/<int:board_id>/<int:user_id>', methods=['POST'])
 def update_board_member_role(board_id, user_id):
@@ -703,24 +694,64 @@ def update_board_member_role(board_id, user_id):
     board = Board.query.get_or_404(board_id)
     
     # Check if user is the owner or admin
-    if board.user_id != session['user_id'] and not any(
-        member.user_id == session['user_id'] and member.role == BoardMemberRole.ADMIN
-        for member in board.members
-    ):
-        abort(403)
+    is_admin = BoardMember.query.filter_by(
+        board_id=board_id, 
+        user_id=session['user_id'], 
+        role=BoardMemberRole.ADMIN
+    ).first()
+    
+    if board.user_id != session['user_id'] and not is_admin:
+        flash('You do not have permission to update member roles', 'error')
+        return redirect(url_for('board_view', board_id=board_id))
     
     role = request.form.get('role')
     
     # Update the member's role
     member = BoardMember.query.filter_by(board_id=board_id, user_id=user_id).first()
     if member:
-        member.role = BoardMemberRole(role)
+        # Convert role to lowercase to match enum values
+        role_value = role.lower() if role else 'viewer'
+        member.role = BoardMemberRole(role_value)
         db.session.commit()
         flash('Member role updated successfully', 'success')
     else:
         flash('Member not found', 'error')
     
-    return redirect(url_for('board_settings', board_id=board_id))
+    return redirect(url_for('manage_members', board_id=board_id))
+
+@app.route('/remove_board_member/<int:board_id>/<int:user_id>', methods=['POST'])
+def remove_board_member(board_id, user_id):
+    if 'user_id' not in session:
+        return redirect(url_for('home'))
+    
+    board = Board.query.get_or_404(board_id)
+    
+    # Check if user is the owner or admin
+    is_admin = BoardMember.query.filter_by(
+        board_id=board_id, 
+        user_id=session['user_id'], 
+        role=BoardMemberRole.ADMIN
+    ).first()
+    
+    if board.user_id != session['user_id'] and not is_admin:
+        flash('You do not have permission to remove members', 'error')
+        return redirect(url_for('board_view', board_id=board_id))
+    
+    # Remove the member
+    member = BoardMember.query.filter_by(board_id=board_id, user_id=user_id).first()
+    if member:
+        # Check if member has any assigned tasks
+        assigned_tasks = Task.query.filter_by(board_id=board_id, assigned_to=user_id).all()
+        for task in assigned_tasks:
+            task.assigned_to = None
+        
+        db.session.delete(member)
+        db.session.commit()
+        flash('Member removed successfully', 'success')
+    else:
+        flash('Member not found', 'error')
+    
+    return redirect(url_for('manage_members', board_id=board_id))
 
 @app.template_filter('status_color')
 def status_color_filter(status):
@@ -746,37 +777,36 @@ def time_until_filter(due_date):
         return 'Tomorrow'
     return f'In {days} days'
 
-# Update the API endpoint for getting task details to include assigned_to
-@app.route('/api/tasks/<int:task_id>', methods=['GET'])
-def get_task(task_id):
+# Update the profile route to include assigned tasks
+@app.route('/profile')
+def profile():
     if 'user_id' not in session:
-        return jsonify({'error': 'Unauthorized'}), 401
+        return redirect(url_for('home'))
     
-    task = Task.query.get_or_404(task_id)
+    user = User.query.get_or_404(session['user_id'])
     
-    # Check if user has access to this task
-    board = Board.query.get(task.board_id)
-    is_member = BoardMember.query.filter_by(board_id=task.board_id, user_id=session['user_id']).first()
-    if task.user_id != session['user_id'] and board.user_id != session['user_id'] and not is_member:
-        return jsonify({'error': 'Forbidden'}), 403
+    # Get boards owned by the user
+    owned_boards = Board.query.filter_by(user_id=user.id).all()
     
-    return jsonify({
-        'id': task.id,
-        'title': task.title,
-        'description': task.description,
-        'status': task.status,
-        'due_date': task.due_date.isoformat() if task.due_date else None,
-        'board_id': task.board_id,
-        'assigned_to': task.assigned_to
-    })
-
+    # Get boards shared with the user
+    shared_boards = Board.query.join(BoardMember).filter(BoardMember.user_id == user.id).all()
+    
+    # Get tasks created by the user
+    created_tasks = Task.query.filter_by(user_id=user.id).all()
+    
+    # Get tasks assigned to the user
+    assigned_tasks = Task.query.filter_by(assigned_to=user.id).all()
+    
+    return render_template(
+        'profile.html',
+        user=user,
+        boards=owned_boards,
+        shared_boards=shared_boards,
+        created_tasks=created_tasks,
+        assigned_tasks=assigned_tasks
+    )
 
 if __name__ == '__main__':
-    # Create upload directories
-    avatar_dir = os.path.join('static', 'avatars')
-    if not os.path.exists(avatar_dir):
-        os.makedirs(avatar_dir)
-        
     with app.app_context():
         db.create_all()
     app.run(debug=True)
