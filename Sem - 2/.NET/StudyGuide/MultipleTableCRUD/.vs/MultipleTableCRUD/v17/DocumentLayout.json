@@ -1,0 +1,173 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\StudyGuide\\MultipleTableCRUD\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{D662453C-9D5C-4BC3-9071-A071F8EBCCC2}|MultipleTableCRUD.csproj|c:\\users\\arin dhimar\\documents\\fergussoncollege\\sem - 2\\.net\\studyguide\\multipletablecrud\\views\\enrollementtbs\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{D662453C-9D5C-4BC3-9071-A071F8EBCCC2}|MultipleTableCRUD.csproj|solutionrelative:views\\enrollementtbs\\create.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D662453C-9D5C-4BC3-9071-A071F8EBCCC2}|MultipleTableCRUD.csproj|c:\\users\\arin dhimar\\documents\\fergussoncollege\\sem - 2\\.net\\studyguide\\multipletablecrud\\controllers\\enrollementtbscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D662453C-9D5C-4BC3-9071-A071F8EBCCC2}|MultipleTableCRUD.csproj|solutionrelative:controllers\\enrollementtbscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D662453C-9D5C-4BC3-9071-A071F8EBCCC2}|MultipleTableCRUD.csproj|c:\\users\\arin dhimar\\documents\\fergussoncollege\\sem - 2\\.net\\studyguide\\multipletablecrud\\views\\coursestbs\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{D662453C-9D5C-4BC3-9071-A071F8EBCCC2}|MultipleTableCRUD.csproj|solutionrelative:views\\coursestbs\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D662453C-9D5C-4BC3-9071-A071F8EBCCC2}|MultipleTableCRUD.csproj|c:\\users\\arin dhimar\\documents\\fergussoncollege\\sem - 2\\.net\\studyguide\\multipletablecrud\\views\\enrollementtbs\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{D662453C-9D5C-4BC3-9071-A071F8EBCCC2}|MultipleTableCRUD.csproj|solutionrelative:views\\enrollementtbs\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D662453C-9D5C-4BC3-9071-A071F8EBCCC2}|MultipleTableCRUD.csproj|c:\\users\\arin dhimar\\documents\\fergussoncollege\\sem - 2\\.net\\studyguide\\multipletablecrud\\views\\studenttbs\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{D662453C-9D5C-4BC3-9071-A071F8EBCCC2}|MultipleTableCRUD.csproj|solutionrelative:views\\studenttbs\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D662453C-9D5C-4BC3-9071-A071F8EBCCC2}|MultipleTableCRUD.csproj|c:\\users\\arin dhimar\\documents\\fergussoncollege\\sem - 2\\.net\\studyguide\\multipletablecrud\\controllers\\coursestbscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D662453C-9D5C-4BC3-9071-A071F8EBCCC2}|MultipleTableCRUD.csproj|solutionrelative:controllers\\coursestbscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D662453C-9D5C-4BC3-9071-A071F8EBCCC2}|MultipleTableCRUD.csproj|c:\\users\\arin dhimar\\documents\\fergussoncollege\\sem - 2\\.net\\studyguide\\multipletablecrud\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D662453C-9D5C-4BC3-9071-A071F8EBCCC2}|MultipleTableCRUD.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D662453C-9D5C-4BC3-9071-A071F8EBCCC2}|MultipleTableCRUD.csproj|c:\\users\\arin dhimar\\documents\\fergussoncollege\\sem - 2\\.net\\studyguide\\multipletablecrud\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{D662453C-9D5C-4BC3-9071-A071F8EBCCC2}|MultipleTableCRUD.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{D662453C-9D5C-4BC3-9071-A071F8EBCCC2}|MultipleTableCRUD.csproj|c:\\users\\arin dhimar\\documents\\fergussoncollege\\sem - 2\\.net\\studyguide\\multipletablecrud\\controllers\\studenttbscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{D662453C-9D5C-4BC3-9071-A071F8EBCCC2}|MultipleTableCRUD.csproj|solutionrelative:controllers\\studenttbscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Create.cshtml",
+              "DocumentMoniker": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\StudyGuide\\MultipleTableCRUD\\Views\\Enrollementtbs\\Create.cshtml",
+              "RelativeDocumentMoniker": "Views\\Enrollementtbs\\Create.cshtml",
+              "ToolTip": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\StudyGuide\\MultipleTableCRUD\\Views\\Enrollementtbs\\Create.cshtml",
+              "RelativeToolTip": "Views\\Enrollementtbs\\Create.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAABSAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-03-31T20:47:50.16Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\StudyGuide\\MultipleTableCRUD\\Views\\Enrollementtbs\\Index.cshtml",
+              "RelativeDocumentMoniker": "Views\\Enrollementtbs\\Index.cshtml",
+              "ToolTip": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\StudyGuide\\MultipleTableCRUD\\Views\\Enrollementtbs\\Index.cshtml",
+              "RelativeToolTip": "Views\\Enrollementtbs\\Index.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAABEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-03-31T20:44:29.503Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\StudyGuide\\MultipleTableCRUD\\Views\\Studenttbs\\Index.cshtml",
+              "RelativeDocumentMoniker": "Views\\Studenttbs\\Index.cshtml",
+              "ToolTip": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\StudyGuide\\MultipleTableCRUD\\Views\\Studenttbs\\Index.cshtml",
+              "RelativeToolTip": "Views\\Studenttbs\\Index.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-03-31T20:43:40.186Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\StudyGuide\\MultipleTableCRUD\\Views\\Coursestbs\\Index.cshtml",
+              "RelativeDocumentMoniker": "Views\\Coursestbs\\Index.cshtml",
+              "ToolTip": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\StudyGuide\\MultipleTableCRUD\\Views\\Coursestbs\\Index.cshtml",
+              "RelativeToolTip": "Views\\Coursestbs\\Index.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-03-31T20:42:38.89Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\StudyGuide\\MultipleTableCRUD\\Program.cs",
+              "RelativeDocumentMoniker": "Program.cs",
+              "ToolTip": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\StudyGuide\\MultipleTableCRUD\\Program.cs",
+              "RelativeToolTip": "Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB4AAAAoAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-31T20:38:34.748Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "EnrollementtbsController.cs",
+              "DocumentMoniker": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\StudyGuide\\MultipleTableCRUD\\Controllers\\EnrollementtbsController.cs",
+              "RelativeDocumentMoniker": "Controllers\\EnrollementtbsController.cs",
+              "ToolTip": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\StudyGuide\\MultipleTableCRUD\\Controllers\\EnrollementtbsController.cs",
+              "RelativeToolTip": "Controllers\\EnrollementtbsController.cs",
+              "ViewState": "AgIAABwAAAAAAAAAAAA4wDIAAABPAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-31T20:36:08.658Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "CoursestbsController.cs",
+              "DocumentMoniker": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\StudyGuide\\MultipleTableCRUD\\Controllers\\CoursestbsController.cs",
+              "RelativeDocumentMoniker": "Controllers\\CoursestbsController.cs",
+              "ToolTip": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\StudyGuide\\MultipleTableCRUD\\Controllers\\CoursestbsController.cs",
+              "RelativeToolTip": "Controllers\\CoursestbsController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-31T20:35:32.912Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\StudyGuide\\MultipleTableCRUD\\appsettings.json",
+              "RelativeDocumentMoniker": "appsettings.json",
+              "ToolTip": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\StudyGuide\\MultipleTableCRUD\\appsettings.json",
+              "RelativeToolTip": "appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2025-03-31T20:38:04.024Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "StudenttbsController.cs",
+              "DocumentMoniker": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\StudyGuide\\MultipleTableCRUD\\Controllers\\StudenttbsController.cs",
+              "RelativeDocumentMoniker": "Controllers\\StudenttbsController.cs",
+              "ToolTip": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\StudyGuide\\MultipleTableCRUD\\Controllers\\StudenttbsController.cs",
+              "RelativeToolTip": "Controllers\\StudenttbsController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-31T20:34:57.618Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

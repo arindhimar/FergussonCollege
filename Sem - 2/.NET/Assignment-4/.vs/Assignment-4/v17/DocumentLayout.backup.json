@@ -3,28 +3,12 @@
   "WorkspaceRootPath": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\Assignment-4\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{4D7DFD02-7859-4FE6-89AC-46D257443F1F}|Assignment-4.csproj|c:\\users\\arin dhimar\\documents\\fergussoncollege\\sem - 2\\.net\\assignment-4\\controllers\\enrollementtbscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4D7DFD02-7859-4FE6-89AC-46D257443F1F}|Assignment-4.csproj|solutionrelative:controllers\\enrollementtbscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{4D7DFD02-7859-4FE6-89AC-46D257443F1F}|Assignment-4.csproj|c:\\users\\arin dhimar\\documents\\fergussoncollege\\sem - 2\\.net\\assignment-4\\controllers\\coursestbscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4D7DFD02-7859-4FE6-89AC-46D257443F1F}|Assignment-4.csproj|solutionrelative:controllers\\coursestbscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{4D7DFD02-7859-4FE6-89AC-46D257443F1F}|Assignment-4.csproj|c:\\users\\arin dhimar\\documents\\fergussoncollege\\sem - 2\\.net\\assignment-4\\controllers\\studenttbscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4D7DFD02-7859-4FE6-89AC-46D257443F1F}|Assignment-4.csproj|solutionrelative:controllers\\studenttbscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{4D7DFD02-7859-4FE6-89AC-46D257443F1F}|Assignment-4.csproj|c:\\users\\arin dhimar\\documents\\fergussoncollege\\sem - 2\\.net\\assignment-4\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{4D7DFD02-7859-4FE6-89AC-46D257443F1F}|Assignment-4.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{4D7DFD02-7859-4FE6-89AC-46D257443F1F}|Assignment-4.csproj|c:\\users\\arin dhimar\\documents\\fergussoncollege\\sem - 2\\.net\\assignment-4\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
       "RelativeMoniker": "D:0:0:{4D7DFD02-7859-4FE6-89AC-46D257443F1F}|Assignment-4.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{4D7DFD02-7859-4FE6-89AC-46D257443F1F}|Assignment-4.csproj|c:\\users\\arin dhimar\\documents\\fergussoncollege\\sem - 2\\.net\\assignment-4\\models\\assignment4context.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{4D7DFD02-7859-4FE6-89AC-46D257443F1F}|Assignment-4.csproj|solutionrelative:models\\assignment4context.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -39,58 +23,19 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "EnrollementtbsController.cs",
-              "DocumentMoniker": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\Assignment-4\\Controllers\\EnrollementtbsController.cs",
-              "RelativeDocumentMoniker": "Controllers\\EnrollementtbsController.cs",
-              "ToolTip": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\Assignment-4\\Controllers\\EnrollementtbsController.cs",
-              "RelativeToolTip": "Controllers\\EnrollementtbsController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-22T05:26:04.241Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "CoursestbsController.cs",
-              "DocumentMoniker": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\Assignment-4\\Controllers\\CoursestbsController.cs",
-              "RelativeDocumentMoniker": "Controllers\\CoursestbsController.cs",
-              "ToolTip": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\Assignment-4\\Controllers\\CoursestbsController.cs",
-              "RelativeToolTip": "Controllers\\CoursestbsController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-22T05:25:11.028Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "StudenttbsController.cs",
-              "DocumentMoniker": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\Assignment-4\\Controllers\\StudenttbsController.cs",
-              "RelativeDocumentMoniker": "Controllers\\StudenttbsController.cs",
-              "ToolTip": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\Assignment-4\\Controllers\\StudenttbsController.cs",
-              "RelativeToolTip": "Controllers\\StudenttbsController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-22T05:22:23.873Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 3,
               "Title": "Program.cs",
               "DocumentMoniker": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\Assignment-4\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
               "ToolTip": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\Assignment-4\\Program.cs",
               "RelativeToolTip": "Program.cs",
-              "ViewState": "AgIAABIAAAAAAAAAAAAAAAgAAABHAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACYAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-03-22T02:51:30.221Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 1,
               "Title": "appsettings.json",
               "DocumentMoniker": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\Assignment-4\\appsettings.json",
               "RelativeDocumentMoniker": "appsettings.json",
@@ -100,18 +45,6 @@
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
               "WhenOpened": "2025-03-22T02:50:44.525Z",
               "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "Assignment4Context.cs",
-              "DocumentMoniker": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\Assignment-4\\Models\\Assignment4Context.cs",
-              "RelativeDocumentMoniker": "Models\\Assignment4Context.cs",
-              "ToolTip": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\Assignment-4\\Models\\Assignment4Context.cs",
-              "RelativeToolTip": "Models\\Assignment4Context.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAABBAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-03-22T02:50:36.571Z"
             }
           ]
         }

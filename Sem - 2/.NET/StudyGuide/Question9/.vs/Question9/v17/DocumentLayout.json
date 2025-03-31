@@ -1,0 +1,139 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\StudyGuide\\Question9\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{B409FB1F-F889-4A21-A7E3-3684C8A1ACBA}|Question9.csproj|c:\\users\\arin dhimar\\documents\\fergussoncollege\\sem - 2\\.net\\studyguide\\question9\\views\\home\\contact.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{B409FB1F-F889-4A21-A7E3-3684C8A1ACBA}|Question9.csproj|solutionrelative:views\\home\\contact.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B409FB1F-F889-4A21-A7E3-3684C8A1ACBA}|Question9.csproj|c:\\users\\arin dhimar\\documents\\fergussoncollege\\sem - 2\\.net\\studyguide\\question9\\views\\home\\projects.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{B409FB1F-F889-4A21-A7E3-3684C8A1ACBA}|Question9.csproj|solutionrelative:views\\home\\projects.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B409FB1F-F889-4A21-A7E3-3684C8A1ACBA}|Question9.csproj|c:\\users\\arin dhimar\\documents\\fergussoncollege\\sem - 2\\.net\\studyguide\\question9\\views\\home\\about.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{B409FB1F-F889-4A21-A7E3-3684C8A1ACBA}|Question9.csproj|solutionrelative:views\\home\\about.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B409FB1F-F889-4A21-A7E3-3684C8A1ACBA}|Question9.csproj|c:\\users\\arin dhimar\\documents\\fergussoncollege\\sem - 2\\.net\\studyguide\\question9\\views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{B409FB1F-F889-4A21-A7E3-3684C8A1ACBA}|Question9.csproj|solutionrelative:views\\home\\index.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B409FB1F-F889-4A21-A7E3-3684C8A1ACBA}|Question9.csproj|c:\\users\\arin dhimar\\documents\\fergussoncollege\\sem - 2\\.net\\studyguide\\question9\\controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B409FB1F-F889-4A21-A7E3-3684C8A1ACBA}|Question9.csproj|solutionrelative:controllers\\homecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B409FB1F-F889-4A21-A7E3-3684C8A1ACBA}|Question9.csproj|c:\\users\\arin dhimar\\documents\\fergussoncollege\\sem - 2\\.net\\studyguide\\question9\\views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}",
+      "RelativeMoniker": "D:0:0:{B409FB1F-F889-4A21-A7E3-3684C8A1ACBA}|Question9.csproj|solutionrelative:views\\shared\\_layout.cshtml||{40D31677-CBC0-4297-A9EF-89D907823A98}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B409FB1F-F889-4A21-A7E3-3684C8A1ACBA}|Question9.csproj|c:\\users\\arin dhimar\\documents\\fergussoncollege\\sem - 2\\.net\\studyguide\\question9\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{B409FB1F-F889-4A21-A7E3-3684C8A1ACBA}|Question9.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Contact.cshtml",
+              "DocumentMoniker": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\StudyGuide\\Question9\\Views\\Home\\Contact.cshtml",
+              "RelativeDocumentMoniker": "Views\\Home\\Contact.cshtml",
+              "ToolTip": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\StudyGuide\\Question9\\Views\\Home\\Contact.cshtml",
+              "RelativeToolTip": "Views\\Home\\Contact.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-03-31T21:02:22.142Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Projects.cshtml",
+              "DocumentMoniker": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\StudyGuide\\Question9\\Views\\Home\\Projects.cshtml",
+              "RelativeDocumentMoniker": "Views\\Home\\Projects.cshtml",
+              "ToolTip": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\StudyGuide\\Question9\\Views\\Home\\Projects.cshtml",
+              "RelativeToolTip": "Views\\Home\\Projects.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABUAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-03-31T21:02:04.327Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "About.cshtml",
+              "DocumentMoniker": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\StudyGuide\\Question9\\Views\\Home\\About.cshtml",
+              "RelativeDocumentMoniker": "Views\\Home\\About.cshtml",
+              "ToolTip": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\StudyGuide\\Question9\\Views\\Home\\About.cshtml",
+              "RelativeToolTip": "Views\\Home\\About.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-03-31T21:01:44.114Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "Index.cshtml",
+              "DocumentMoniker": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\StudyGuide\\Question9\\Views\\Home\\Index.cshtml",
+              "RelativeDocumentMoniker": "Views\\Home\\Index.cshtml",
+              "ToolTip": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\StudyGuide\\Question9\\Views\\Home\\Index.cshtml",
+              "RelativeToolTip": "Views\\Home\\Index.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-03-31T21:00:57.863Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "HomeController.cs",
+              "DocumentMoniker": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\StudyGuide\\Question9\\Controllers\\HomeController.cs",
+              "RelativeDocumentMoniker": "Controllers\\HomeController.cs",
+              "ToolTip": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\StudyGuide\\Question9\\Controllers\\HomeController.cs",
+              "RelativeToolTip": "Controllers\\HomeController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-31T21:00:40.559Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "_Layout.cshtml",
+              "DocumentMoniker": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\StudyGuide\\Question9\\Views\\Shared\\_Layout.cshtml",
+              "RelativeDocumentMoniker": "Views\\Shared\\_Layout.cshtml",
+              "ToolTip": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\StudyGuide\\Question9\\Views\\Shared\\_Layout.cshtml",
+              "RelativeToolTip": "Views\\Shared\\_Layout.cshtml",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000759|",
+              "WhenOpened": "2025-03-31T21:00:21.215Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\StudyGuide\\Question9\\Program.cs",
+              "RelativeDocumentMoniker": "Program.cs",
+              "ToolTip": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\StudyGuide\\Question9\\Program.cs",
+              "RelativeToolTip": "Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-03-31T20:59:03.023Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
