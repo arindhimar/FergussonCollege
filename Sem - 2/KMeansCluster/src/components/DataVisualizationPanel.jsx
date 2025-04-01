@@ -1,12 +1,20 @@
 "use client"
 
-import { useState } from "react"
-import { BarChartIcon, ScatterChartIcon as ScatterIcon, TableIcon, InfoIcon } from "lucide-react"
+import { useState, useEffect } from "react"
+import {
+  BarChartIcon,
+  ScatterChartIcon as ScatterIcon,
+  TableIcon,
+  InfoIcon,
+  DownloadIcon,
+  PieChartIcon,
+} from "lucide-react"
 import ScatterPlot from "./visualizations/ScatterPlot"
 import BarChart from "./visualizations/BarChart"
+import PieChart from "./visualizations/PieChart"
 import DataTable from "./DataTable"
-import AnimationControls from "./AnimationControls"
 import StepExplanation from "./StepExplanation"
+import ClusterStats from "./ClusterStats"
 
 const DataVisualizationPanel = ({
   data,
@@ -23,9 +31,12 @@ const DataVisualizationPanel = ({
   resetAnimation,
   iterations,
   currentDetailedStep,
+  animationSpeed,
+  setAnimationSpeed,
 }) => {
   const [currentPage, setCurrentPage] = useState(1)
   const [showExplanation, setShowExplanation] = useState(true)
+  const [showStats, setShowStats] = useState(false)
   const rowsPerPage = 10
 
   // Calculate pagination
@@ -34,17 +45,45 @@ const DataVisualizationPanel = ({
 
   // Generate cluster colors
   const clusterColors = [
-    "rgb(56, 189, 248)", // sky-400
-    "rgb(251, 146, 60)", // orange-400
-    "rgb(168, 85, 247)", // purple-500
-    "rgb(74, 222, 128)", // green-400
-    "rgb(248, 113, 113)", // red-400
-    "rgb(232, 121, 249)", // fuchsia-400
-    "rgb(250, 204, 21)", // yellow-400
-    "rgb(45, 212, 191)", // teal-400
-    "rgb(129, 140, 248)", // indigo-400
-    "rgb(244, 114, 182)", // pink-400
+    "rgb(0, 122, 255)", // Bright blue
+    "rgb(255, 59, 48)", // Bright red
+    "rgb(76, 217, 100)", // Bright green
+    "rgb(255, 149, 0)", // Bright orange
+    "rgb(175, 82, 222)", // Bright purple
+    "rgb(255, 204, 0)", // Bright yellow
+    "rgb(90, 200, 250)", // Light blue
+    "rgb(255, 45, 85)", // Pink
+    "rgb(0, 199, 190)", // Teal
+    "rgb(88, 86, 214)", // Indigo
   ]
+
+  // Skip to the end of the animation
+  const skipToEnd = () => {
+    if (totalSteps > 0) {
+      onStepChange(totalSteps - 1)
+    }
+  }
+
+  // Export data as CSV
+  const exportData = () => {
+    if (!data || data.length === 0) return
+
+    // Convert data to CSV format
+    const headers = Object.keys(data[0]).join(",")
+    const rows = data.map((row) => Object.values(row).join(","))
+    const csvContent = [headers, ...rows].join("\n")
+
+    // Create a blob and download link
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" })
+    const url = URL.createObjectURL(blob)
+    const link = document.createElement("a")
+    link.setAttribute("href", url)
+    link.setAttribute("download", `kmeans_clusters_${new Date().toISOString().slice(0, 10)}.csv`)
+    link.style.visibility = "hidden"
+    document.body.appendChild(link)
+    link.click()
+    document.body.removeChild(link)
+  }
 
   // Highlight the row in the table that corresponds to the current point being processed
   const getHighlightedRowIndex = () => {
@@ -53,6 +92,41 @@ const DataVisualizationPanel = ({
     }
     return -1
   }
+
+  // Keyboard shortcuts for animation control
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") return
+
+      switch (e.key) {
+        case " ":
+          toggleAnimation()
+          e.preventDefault()
+          break
+        case "ArrowRight":
+          if (animationStep < totalSteps - 1) onStepChange(animationStep + 1)
+          e.preventDefault()
+          break
+        case "ArrowLeft":
+          if (animationStep > 0) onStepChange(animationStep - 1)
+          e.preventDefault()
+          break
+        case "Home":
+          resetAnimation()
+          e.preventDefault()
+          break
+        case "End":
+          skipToEnd()
+          e.preventDefault()
+          break
+        default:
+          break
+      }
+    }
+
+    window.addEventListener("keydown", handleKeyDown)
+    return () => window.removeEventListener("keydown", handleKeyDown)
+  }, [animationStep, totalSteps, toggleAnimation, onStepChange, resetAnimation])
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 h-full">
@@ -97,6 +171,18 @@ const DataVisualizationPanel = ({
           </button>
 
           <button
+            onClick={() => setVisualizationType("pie")}
+            className={`p-2 rounded-md transition-all duration-200 ${
+              visualizationType === "pie"
+                ? "bg-primary-100 dark:bg-primary-900 text-primary-600 dark:text-primary-400 shadow-md transform scale-105"
+                : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600"
+            }`}
+            title="Pie Chart"
+          >
+            <PieChartIcon className="w-5 h-5" />
+          </button>
+
+          <button
             onClick={() => setShowExplanation(!showExplanation)}
             className={`p-2 rounded-md transition-all duration-200 ${
               showExplanation
@@ -107,28 +193,48 @@ const DataVisualizationPanel = ({
           >
             <InfoIcon className="w-5 h-5" />
           </button>
+
+          <button
+            onClick={exportData}
+            disabled={!data || data.length === 0}
+            className={`p-2 rounded-md transition-all duration-200 
+              ${
+                !data || data.length === 0
+                  ? "bg-gray-100 dark:bg-gray-700 text-gray-400 dark:text-gray-600 cursor-not-allowed"
+                  : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600"
+              }`}
+            title="Export Data as CSV"
+          >
+            <DownloadIcon className="w-5 h-5" />
+          </button>
         </div>
       </div>
 
-      {/* Animation Controls */}
-      {(visualizationType === "scatter" || visualizationType === "bar") && totalSteps > 0 && (
-        <AnimationControls
-          currentStep={animationStep}
-          totalSteps={totalSteps}
-          onStepChange={onStepChange}
-          isPlaying={isAnimationPlaying}
-          togglePlay={toggleAnimation}
-          resetAnimation={resetAnimation}
-        />
-      )}
-
       {/* Step Explanation */}
-      {showExplanation && (visualizationType === "scatter" || visualizationType === "bar") && (
-        <StepExplanation
-          currentDetailedStep={currentDetailedStep}
-          animationStep={animationStep}
-          totalSteps={totalSteps}
-        />
+      {showExplanation &&
+        (visualizationType === "scatter" || visualizationType === "bar" || visualizationType === "pie") && (
+          <StepExplanation
+            currentDetailedStep={currentDetailedStep}
+            animationStep={animationStep}
+            totalSteps={totalSteps}
+          />
+        )}
+
+      {/* Cluster Statistics Button */}
+      {data && data.some((d) => d.cluster !== undefined) && (
+        <div className="mb-4">
+          <button
+            onClick={() => setShowStats(!showStats)}
+            className="text-sm flex items-center gap-2 text-sky-600 dark:text-sky-400 hover:underline"
+          >
+            {showStats ? "Hide" : "Show"} Cluster Statistics
+            <span className="text-xs bg-sky-100 dark:bg-sky-900 text-sky-800 dark:text-sky-200 px-2 py-0.5 rounded-full">
+              New
+            </span>
+          </button>
+
+          {showStats && <ClusterStats data={data} xAxis={xAxis} yAxis={yAxis} clusterColors={clusterColors} />}
+        </div>
       )}
 
       {/* Table View */}
@@ -151,9 +257,36 @@ const DataVisualizationPanel = ({
                 Previous
               </button>
 
-              <span className="text-sm text-gray-600 dark:text-gray-400">
-                Page {currentPage} of {totalPages}
-              </span>
+              <div className="flex items-center gap-1">
+                {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
+                  // Show pages around current page
+                  let pageNum
+                  if (totalPages <= 5) {
+                    pageNum = i + 1
+                  } else if (currentPage <= 3) {
+                    pageNum = i + 1
+                  } else if (currentPage >= totalPages - 2) {
+                    pageNum = totalPages - 4 + i
+                  } else {
+                    pageNum = currentPage - 2 + i
+                  }
+
+                  return (
+                    <button
+                      key={i}
+                      onClick={() => setCurrentPage(pageNum)}
+                      className={`w-8 h-8 flex items-center justify-center rounded-md text-sm
+                        ${
+                          currentPage === pageNum
+                            ? "bg-sky-100 dark:bg-sky-900 text-sky-700 dark:text-sky-300 font-medium"
+                            : "text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700"
+                        }`}
+                    >
+                      {pageNum}
+                    </button>
+                  )
+                })}
+              </div>
 
               <button
                 onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
@@ -188,8 +321,15 @@ const DataVisualizationPanel = ({
         </div>
       )}
 
+      {/* Pie Chart View */}
+      {visualizationType === "pie" && (
+        <div className="h-[500px] mt-4">
+          <PieChart data={data} clusterColors={clusterColors} />
+        </div>
+      )}
+
       {/* Legend */}
-      {(visualizationType === "scatter" || visualizationType === "bar") &&
+      {(visualizationType === "scatter" || visualizationType === "bar" || visualizationType === "pie") &&
         data.some((d) => d.cluster !== undefined) && (
           <div className="mt-4 flex flex-wrap gap-3 bg-gray-50 dark:bg-gray-700 p-3 rounded-lg">
             <div className="text-sm font-medium mr-2">Clusters:</div>
@@ -206,6 +346,35 @@ const DataVisualizationPanel = ({
               ))}
           </div>
         )}
+
+      {/* Keyboard Shortcuts Help */}
+      <div className="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
+        <details className="text-sm text-gray-600 dark:text-gray-400">
+          <summary className="cursor-pointer hover:text-gray-800 dark:hover:text-gray-200">Keyboard Shortcuts</summary>
+          <div className="mt-2 grid grid-cols-2 gap-2 text-xs">
+            <div className="flex items-center gap-2">
+              <kbd className="px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded">Space</kbd>
+              <span>Play/Pause</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <kbd className="px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded">←</kbd>
+              <span>Previous Step</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <kbd className="px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded">→</kbd>
+              <span>Next Step</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <kbd className="px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded">Home</kbd>
+              <span>Reset</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <kbd className="px-2 py-1 bg-gray-100 dark:bg-gray-700 rounded">End</kbd>
+              <span>Skip to End</span>
+            </div>
+          </div>
+        </details>
+      </div>
     </div>
   )
 }

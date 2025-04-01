@@ -3,6 +3,10 @@
 import { useState, useEffect, useRef } from "react"
 import DataEntryPanel from "./components/DataEntryPanel"
 import DataVisualizationPanel from "./components/DataVisualizationPanel"
+import KMeansExplanation from "./components/KMeansExplanation"
+import FloatingControls from "./components/FloatingControls"
+import AppTabs from "./components/AppTabs"
+import AboutSection from "./components/AboutSection"
 import { runKMeansClustering } from "./utils/kmeansAlgorithm"
 import { generateRandomData } from "./utils/dataUtils"
 
@@ -20,8 +24,8 @@ function App() {
   const [iterations, setIterations] = useState([])
   const [detailedSteps, setDetailedSteps] = useState([])
   const [currentDetailedStep, setCurrentDetailedStep] = useState(null)
+  const [animationSpeed, setAnimationSpeed] = useState(800) // ms between steps
   const animationRef = useRef(null)
-  const animationSpeedRef = useRef(800) // ms between steps
 
   const columns = data.length > 0 ? Object.keys(data[0]).filter((col) => col !== "cluster") : []
 
@@ -218,6 +222,14 @@ function App() {
     setIsAnimationPlaying(false)
   }
 
+  const skipToEnd = () => {
+    if (totalSteps > 0) {
+      setAnimationStep(totalSteps - 1)
+      handleStepChange(totalSteps - 1)
+      setIsAnimationPlaying(false)
+    }
+  }
+
   // Handle animation playback
   useEffect(() => {
     if (isAnimationPlaying && animationStep < totalSteps - 1) {
@@ -225,7 +237,7 @@ function App() {
         const nextStep = animationStep + 1
         setAnimationStep(nextStep)
         handleStepChange(nextStep)
-      }, animationSpeedRef.current)
+      }, animationSpeed)
     } else if (animationStep >= totalSteps - 1) {
       setIsAnimationPlaying(false)
     }
@@ -235,7 +247,11 @@ function App() {
         clearTimeout(animationRef.current)
       }
     }
-  }, [isAnimationPlaying, animationStep, totalSteps])
+  }, [isAnimationPlaying, animationStep, totalSteps, animationSpeed])
+
+  // Show floating controls only when animation is available
+  const showFloatingControls =
+    totalSteps > 0 && (visualizationType === "scatter" || visualizationType === "bar" || visualizationType === "pie")
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800 text-gray-800 dark:text-gray-200">
@@ -248,46 +264,74 @@ function App() {
       </header>
 
       <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <div className="flex flex-col lg:flex-row gap-6">
-          {/* Left Panel */}
-          <div className="lg:w-1/3">
-            <DataEntryPanel
-              onAddDataPoint={handleAddDataPoint}
-              onFileUpload={handleFileUpload}
-              onLoadSampleData={handleLoadSampleData}
-              onGenerateRandomData={handleGenerateRandomData}
-              columns={columns}
-              xAxis={xAxis}
-              yAxis={yAxis}
-              setXAxis={setXAxis}
-              setYAxis={setYAxis}
-              clusterCount={clusterCount}
-              setClusterCount={setClusterCount}
-              onRunClustering={runClustering}
-              isLoading={isLoading}
-            />
-          </div>
+        <AppTabs>
+          <AppTabs.TabPanel tabId="visualization">
+            <div className="flex flex-col lg:flex-row gap-6">
+              {/* Left Panel */}
+              <div className="lg:w-1/3">
+                <DataEntryPanel
+                  onAddDataPoint={handleAddDataPoint}
+                  onFileUpload={handleFileUpload}
+                  onLoadSampleData={handleLoadSampleData}
+                  onGenerateRandomData={handleGenerateRandomData}
+                  columns={columns}
+                  xAxis={xAxis}
+                  yAxis={yAxis}
+                  setXAxis={setXAxis}
+                  setYAxis={setYAxis}
+                  clusterCount={clusterCount}
+                  setClusterCount={setClusterCount}
+                  onRunClustering={runClustering}
+                  isLoading={isLoading}
+                />
+              </div>
 
-          {/* Right Panel */}
-          <div className="lg:w-2/3">
-            <DataVisualizationPanel
-              data={data}
-              clusters={clusters}
-              xAxis={xAxis}
-              yAxis={yAxis}
-              visualizationType={visualizationType}
-              setVisualizationType={setVisualizationType}
-              animationStep={animationStep}
-              totalSteps={totalSteps}
-              onStepChange={handleStepChange}
-              isAnimationPlaying={isAnimationPlaying}
-              toggleAnimation={toggleAnimation}
-              resetAnimation={resetAnimation}
-              iterations={iterations}
-              currentDetailedStep={currentDetailedStep}
-            />
-          </div>
-        </div>
+              {/* Right Panel */}
+              <div className="lg:w-2/3">
+                <DataVisualizationPanel
+                  data={data}
+                  clusters={clusters}
+                  xAxis={xAxis}
+                  yAxis={yAxis}
+                  visualizationType={visualizationType}
+                  setVisualizationType={setVisualizationType}
+                  animationStep={animationStep}
+                  totalSteps={totalSteps}
+                  onStepChange={handleStepChange}
+                  isAnimationPlaying={isAnimationPlaying}
+                  toggleAnimation={toggleAnimation}
+                  resetAnimation={resetAnimation}
+                  iterations={iterations}
+                  currentDetailedStep={currentDetailedStep}
+                  animationSpeed={animationSpeed}
+                  setAnimationSpeed={setAnimationSpeed}
+                />
+              </div>
+            </div>
+          </AppTabs.TabPanel>
+
+          <AppTabs.TabPanel tabId="explanation">
+            <KMeansExplanation />
+          </AppTabs.TabPanel>
+
+          <AppTabs.TabPanel tabId="about">
+            <AboutSection />
+          </AppTabs.TabPanel>
+        </AppTabs>
+
+        {/* Floating Animation Controls */}
+        <FloatingControls
+          currentStep={animationStep}
+          totalSteps={totalSteps}
+          onStepChange={handleStepChange}
+          isPlaying={isAnimationPlaying}
+          togglePlay={toggleAnimation}
+          resetAnimation={resetAnimation}
+          skipToEnd={skipToEnd}
+          animationSpeed={animationSpeed}
+          setAnimationSpeed={setAnimationSpeed}
+          isVisible={showFloatingControls}
+        />
       </main>
     </div>
   )
