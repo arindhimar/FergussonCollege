@@ -371,6 +371,9 @@ def board_view():
     
     board = Board.query.get_or_404(board_id)
     
+    # Get the current user
+    user = User.query.get_or_404(session['user_id'])
+    
     # Check if user has access to this board
     is_member = BoardMember.query.filter_by(board_id=board_id, user_id=session['user_id']).first()
     if board.user_id != session['user_id'] and not is_member:
@@ -388,7 +391,8 @@ def board_view():
         'board-view.html',
         board=board,
         tasks_by_status=tasks_by_status,
-        session=session
+        session=session,
+        user=user  # Pass the user to the template
     )
 
 # API endpoints for board data
@@ -420,6 +424,10 @@ def get_board(board_id):
         'id': board.id,
         'name': board.name,
         'color': board.color,
+        'technologies': board.technologies,
+        'cost': board.cost,
+        'deadline': board.deadline.isoformat() if board.deadline else None,
+        'is_private': board.is_private,
         'tasks': tasks_by_status
     })
 
@@ -609,7 +617,7 @@ def get_task(task_id):
     board = Board.query.get(task.board_id)
     
     # Check if user has access to this task
-    is_member = BoardMember.query.filter_by(board_id=task.board_id, user_id=session['user_id']).first()
+    is_member = BoardMember.query.filter_by(board_id=board.id, user_id=session['user_id']).first()
     if task.user_id != session['user_id'] and board.user_id != session['user_id'] and not is_member:
         return jsonify({'error': 'Forbidden'}), 403
     
@@ -1030,6 +1038,48 @@ def get_users_by_skill(skill):
     }
     
     return jsonify(result)
+
+# Add a new API endpoint to get task assignees
+@app.route('/api/task_assignees/<int:task_id>', methods=['GET'])
+def get_task_assignees(task_id):
+    if 'user_id' not in session:
+        return jsonify({'error': 'Unauthorized'}), 401
+    
+    task = Task.query.get_or_404(task_id)
+    board = Board.query.get(task.board_id)
+    
+    # Check if user has access to this task
+    is_member = BoardMember.query.filter_by(board_id=board.board_id, user_id=session['user_id']).first()
+    if task.user_id != session['user_id'] and board.user_id != session['user_id'] and not is_member:
+        return jsonify({'error': 'Forbidden'}), 403
+    
+    # Get assignees
+    assignees = []
+    
+    # Add primary assignee if it exists
+    if task.assigned_to:
+        primary_assignee = User.query.get(task.assigned_to)
+        if primary_assignee:
+            assignees.append({
+                'id': primary_assignee.id,
+                'username': primary_assignee.username
+            })
+    
+    # Add other assignees from TaskAssignee model
+    task_assignees = TaskAssignee.query.filter_by(task_id=task.id).all()
+    for ta in task_assignees:
+        # Skip if already added as primary assignee
+        if ta.user_id == task.assigned_to:
+            continue
+        
+        assignees.append({
+            'id': ta.user_id,
+            'username': ta.user.username
+        })
+    
+    return jsonify({
+        'assignees': assignees
+    })
 
 if __name__ == '__main__':
     with app.app_context():

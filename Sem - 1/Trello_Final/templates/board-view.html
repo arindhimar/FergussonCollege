@@ -109,9 +109,15 @@
                             <div>
                                 <button id="user-menu-button" class="bg-white rounded-full flex text-sm focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                                     <span class="sr-only">Open user menu</span>
-                                    <div class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-medium">
-                                        {{ board.owner.username[:2]|upper }}
+                                    {% if user.avatar %}
+                                    <div class="h-8 w-8 rounded-full overflow-hidden">
+                                        <img src="{{ user.avatar }}" alt="{{ user.username }}" class="h-full w-full object-cover">
                                     </div>
+                                    {% else %}
+                                    <div class="h-8 w-8 rounded-full bg-blue-500 flex items-center justify-center text-white font-medium">
+                                        {{ user.username[:2]|upper }}
+                                    </div>
+                                    {% endif %}
                                 </button>
                             </div>
                             <div id="user-dropdown" class="hidden origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10">
@@ -529,22 +535,32 @@
                 <div class="mb-4">
                     <label for="task-technology" class="block text-sm font-medium text-gray-700 mb-1">Technology/Skill Required</label>
                     <select id="task-technology" name="technology" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                        <option value="">Select a technology</option>
+                        <option value="" disabled selected>Select a technology</option>
                         {% if board.technologies %}
+                            <optgroup label="Board Technologies">
                             {% for tech in board.technologies.split(',') %}
                                 <option value="{{ tech.strip() }}">{{ tech.strip() }}</option>
-                        {% endfor %}
-                    {% endif %}
-                    <option value="Python">Python</option>
-                    <option value="JavaScript">JavaScript</option>
-                    <option value="PHP">PHP</option>
-                    <option value="Java">Java</option>
-                    <option value="C#">C#</option>
-                    <option value="HTML/CSS">HTML/CSS</option>
-                    <option value="React">React</option>
-                    <option value="Node.js">Node.js</option>
-                </select>
-            </div>
+                            {% endfor %}
+                            </optgroup>
+                        {% endif %}
+                        <optgroup label="Common Technologies">
+                            <option value="Python">Python</option>
+                            <option value="JavaScript">JavaScript</option>
+                            <option value="PHP">PHP</option>
+                            <option value="Java">Java</option>
+                            <option value="C#">C#</option>
+                            <option value="HTML/CSS">HTML/CSS</option>
+                            <option value="React">React</option>
+                            <option value="Node.js">Node.js</option>
+                            <option value="Django">Django</option>
+                            <option value="Flask">Flask</option>
+                            <option value="SQL">SQL</option>
+                            <option value="MongoDB">MongoDB</option>
+                            <option value="DevOps">DevOps</option>
+                            <option value="UI/UX Design">UI/UX Design</option>
+                        </optgroup>
+                    </select>
+                </div>
             <div class="mb-4">
                 <label for="task-priority" class="block text-sm font-medium text-gray-700 mb-1">Priority</label>
                 <select id="task-priority" name="priority" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
@@ -864,158 +880,274 @@
   });
 
   // Edit Task Button
-  document.querySelectorAll('.edit-task-btn').forEach(button => {
-      button.addEventListener('click', async () => {
-          const taskId = button.dataset.taskId;
-          
-          try {
-              // Fetch task data
-              const response = await fetch(`/api/tasks/${taskId}`);
-              if (!response.ok) throw new Error('Failed to fetch task data');
-              
-              const task = await response.json();
-              
-              // Create a form for editing
-              const form = document.createElement('form');
-              form.method = 'POST';
-              form.action = `/update_task/${taskId}`;
-              form.innerHTML = `
-                  <input type="hidden" name="status" value="${task.status}">
-                  <div class="mb-4">
-                      <label class="block text-sm font-medium text-gray-700 mb-1">Task Title</label>
-                      <input type="text" name="title" value="${task.title}" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                  </div>
-                  <div class="mb-4">
-                      <label class="block text-sm font-medium text-gray-700 mb-1">Description (Optional)</label>
-                      <textarea name="description" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">${task.description || ''}</textarea>
-                  </div>
-                  <div class="mb-4">
-                      <label class="block text-sm font-medium text-gray-700 mb-1">Technology/Skill Required</label>
-                      <select name="technology" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                          <option value="">Select a technology</option>
-                          {% if board.technologies %}
-                              {% for tech in board.technologies.split(',') %}
-                                  <option value="{{ tech.strip() }}" ${task.technology === '{{ tech.strip() }}' ? 'selected' : ''}>{{ tech.strip() }}</option>
-                              {% endfor %}
-                          {% endif %}
-                          <option value="Python" ${task.technology === 'Python' ? 'selected' : ''}>Python</option>
-                          <option value="JavaScript" ${task.technology === 'JavaScript' ? 'selected' : ''}>JavaScript</option>
-                          <option value="PHP" ${task.technology === 'PHP' ? 'selected' : ''}>PHP</option>
-                          <option value="Java" ${task.technology === 'Java' ? 'selected' : ''}>Java</option>
-                          <option value="C#" ${task.technology === 'C#' ? 'selected' : ''}>C#</option>
-                          <option value="HTML/CSS" ${task.technology === 'HTML/CSS' ? 'selected' : ''}>HTML/CSS</option>
-                          <option value="React" ${task.technology === 'React' ? 'selected' : ''}>React</option>
-                          <option value="Node.js" ${task.technology === 'Node.js' ? 'selected' : ''}>Node.js</option>
-                      </select>
-                  </div>
-                  <div class="mb-4">
-                      <label class="block text-sm font-medium text-gray-700 mb-1">Priority</label>
-                      <select name="priority" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                          <option value="low" ${task.priority === 'low' ? 'selected' : ''}>Low</option>
-                          <option value="medium" ${task.priority === 'medium' ? 'selected' : ''}>Medium</option>
-                          <option value="high" ${task.priority === 'high' ? 'selected' : ''}>High</option>
-                      </select>
-                  </div>
-                  <div class="mb-4">
-                      <label class="block text-sm font-medium text-gray-700 mb-1">Due Date (Optional)</label>
-                      <input type="date" name="due_date" value="${task.due_date ? task.due_date.split('T')[0] : ''}" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-                  </div>
-                  <div class="mb-4">
-                      <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                      <div class="grid grid-cols-4 gap-2">
-                          <div class="status-option flex items-center p-2 border rounded cursor-pointer ${task.status === 'todo' ? 'bg-red-100 border-red-500' : ''}" data-status="todo">
-                              <span class="h-3 w-3 rounded-full bg-red-500 mr-2"></span>
-                              <span class="text-sm">To Do</span>
-                          </div>
-                          <div class="status-option flex items-center p-2 border rounded cursor-pointer ${task.status === 'progress' ? 'bg-yellow-100 border-yellow-500' : ''}" data-status="progress">
-                              <span class="h-3 w-3 rounded-full bg-yellow-500 mr-2"></span>
-                              <span class="text-sm">Progress</span>
-                          </div>
-                          <div class="status-option flex items-center p-2 border rounded cursor-pointer ${task.status === 'review' ? 'bg-blue-100 border-blue-500' : ''}" data-status="review">
-                              <span class="h-3 w-3 rounded-full bg-blue-500 mr-2"></span>
-                              <span class="text-sm">Review</span>
-                          </div>
-                          <div class="status-option flex items-center p-2 border rounded cursor-pointer ${task.status === 'done' ? 'bg-green-100 border-green-500' : ''}" data-status="done">
-                              <span class="h-3 w-3 rounded-full bg-green-500 mr-2"></span>
-                              <span class="text-sm">Done</span>
-                          </div>
-                      </div>
-                  </div>
-                  <div class="flex justify-end space-x-3">
-                      <button type="button" class="cancel-edit-btn px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                          Cancel
-                      </button>
-                      <button type="submit" class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                          Save Changes
-                      </button>
-                  </div>
-              `;
-              
-              // Create a modal for the edit form
-              const modal = document.createElement('div');
-              modal.className = 'fixed inset-0 z-50 flex items-center justify-center';
-              modal.innerHTML = `
-                  <div class="modal-overlay absolute inset-0 bg-black bg-opacity-50"></div>
-                  <div class="modal-content bg-white rounded-lg shadow-xl w-full max-w-md mx-4 p-6 relative opacity-0 transform -translate-y-4">
-                      <button class="close-modal absolute top-4 right-4 text-gray-400 hover:text-gray-600">
-                          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                          </svg>
-                      </button>
-                      <h2 class="text-2xl font-bold text-gray-900 mb-6">Edit Task</h2>
-                  </div>
-              `;
-              
-              document.body.appendChild(modal);
-              const modalContent = modal.querySelector('.modal-content');
-              modalContent.appendChild(form);
-              
-              // Show the modal
-              setTimeout(() => {
-                  modal.querySelector('.modal-overlay').classList.add('active');
-                  modalContent.classList.add('active');
-                  modalContent.classList.remove('opacity-0', 'transform', '-translate-y-4');
-              }, 10);
-              
-              // Add event listeners for the modal
-              modal.querySelector('.close-modal').addEventListener('click', () => {
-                  closeTaskModal(modal);
-              });
-              
-              modal.querySelector('.cancel-edit-btn').addEventListener('click', () => {
-                  closeTaskModal(modal);
-              });
-              
-              modal.querySelector('.modal-overlay').addEventListener('click', () => {
-                  closeTaskModal(modal);
-              });
-              
-              // Add event listeners for status selection
-              modal.querySelectorAll('.status-option').forEach(option => {
-                  option.addEventListener('click', () => {
-                      const status = option.dataset.status;
-                      form.querySelector('input[name="status"]').value = status;
-                      
-                      modal.querySelectorAll('.status-option').forEach(opt => {
-                          opt.classList.remove('bg-red-100', 'bg-yellow-100', 'bg-blue-100', 'bg-green-100', 'border-red-500', 'border-yellow-500', 'border-blue-500', 'border-green-500');
-                      });
-                      
-                      const statusColors = {
-                          'todo': ['bg-red-100', 'border-red-500'],
-                          'progress': ['bg-yellow-100', 'border-yellow-500'],
-                          'review': ['bg-blue-100', 'border-blue-500'],
-                          'done': ['bg-green-100', 'border-green-500']
-                      };
-                      
-                      option.classList.add(...statusColors[status]);
-                  });
-              });
-              
-          } catch (error) {
-              console.error('Error:', error);
-          }
-      });
-  });
+  // Update the edit task function to include all fields and proper assignees
+document.querySelectorAll('.edit-task-btn').forEach(button => {
+    button.addEventListener('click', async () => {
+        const taskId = button.dataset.taskId;
+        
+        try {
+            // Fetch task data
+            const response = await fetch(`/api/tasks/${taskId}`);
+            if (!response.ok) throw new Error('Failed to fetch task data');
+            
+            const task = await response.json();
+            
+            // Create a form for editing
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = `/update_task/${taskId}`;
+            form.innerHTML = `
+                <input type="hidden" name="status" value="${task.status}">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Task Title</label>
+                    <input type="text" name="title" value="${task.title}" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Description (Optional)</label>
+                    <textarea name="description" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">${task.description || ''}</textarea>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Technology/Skill Required</label>
+                    <select name="technology" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="">Select a technology</option>
+                        {% if board.technologies %}
+                            {% for tech in board.technologies.split(',') %}
+                                <option value="{{ tech.strip() }}" ${task.technology === '{{ tech.strip() }}' ? 'selected' : ''}>{{ tech.strip() }}</option>
+                            {% endfor %}
+                        {% endif %}
+                        <option value="Python" ${task.technology === 'Python' ? 'selected' : ''}>Python</option>
+                        <option value="JavaScript" ${task.technology === 'JavaScript' ? 'selected' : ''}>JavaScript</option>
+                        <option value="PHP" ${task.technology === 'PHP' ? 'selected' : ''}>PHP</option>
+                        <option value="Java" ${task.technology === 'Java' ? 'selected' : ''}>Java</option>
+                        <option value="C#" ${task.technology === 'C#' ? 'selected' : ''}>C#</option>
+                        <option value="HTML/CSS" ${task.technology === 'HTML/CSS' ? 'selected' : ''}>HTML/CSS</option>
+                        <option value="React" ${task.technology === 'React' ? 'selected' : ''}>React</option>
+                        <option value="Node.js" ${task.technology === 'Node.js' ? 'selected' : ''}>Node.js</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Priority</label>
+                    <select name="priority" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="low" ${task.priority === 'low' ? 'selected' : ''}>Low</option>
+                        <option value="medium" ${task.priority === 'medium' ? 'selected' : ''}>Medium</option>
+                        <option value="high" ${task.priority === 'high' ? 'selected' : ''}>High</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Due Date (Optional)</label>
+                    <input type="date" name="due_date" value="${task.due_date ? task.due_date.split('T')[0] : ''}" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                    <div class="grid grid-cols-4 gap-2">
+                        <div class="status-option flex items-center p-2 border rounded cursor-pointer ${task.status === 'todo' ? 'bg-red-100 border-red-500' : ''}" data-status="todo">
+                            <span class="h-3 w-3 rounded-full bg-red-500 mr-2"></span>
+                            <span class="text-sm">To Do</span>
+                        </div>
+                        <div class="status-option flex items-center p-2 border rounded cursor-pointer ${task.status === 'progress' ? 'bg-yellow-100 border-yellow-500' : ''}" data-status="progress">
+                            <span class="h-3 w-3 rounded-full bg-yellow-500 mr-2"></span>
+                            <span class="text-sm">Progress</span>
+                        </div>
+                        <div class="status-option flex items-center p-2 border rounded cursor-pointer ${task.status === 'review' ? 'bg-blue-100 border-blue-500' : ''}" data-status="review">
+                            <span class="h-3 w-3 rounded-full bg-blue-500 mr-2"></span>
+                            <span class="text-sm">Review</span>
+                        </div>
+                        <div class="status-option flex items-center p-2 border rounded cursor-pointer ${task.status === 'done' ? 'bg-green-100 border-green-500' : ''}" data-status="done">
+                            <span class="h-3 w-3 rounded-full bg-green-500 mr-2"></span>
+                            <span class="text-sm">Done</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Assignees</label>
+                    <div id="edit-selected-assignees" class="flex flex-wrap gap-2 mb-2">
+                        <!-- Selected assignees will be populated here -->
+                    </div>
+                    <select id="edit-task-assignees" class="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="" disabled selected>Select team members</option>
+                        {% if board.owner.id == session['user_id'] %}
+                            <option value="{{ board.owner.id }}">{{ board.owner.username }} (You - Owner)</option>
+                        {% else %}
+                            <option value="{{ board.owner.id }}">{{ board.owner.username }} (Owner)</option>
+                        {% endif %}
+                        {% for member in board.members %}
+                            {% if member.user.id == session['user_id'] %}
+                                <option value="{{ member.user.id }}">{{ member.user.username }} (You)</option>
+                            {% else %}
+                                <option value="{{ member.user.id }}">{{ member.user.username }}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                    <div id="edit-assignee-inputs">
+                        <!-- Hidden inputs for assignees will be added here -->
+                    </div>
+                    <!-- For backward compatibility -->
+                    <input type="hidden" id="edit-task-assignee" name="assigned_to" value="${task.assigned_to || ''}">
+                </div>
+                <div class="flex justify-end space-x-3">
+                    <button type="button" class="cancel-edit-btn px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        Cancel
+                    </button>
+                    <button type="submit" class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        Save Changes
+                    </button>
+                </div>
+            `;
+            
+            // Create a modal for the edit form
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 z-50 flex items-center justify-center';
+            modal.innerHTML = `
+                <div class="modal-overlay absolute inset-0 bg-black bg-opacity-50"></div>
+                <div class="modal-content bg-white rounded-lg shadow-xl w-full max-w-md mx-4 p-6 relative opacity-0 transform -translate-y-4">
+                    <button class="close-modal absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">Edit Task</h2>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            const modalContent = modal.querySelector('.modal-content');
+            modalContent.appendChild(form);
+            
+            // Show the modal
+            setTimeout(() => {
+                modal.querySelector('.modal-overlay').classList.add('active');
+                modalContent.classList.add('active');
+                modalContent.classList.remove('opacity-0', 'transform', '-translate-y-4');
+            }, 10);
+            
+            // Add event listeners for the modal
+            modal.querySelector('.close-modal').addEventListener('click', () => {
+                closeTaskModal(modal);
+            });
+            
+            modal.querySelector('.cancel-edit-btn').addEventListener('click', () => {
+                closeTaskModal(modal);
+            });
+            
+            modal.querySelector('.modal-overlay').addEventListener('click', () => {
+                closeTaskModal(modal);
+            });
+            
+            // Add event listeners for status selection
+            modal.querySelectorAll('.status-option').forEach(option => {
+                option.addEventListener('click', () => {
+                    const status = option.dataset.status;
+                    form.querySelector('input[name="status"]').value = status;
+                    
+                    modal.querySelectorAll('.status-option').forEach(opt => {
+                        opt.classList.remove('bg-red-100', 'bg-yellow-100', 'bg-blue-100', 'bg-green-100', 'border-red-500', 'border-yellow-500', 'border-blue-500', 'border-green-500');
+                    });
+                    
+                    const statusColors = {
+                        'todo': ['bg-red-100', 'border-red-500'],
+                        'progress': ['bg-yellow-100', 'border-yellow-500'],
+                        'review': ['bg-blue-100', 'border-blue-500'],
+                        'done': ['bg-green-100', 'border-green-500']
+                    };
+                    
+                    option.classList.add(...statusColors[status]);
+                });
+            });
+            
+            // Setup assignee selection for edit form
+            const editTaskAssigneesSelect = modal.querySelector('#edit-task-assignees');
+            const editSelectedAssigneesDiv = modal.querySelector('#edit-selected-assignees');
+            const editAssigneeInputsDiv = modal.querySelector('#edit-assignee-inputs');
+            const editSingleAssigneeInput = modal.querySelector('#edit-task-assignee');
+            
+            let editSelectedAssignees = [];
+            
+            // Fetch current assignees
+            try {
+                const assigneesResponse = await fetch(`/api/task_assignees/${taskId}`);
+                if (assigneesResponse.ok) {
+                    const assigneesData = await assigneesResponse.json();
+                    editSelectedAssignees = assigneesData.assignees.map(a => ({ id: a.id, name: a.username }));
+                    updateEditAssigneesDisplay();
+                }
+            } catch (error) {
+                console.error('Error fetching assignees:', error);
+                // If we can't fetch assignees, at least add the primary assignee if it exists
+                if (task.assigned_to) {
+                    // Find the user in the board members
+                    const assigneeOption = editTaskAssigneesSelect.querySelector(`option[value="${task.assigned_to}"]`);
+                    if (assigneeOption) {
+                        editSelectedAssignees.push({ id: task.assigned_to, name: assigneeOption.textContent });
+                        updateEditAssigneesDisplay();
+                    }
+                }
+            }
+            
+            editTaskAssigneesSelect.addEventListener('change', function() {
+                const userId = this.value;
+                if (!userId) return;
+                
+                const userName = this.options[this.selectedIndex].text;
+                
+                // Check if already selected
+                if (!editSelectedAssignees.some(a => a.id === userId)) {
+                    editSelectedAssignees.push({ id: userId, name: userName });
+                    updateEditAssigneesDisplay();
+                }
+                
+                // Reset select
+                this.value = '';
+            });
+            
+            function updateEditAssigneesDisplay() {
+                // Clear current display
+                editSelectedAssigneesDiv.innerHTML = '';
+                editAssigneeInputsDiv.innerHTML = '';
+                
+                // Set first assignee as primary (for backward compatibility)
+                if (editSelectedAssignees.length > 0) {
+                    editSingleAssigneeInput.value = editSelectedAssignees[0].id;
+                } else {
+                    editSingleAssigneeInput.value = '';
+                }
+                
+                // Add badges for each assignee
+                editSelectedAssignees.forEach(assignee => {
+                    // Create badge
+                    const badge = document.createElement('div');
+                    badge.className = 'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800';
+                    badge.innerHTML = `
+                        ${assignee.name}
+                        <button type="button" class="ml-1.5 inline-flex items-center justify-center h-4 w-4 rounded-full text-blue-400 hover:bg-blue-200 hover:text-blue-500 focus:outline-none focus:bg-blue-500 focus:text-white">
+                            <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    `;
+                    
+                    // Add remove functionality
+                    badge.querySelector('button').addEventListener('click', () => {
+                        editSelectedAssignees = editSelectedAssignees.filter(a => a.id !== assignee.id);
+                        badge.remove();
+                        updateEditAssigneesDisplay();
+                    });
+                    
+                    editSelectedAssigneesDiv.appendChild(badge);
+                    
+                    // Create hidden input
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = 'assignees[]';
+                    input.value = assignee.id;
+                    editAssigneeInputsDiv.appendChild(input);
+                });
+            }
+            
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    });
+});
 
   // Delete Task Button
   document.querySelectorAll('.delete-task-btn').forEach(button => {
@@ -1084,6 +1216,7 @@
       task.setAttribute('draggable', true);
       
       task.addEventListener('dragstart', (e) => {
+          console.log('Drag started', task.dataset.taskId);
           draggedTask = task;
           setTimeout(() => {
               task.classList.add('dragging');
@@ -1091,75 +1224,91 @@
       });
       
       task.addEventListener('dragend', () => {
+          console.log('Drag ended');
           task.classList.remove('dragging');
-          draggedTask = null;
+          // Don't set draggedTask to null immediately to allow the drop handler to use it
+          setTimeout(() => {
+              draggedTask = null;
+          }, 50);
       });
   });
 
   document.querySelectorAll('.task-column').forEach(column => {
-      column.addEventListener('dragover', (e) => {
-          e.preventDefault();
-          column.classList.add('bg-gray-200');
-      });
-      
-      column.addEventListener('dragleave', () => {
-          column.classList.remove('bg-gray-200');
-      });
-      
-      column.addEventListener('drop', async (e) => {
-          e.preventDefault();
-          column.classList.remove('bg-gray-200');
-          
-          if (draggedTask) {
-              const taskId = draggedTask.dataset.taskId;
-              const newStatus = column.dataset.status;
-              
-              try {
-                  const response = await fetch(`/api/tasks/${taskId}/status`, {
-                      method: 'PUT',
-                      headers: {
-                          'Content-Type': 'application/json',
-                      },
-                      body: JSON.stringify({ status: newStatus }),
-                  });
-                  
-                  if (response.ok) {
-                      // Move the task to the new column
-                      column.insertBefore(draggedTask, column.querySelector('.add-task-placeholder'));
-                      
-                      // Show a success message
-                      const flash = document.createElement('div');
-                      flash.className = 'flash success animate__animated animate__fadeIn';
-                      flash.textContent = 'Task status updated successfully!';
-                      document.body.appendChild(flash);
-                      
-                      setTimeout(() => {
-                          flash.classList.add('animate__fadeOut');
-                          setTimeout(() => {
-                              document.body.removeChild(flash);
-                          }, 500);
-                      }, 2000);
-                  } else {
-                      throw new Error('Failed to update task status');
-                  }
-              } catch (error) {
-                  console.error('Error:', error);
-                  
-                  // Show an error message
-                  const flash = document.createElement('div');
-                  flash.className = 'flash error animate__animated animate__fadeIn';
-                  flash.textContent = 'Failed to update task status. Please try again.';
-                  document.body.appendChild(flash);
-                  
-                  setTimeout(() => {
-                      flash.classList.add('animate__fadeOut');
-                      setTimeout(() => {
-                          document.body.removeChild(flash);
-                      }, 500);
-                  }, 2000);
-              }
-          }
-      });
-  });
+    column.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        column.classList.add('bg-gray-200');
+    });
+    
+    column.addEventListener('dragleave', () => {
+        column.classList.remove('bg-gray-200');
+    });
+    
+    // Replace the drop event handler in the drag and drop functionality section with this improved version
+    column.addEventListener('drop', async (e) => {
+        e.preventDefault();
+        column.classList.remove('bg-gray-200');
+        
+        if (!draggedTask) {
+            console.error('No task is being dragged');
+            return; // Exit early if draggedTask is null
+        }
+        
+        const taskId = draggedTask.dataset.taskId;
+        const newStatus = column.dataset.status;
+        
+        try {
+            const response = await fetch(`/api/tasks/${taskId}/status`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ status: newStatus }),
+            });
+            
+            if (response.ok) {
+                // Find the placeholder element
+                const placeholder = column.querySelector('.add-task-placeholder');
+                
+                // Check if placeholder exists before trying to insert
+                if (placeholder) {
+                    // Move the task to the new column
+                    column.insertBefore(draggedTask, placeholder);
+                } else {
+                    // If no placeholder, just append to the column
+                    column.appendChild(draggedTask);
+                }
+                
+                // Show a success message
+                const flash = document.createElement('div');
+                flash.className = 'flash success';
+                flash.textContent = 'Task status updated successfully!';
+                document.body.appendChild(flash);
+                
+                setTimeout(() => {
+                    document.body.removeChild(flash);
+                }, 2000);
+            } else {
+                throw new Error('Failed to update task status');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            
+            // Show an error message
+            const flash = document.createElement('div');
+            flash.className = 'flash error';
+            flash.textContent = 'Failed to update task status. Please try again.';
+            document.body.appendChild(flash);
+            
+            setTimeout(() => {
+                document.body.removeChild(flash);
+            }, 2000);
+        }
+    });
+});
+
+// Remove the helper function and the cloning approach since it's causing issues
+function addTaskEventListeners(taskCard) {
+    // This function is no longer needed
+}
 </script>
 
