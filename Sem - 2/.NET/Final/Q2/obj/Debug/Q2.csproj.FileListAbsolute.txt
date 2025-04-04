@@ -1,0 +1,7 @@
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\Final\Q2\bin\Debug\Q2.exe.config
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\Final\Q2\bin\Debug\Q2.exe
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\Final\Q2\bin\Debug\Q2.pdb
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\Final\Q2\obj\Debug\Q2.csproj.AssemblyReference.cache
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\Final\Q2\obj\Debug\Q2.csproj.CoreCompileInputs.cache
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\Final\Q2\obj\Debug\Q2.exe
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\Final\Q2\obj\Debug\Q2.pdb
