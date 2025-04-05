@@ -1,0 +1,21 @@
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\Final\6B\obj\Debug\6B.csproj.AssemblyReference.cache
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\Final\6B\obj\Debug\_6B.Form1.resources
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\Final\6B\obj\Debug\_6B.Properties.Resources.resources
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\Final\6B\obj\Debug\6B.csproj.GenerateResource.cache
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\Final\6B\obj\Debug\6B.csproj.CoreCompileInputs.cache
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\Final\6B\bin\Debug\6B.exe.config
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\Final\6B\bin\Debug\6B.exe
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\Final\6B\bin\Debug\6B.pdb
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\Final\6B\obj\Debug\6B.exe
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\Final\6B\obj\Debug\6B.pdb
+Z:\Sem-2\.net\Final\6B\bin\Debug\6B.exe.config
+Z:\Sem-2\.net\Final\6B\bin\Debug\6B.exe
+Z:\Sem-2\.net\Final\6B\bin\Debug\6B.pdb
+Z:\Sem-2\.net\Final\6B\obj\Debug\6B.csproj.AssemblyReference.cache
+Z:\Sem-2\.net\Final\6B\obj\Debug\6B.csproj.SuggestedBindingRedirects.cache
+Z:\Sem-2\.net\Final\6B\obj\Debug\_6B.Form1.resources
+Z:\Sem-2\.net\Final\6B\obj\Debug\_6B.Properties.Resources.resources
+Z:\Sem-2\.net\Final\6B\obj\Debug\6B.csproj.GenerateResource.cache
+Z:\Sem-2\.net\Final\6B\obj\Debug\6B.csproj.CoreCompileInputs.cache
+Z:\Sem-2\.net\Final\6B\obj\Debug\6B.exe
+Z:\Sem-2\.net\Final\6B\obj\Debug\6B.pdb

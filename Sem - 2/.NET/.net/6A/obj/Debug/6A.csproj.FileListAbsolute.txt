@@ -1,0 +1,21 @@
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\Final\6A\bin\Debug\6A.exe.config
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\Final\6A\bin\Debug\6A.exe
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\Final\6A\bin\Debug\6A.pdb
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\Final\6A\obj\Debug\6A.csproj.AssemblyReference.cache
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\Final\6A\obj\Debug\_6A.Form1.resources
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\Final\6A\obj\Debug\_6A.Properties.Resources.resources
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\Final\6A\obj\Debug\6A.csproj.GenerateResource.cache
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\Final\6A\obj\Debug\6A.csproj.CoreCompileInputs.cache
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\Final\6A\obj\Debug\6A.exe
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\Final\6A\obj\Debug\6A.pdb
+Z:\Sem-2\.net\Final\6A\bin\Debug\6A.exe.config
+Z:\Sem-2\.net\Final\6A\bin\Debug\6A.exe
+Z:\Sem-2\.net\Final\6A\bin\Debug\6A.pdb
+Z:\Sem-2\.net\Final\6A\obj\Debug\6A.csproj.AssemblyReference.cache
+Z:\Sem-2\.net\Final\6A\obj\Debug\6A.csproj.SuggestedBindingRedirects.cache
+Z:\Sem-2\.net\Final\6A\obj\Debug\_6A.Form1.resources
+Z:\Sem-2\.net\Final\6A\obj\Debug\_6A.Properties.Resources.resources
+Z:\Sem-2\.net\Final\6A\obj\Debug\6A.csproj.GenerateResource.cache
+Z:\Sem-2\.net\Final\6A\obj\Debug\6A.csproj.CoreCompileInputs.cache
+Z:\Sem-2\.net\Final\6A\obj\Debug\6A.exe
+Z:\Sem-2\.net\Final\6A\obj\Debug\6A.pdb

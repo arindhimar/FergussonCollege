@@ -1,0 +1,7 @@
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\Tutorial\SampleLearning\bin\Debug\SampleLearning.exe.config
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\Tutorial\SampleLearning\bin\Debug\SampleLearning.exe
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\Tutorial\SampleLearning\bin\Debug\SampleLearning.pdb
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\Tutorial\SampleLearning\obj\Debug\SampleLearning.csproj.AssemblyReference.cache
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\Tutorial\SampleLearning\obj\Debug\SampleLearning.csproj.CoreCompileInputs.cache
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\Tutorial\SampleLearning\obj\Debug\SampleLearning.exe
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\Tutorial\SampleLearning\obj\Debug\SampleLearning.pdb

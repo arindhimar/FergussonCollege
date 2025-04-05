@@ -1,0 +1,8 @@
+Z:\Sem-2\.net\3A\3A\bin\Debug\3A.exe.config
+Z:\Sem-2\.net\3A\3A\bin\Debug\3A.exe
+Z:\Sem-2\.net\3A\3A\bin\Debug\3A.pdb
+Z:\Sem-2\.net\3A\3A\obj\Debug\3A.csproj.AssemblyReference.cache
+Z:\Sem-2\.net\3A\3A\obj\Debug\3A.csproj.SuggestedBindingRedirects.cache
+Z:\Sem-2\.net\3A\3A\obj\Debug\3A.csproj.CoreCompileInputs.cache
+Z:\Sem-2\.net\3A\3A\obj\Debug\3A.exe
+Z:\Sem-2\.net\3A\3A\obj\Debug\3A.pdb

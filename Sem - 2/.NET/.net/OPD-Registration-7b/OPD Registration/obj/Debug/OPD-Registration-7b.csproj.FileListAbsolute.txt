@@ -1,0 +1,21 @@
+D:\ASNET\OPD Registration\OPD Registration\bin\Debug\OPD Registration.exe.config
+D:\ASNET\OPD Registration\OPD Registration\bin\Debug\OPD Registration.exe
+D:\ASNET\OPD Registration\OPD Registration\bin\Debug\OPD Registration.pdb
+D:\ASNET\OPD Registration\OPD Registration\obj\Debug\OPD-Registration-7b.csproj.AssemblyReference.cache
+D:\ASNET\OPD Registration\OPD Registration\obj\Debug\OPD_Registration.Form1.resources
+D:\ASNET\OPD Registration\OPD Registration\obj\Debug\OPD_Registration.Properties.Resources.resources
+D:\ASNET\OPD Registration\OPD Registration\obj\Debug\OPD-Registration-7b.csproj.GenerateResource.cache
+D:\ASNET\OPD Registration\OPD Registration\obj\Debug\OPD-Registration-7b.csproj.CoreCompileInputs.cache
+D:\ASNET\OPD Registration\OPD Registration\obj\Debug\OPD Registration.exe
+D:\ASNET\OPD Registration\OPD Registration\obj\Debug\OPD Registration.pdb
+Z:\Sem-2\.net\Final\OPD-Registration-7b\OPD Registration\bin\Debug\OPD Registration.exe.config
+Z:\Sem-2\.net\Final\OPD-Registration-7b\OPD Registration\bin\Debug\OPD Registration.exe
+Z:\Sem-2\.net\Final\OPD-Registration-7b\OPD Registration\bin\Debug\OPD Registration.pdb
+Z:\Sem-2\.net\Final\OPD-Registration-7b\OPD Registration\obj\Debug\OPD-Registration-7b.csproj.AssemblyReference.cache
+Z:\Sem-2\.net\Final\OPD-Registration-7b\OPD Registration\obj\Debug\OPD-Registration-7b.csproj.SuggestedBindingRedirects.cache
+Z:\Sem-2\.net\Final\OPD-Registration-7b\OPD Registration\obj\Debug\OPD_Registration.Form1.resources
+Z:\Sem-2\.net\Final\OPD-Registration-7b\OPD Registration\obj\Debug\OPD_Registration.Properties.Resources.resources
+Z:\Sem-2\.net\Final\OPD-Registration-7b\OPD Registration\obj\Debug\OPD-Registration-7b.csproj.GenerateResource.cache
+Z:\Sem-2\.net\Final\OPD-Registration-7b\OPD Registration\obj\Debug\OPD-Registration-7b.csproj.CoreCompileInputs.cache
+Z:\Sem-2\.net\Final\OPD-Registration-7b\OPD Registration\obj\Debug\OPD Registration.exe
+Z:\Sem-2\.net\Final\OPD-Registration-7b\OPD Registration\obj\Debug\OPD Registration.pdb
