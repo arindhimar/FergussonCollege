@@ -106,5 +106,9 @@ namespace RailwayReservation_7a
             txtFare.Clear();
         }
 
+        private void dtpDate_ValueChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

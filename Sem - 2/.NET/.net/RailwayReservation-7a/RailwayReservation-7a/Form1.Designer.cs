@@ -195,6 +195,7 @@
             this.dtpDate.Name = "dtpDate";
             this.dtpDate.Size = new System.Drawing.Size(192, 22);
             this.dtpDate.TabIndex = 13;
+            this.dtpDate.ValueChanged += new System.EventHandler(this.dtpDate_ValueChanged);
             // 
             // splitter1
             // 

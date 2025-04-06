@@ -1,8 +1,0 @@
-Z:\Sem-2\.net\Q4\Q4\obj\Debug\Q4.csproj.AssemblyReference.cache
-Z:\Sem-2\.net\Q4\Q4\obj\Debug\Q4.csproj.SuggestedBindingRedirects.cache
-Z:\Sem-2\.net\Q4\Q4\obj\Debug\Q4.csproj.CoreCompileInputs.cache
-Z:\Sem-2\.net\Q4\Q4\bin\Debug\Q4.exe.config
-Z:\Sem-2\.net\Q4\Q4\bin\Debug\Q4.exe
-Z:\Sem-2\.net\Q4\Q4\bin\Debug\Q4.pdb
-Z:\Sem-2\.net\Q4\Q4\obj\Debug\Q4.exe
-Z:\Sem-2\.net\Q4\Q4\obj\Debug\Q4.pdb
