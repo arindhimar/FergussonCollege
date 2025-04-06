@@ -33,7 +33,25 @@ namespace ConsoleApp1
             {
                 Console.WriteLine(item);
             }
+
+            
 */
+
+
+            string str = Console.ReadLine();
+
+            char[] arr = str.ToCharArray();
+
+            int sum = 0;
+
+            foreach (char c in arr)
+            {
+                sum += Convert.ToInt16(c.ToString());
+            }
+
+            Console.WriteLine(sum);
+
+
         }
     }
 }

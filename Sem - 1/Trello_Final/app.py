@@ -617,7 +617,7 @@ def get_task(task_id):
     board = Board.query.get(task.board_id)
     
     # Check if user has access to this task
-    is_member = BoardMember.query.filter_by(board_id=board.id, user_id=session['user_id']).first()
+    is_member = BoardMember.query.filter_by(board_id=board.board_id, user_id=session['user_id']).first()
     if task.user_id != session['user_id'] and board.user_id != session['user_id'] and not is_member:
         return jsonify({'error': 'Forbidden'}), 403
     
@@ -687,6 +687,7 @@ def manage_members(board_id):
         pending_invitations=pending_invitations
     )
 
+# Update the invite_board_member function to handle existing invitations
 @app.route('/invite_board_member/<int:board_id>', methods=['POST'])
 def invite_board_member(board_id):
     if 'user_id' not in session:
@@ -724,16 +725,8 @@ def invite_board_member(board_id):
         flash('User is already a member of this board', 'error')
         return redirect(url_for('manage_members', board_id=board_id))
     
-    # Check if there's already a pending invitation
-    existing_invitation = BoardInvitation.query.filter_by(
-        board_id=board_id, 
-        invitee_id=user_id,
-        status=BoardInvitationStatus.PENDING
-    ).first()
-    
-    if existing_invitation:
-        flash('An invitation has already been sent to this user', 'error')
-        return redirect(url_for('manage_members', board_id=board_id))
+    # Delete any existing invitation records for this user and board
+    BoardInvitation.query.filter_by(board_id=board_id, invitee_id=user_id).delete()
     
     # Create a new invitation
     role_value = role.lower() if role else 'viewer'
@@ -844,6 +837,7 @@ def update_board_member_role(board_id, user_id):
     
     return redirect(url_for('manage_members', board_id=board_id))
 
+# Update the remove_board_member function to also delete any invitation records
 @app.route('/remove_board_member/<int:board_id>/<int:user_id>', methods=['POST'])
 def remove_board_member(board_id, user_id):
     if 'user_id' not in session:
@@ -869,6 +863,9 @@ def remove_board_member(board_id, user_id):
         assigned_tasks = Task.query.filter_by(board_id=board_id, assigned_to=user_id).all()
         for task in assigned_tasks:
             task.assigned_to = None
+        
+        # Delete any invitation records for this user and board
+        BoardInvitation.query.filter_by(board_id=board_id, invitee_id=user_id).delete()
         
         db.session.delete(member)
         db.session.commit()
