@@ -1,0 +1,8 @@
+Z:\Sem-2\.net\Final\Q1\bin\Debug\Q1.exe.config
+Z:\Sem-2\.net\Final\Q1\bin\Debug\Q1.exe
+Z:\Sem-2\.net\Final\Q1\bin\Debug\Q1.pdb
+Z:\Sem-2\.net\Final\Q1\obj\Debug\Q1.csproj.AssemblyReference.cache
+Z:\Sem-2\.net\Final\Q1\obj\Debug\Q1.csproj.SuggestedBindingRedirects.cache
+Z:\Sem-2\.net\Final\Q1\obj\Debug\Q1.csproj.CoreCompileInputs.cache
+Z:\Sem-2\.net\Final\Q1\obj\Debug\Q1.exe
+Z:\Sem-2\.net\Final\Q1\obj\Debug\Q1.pdb

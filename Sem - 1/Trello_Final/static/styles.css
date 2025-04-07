@@ -24,25 +24,13 @@
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
-}
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
 
-.flash {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    padding: 1rem;
-    border-radius: 0.5rem;
-    z-index: 1000;
-}
-
-.flash.success {
-    background-color: #4CAF50;
-    color: white;
-}
-
-.flash.error {
-    background-color: #f44336;
-    color: white;
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
