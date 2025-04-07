@@ -1,11 +1,17 @@
-def is_valid(m1, c1, m2, c2):
-    # No group can have more cannibals than missionaries (if missionaries exist)
-    return all([
-        0 <= m1 <= 3, 0 <= c1 <= 3,
-        0 <= m2 <= 3, 0 <= c2 <= 3,
-        (m1 == 0 or m1 >= c1),
-        (m2 == 0 or m2 >= c2)
-    ])
+def is_valid(m_left, c_left, m_right, c_right):
+    # Reject negative numbers
+    if m_left < 0 or c_left < 0 or m_right < 0 or c_right < 0:
+        return False
+
+    # Check missionary safety on the left
+    if m_left > 0 and m_left < c_left:
+        return False
+
+    # Check missionary safety on the right
+    if m_right > 0 and m_right < c_right:
+        return False
+
+    return True
 
 def menu_missionaries():
     left = [3, 3]   # [missionaries, cannibals]
