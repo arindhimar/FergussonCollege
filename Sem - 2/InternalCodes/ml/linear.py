@@ -4,7 +4,7 @@ from sklearn.linear_model import LinearRegression  # Import Linear Regression mo
 from sklearn.metrics import mean_squared_error, r2_score  # Regression metrics
 
 # Load dataset
-data = pd.read_csv("file_path")  # Replace with your actual file path
+data = pd.read_csv("sample_dataset.csv")  # Replace with your actual file path
 
 # Display the first few rows
 print(data.head())

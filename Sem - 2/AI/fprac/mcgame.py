@@ -24,7 +24,7 @@ def game():
             
         try:
             m=int(input("enter m"))
-            n=int(input("enter n"))
+            c=int(input("enter n"))
         except:
             continue
         
@@ -38,14 +38,14 @@ def game():
                 continue
             
             newleft = [left[0] - m , left[1]-c]
-            newleft = [right[0] + m , right[1]+c]
+            newright = [right[0] + m , right[1]+c]
         else:
             if m > right[0] or c > right[1]:
                 print("invalid")
                 continue
             
             newleft = [left[0] + m , left[1]+c]
-            newleft = [right[0] - m , right[1]-c]
+            newright = [right[0] - m , right[1]-c]
             
         
         if not isvalid(newleft[0],newleft[1],newright[0],newright[1]):

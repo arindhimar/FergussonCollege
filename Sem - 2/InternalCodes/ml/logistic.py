@@ -4,26 +4,29 @@ from sklearn.linear_model import LogisticRegression  # Logistic Regression model
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix  # Metrics
 
 # Load dataset
-data = pd.read_csv("file_path")  # Replace with your actual file path
+data = pd.read_csv("sample_dataset.csv")  # Make sure this file exists in the same folder
 
 # Show first few rows
+print("First few rows of the dataset:")
 print(data.head())
 
-# Feature matrix and target vector
-X = data.iloc[:, :-1]  # All columns except last
-y = data.iloc[:, -1]   # Last column as target
+# Separate features and target
+X = data.drop("purchased", axis=1)  # All columns except 'purchased'
+y = data["purchased"].astype(int)   # Ensure target is categorical (0 or 1)
 
-# Split data
+# Split data into training and testing sets
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
 
-# Initialize and train the logistic regression model
-model = LogisticRegression(max_iter=1000)  # max_iter is increased in case of convergence issues
+# Initialize logistic regression model
+model = LogisticRegression(max_iter=1000)
+
+# Train the model
 model.fit(X_train, y_train)
 
-# Predict on test data
+# Predict on test set
 y_pred = model.predict(X_test)
 
-# Evaluation
-print(f"Accuracy: {accuracy_score(y_test, y_pred):.2f}")
-print("Confusion Matrix:\n", confusion_matrix(y_test, y_pred))
-print("Classification Report:\n", classification_report(y_test, y_pred))
+# Evaluation metrics
+print(f"\nAccuracy: {accuracy_score(y_test, y_pred):.2f}")
+print("\nConfusion Matrix:\n", confusion_matrix(y_test, y_pred))
+print("\nClassification Report:\n", classification_report(y_test, y_pred))

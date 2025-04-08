@@ -1,0 +1,61 @@
+from collections import deque
+
+def isValid(mleft,cleft,mright,cright):
+    if mleft<0 or cleft <0 or mright<0 or cright<0:
+        return False
+    
+    if mleft>0 and cleft>mleft:
+        return False
+    if mright>0 and cright>mright:
+        return False
+
+    return True
+
+
+def bfs():
+    start = (3,3,1)
+    goal  = (0,0,0)
+    
+    q = deque()
+    v = set()
+    
+    q.append((start,[start]))
+    v.add(start)
+    
+    while q:
+        (mleft,cleft,boat),path = q.popleft()
+        
+        mright = 3-mleft
+        cright = 3-cleft
+        
+        if (mleft,cleft,boat) ==goal :
+            print("Wion")
+            
+            for p in path:
+                print(p)
+            break
+        
+
+        moves = [(1,0),(2,0),(0,1),(0,2),(1,1)]
+        
+        for mmove,cmove in moves:
+            if boat==1:
+                newstate  = (mleft-mmove,cleft-cmove,0)
+            else:
+                newstate  = (mleft+mmove,cleft+cmove,1)
+                
+            
+            mnewleft , cnewleft , newboat = newstate
+            
+            mnewright = 3 - mnewleft
+            cnewright = 3 - cnewleft
+            
+            if isValid(mnewleft,cnewleft,mnewright,cnewright) and newstate not in v:
+                v.add(newstate)
+                q.append((newstate,path+[newstate]))
+                
+                
+
+
+bfs()
+            
