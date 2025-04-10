@@ -6,9 +6,6 @@ from sklearn.metrics import mean_squared_error, r2_score  # Regression metrics
 # Load dataset
 data = pd.read_csv("sample_dataset.csv")  # Replace with your actual file path
 
-# Display the first few rows
-print(data.head())
-
 # Split features and target
 X = data.iloc[:, :-1]  # All columns except the last as features
 y = data.iloc[:, -1]   # Last column as target

@@ -1,29 +1,27 @@
-import pandas as pd  # For data manipulation
-from sklearn.model_selection import train_test_split  # To split data
-from sklearn.ensemble import RandomForestClassifier  # Random Forest model
-from sklearn.metrics import accuracy_score, confusion_matrix, classification_report  # Evaluation metrics
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 
-# Load the dataset
-data = pd.read_csv("sample_dataset.csv")  # Replace with your actual file path
-
-# Show first few rows
+# Load dataset
+data = pd.read_csv("sample_dataset.csv")
 print(data.head())
 
-# Split into features and target
-X = data.iloc[:, :-1]  # Features
-y = data.iloc[:, -1]   # Target variable
+# ✅ Define features and target properly
+X = data[["age", "income", "score"]]          # Use only relevant features for classification
+y = data["purchased"].astype(int)             # Ensure target is categorical (0 or 1)
 
-# Split into training and testing data
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+# Split the data
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.3, random_state=42, stratify=y
+)
 
-# Initialize and train the Random Forest classifier
+# Train Random Forest Classifier
 rf = RandomForestClassifier(n_estimators=100, random_state=42)
 rf.fit(X_train, y_train)
 
-# Make predictions
+# Predict and evaluate
 y_pred = rf.predict(X_test)
-
-# Evaluate model
-print(f"Accuracy: {accuracy_score(y_test, y_pred):.2f}")
-print("Confusion Matrix:\n", confusion_matrix(y_test, y_pred))
-print("Classification Report:\n", classification_report(y_test, y_pred))
+print(f"\nAccuracy: {accuracy_score(y_test, y_pred):.2f}")
+print("\nConfusion Matrix:\n", confusion_matrix(y_test, y_pred))
+print("\nClassification Report:\n", classification_report(y_test, y_pred))
