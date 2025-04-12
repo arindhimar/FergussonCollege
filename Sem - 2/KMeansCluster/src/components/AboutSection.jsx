@@ -65,21 +65,15 @@ const AboutSection = () => {
 
         <div className="flex flex-col md:flex-row justify-center items-center gap-4 pt-4 border-t border-gray-200 dark:border-gray-700">
           <a
-            href="https://github.com"
+            href="https://github.com/arindhimar/FergussonCollege/tree/FullStack-1/Sem%20-%202/KMeansCluster"
             className="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-sky-600 dark:hover:text-sky-400"
           >
             <Github className="w-5 h-5" />
             <span>GitHub Repository</span>
           </a>
+
           <a
-            href="https://example.com"
-            className="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-sky-600 dark:hover:text-sky-400"
-          >
-            <Globe className="w-5 h-5" />
-            <span>Project Website</span>
-          </a>
-          <a
-            href="mailto:contact@example.com"
+            href="mailto:arindhimar.fc@gmail.com"
             className="flex items-center gap-2 text-gray-700 dark:text-gray-300 hover:text-sky-600 dark:hover:text-sky-400"
           >
             <Mail className="w-5 h-5" />
