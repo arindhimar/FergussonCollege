@@ -1,0 +1,1 @@
+print("Lol!!kya dekh raha hai re??!!")

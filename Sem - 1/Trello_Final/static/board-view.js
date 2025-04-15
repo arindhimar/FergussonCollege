@@ -1,6 +1,12 @@
 // Drag and Drop Functionality for Tasks
 let draggedTask = null
 
+// Add a function to handle API errors more gracefully
+function handleApiError(error, message) {
+  console.error("Error:", error)
+  showFlashMessage(message || "An error occurred. Please try again.", "error")
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   // Initialize drag and drop for all task cards
   initDragAndDrop()
@@ -90,5 +96,30 @@ document.addEventListener("DOMContentLoaded", () => {
       }, 500)
     }, 2000)
   }
-})
 
+  // Modify the edit task button event listener to handle errors better
+  document.querySelectorAll(".edit-task-btn").forEach((button) => {
+    button.addEventListener("click", async () => {
+      const taskId = button.dataset.taskId
+
+      try {
+        // Show loading indicator
+        showFlashMessage("Loading task data...", "info")
+
+        // Fetch task data
+        const response = await fetch(`/api/tasks/${taskId}`)
+        if (!response.ok) {
+          const errorText = await response.text()
+          throw new Error(`Failed to fetch task data: ${errorText}`)
+        }
+
+        const task = await response.json()
+
+        // Create a form for editing
+        // Rest of the code remains the same...
+      } catch (error) {
+        handleApiError(error, "Failed to load task data. Please try again.")
+      }
+    })
+  })
+})

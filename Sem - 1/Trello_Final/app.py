@@ -5,6 +5,12 @@ from datetime import datetime
 from enum import Enum
 import os
 from werkzeug.utils import secure_filename
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from apscheduler.schedulers.background import BackgroundScheduler
+from datetime import timedelta
+import atexit
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'IaB8kqagM3TeF6pUP9jw9bH9FZPbj3ml'
@@ -12,6 +18,15 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:root@localhost/tre
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max upload size
+
+
+# SMTP Configuration
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'  # Example for Gmail
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = 'alvfcoc@gmail.com'
+app.config['MAIL_PASSWORD'] = 'owjz jode vsjb kgdn'
+app.config['MAIL_DEFAULT_SENDER'] = 'alvfcoc@gmail.com'
 
 # Ensure upload directory exists
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
@@ -146,6 +161,98 @@ class TaskAssignee(db.Model):
     
     task = db.relationship('Task', backref='assignees_rel')
     user = db.relationship('User')
+
+
+# Email Utility Functions
+def send_email(to, subject, body_html, body_text=None):
+    try:
+        msg = MIMEMultipart('alternative')
+        msg['Subject'] = subject
+        msg['From'] = app.config['MAIL_DEFAULT_SENDER']
+        msg['To'] = to
+
+        part1 = MIMEText(body_text, 'plain') if body_text else None
+        part2 = MIMEText(body_html, 'html')
+
+        if part1:
+            msg.attach(part1)
+        msg.attach(part2)
+
+        with smtplib.SMTP(app.config['MAIL_SERVER'], app.config['MAIL_PORT']) as server:
+            server.starttls()
+            server.login(app.config['MAIL_USERNAME'], app.config['MAIL_PASSWORD'])
+            server.sendmail(app.config['MAIL_DEFAULT_SENDER'], [to], msg.as_string())
+    except Exception as e:
+        app.logger.error(f"Failed to send email: {str(e)}")
+
+def send_invitation_email(invitee_email, board_name, inviter_name):
+    subject = f"You've been invited to join the board '{board_name}'"
+    html = f"""
+    <html>
+        <body>
+            <p>Hello,</p>
+            <p>{inviter_name} has invited you to join the board '{board_name}' on TaskFlow.</p>
+            <p>Please check your dashboard to accept or reject the invitation.</p>
+            <br>
+            <p>Best regards,<br>TaskFlow Team</p>
+        </body>
+    </html>
+    """
+    send_email(invitee_email, subject, html)
+
+def send_task_assignment_email(user_email, task_title, board_name, assigner_name):
+    subject = f"New task assigned: {task_title}"
+    html = f"""
+    <html>
+        <body>
+            <p>Hello,</p>
+            <p>{assigner_name} has assigned you to the task '{task_title}' in board '{board_name}'.</p>
+            <p>Please check the task details and update your progress accordingly.</p>
+            <br>
+            <p>Best regards,<br>TaskFlow Team</p>
+        </body>
+    </html>
+    """
+    send_email(user_email, subject, html)
+
+def send_deadline_reminder_email(user_email, task_title, board_name, due_date):
+    subject = f"Deadline approaching for task: {task_title}"
+    html = f"""
+    <html>
+        <body>
+            <p>Hello,</p>
+            <p>This is a reminder that the task '{task_title}' in board '{board_name}'</p>
+            <p>is due on {due_date.strftime('%Y-%m-%d %H:%M')}.</p>
+            <br>
+            <p>Best regards,<br>TaskFlow Team</p>
+        </body>
+    </html>
+    """
+    send_email(user_email, subject, html)
+    
+
+def check_deadlines():
+    with app.app_context():
+        now = datetime.utcnow()
+        upcoming = Task.query.filter(
+            Task.due_date > now,
+            Task.due_date <= now + timedelta(hours=24)
+        ).all()
+
+        for task in upcoming:
+            assignees = [task.creator]  # Add logic to get all assignees
+            if task.assignees:
+                assignees += [a.user for a in task.assignees_rel]
+            
+            for user in set(assignees):
+                send_deadline_reminder_email(
+                    user.email,
+                    task.title,
+                    task.board.name,
+                    task.due_date
+                )
+
+
 
 # Routes
 @app.route('/')
@@ -487,6 +594,8 @@ def create_task():
             if is_valid_assignee:
                 task_assignee = TaskAssignee(task_id=task.id, user_id=user_id)
                 db.session.add(task_assignee)
+                user = User.query.get(user_id)
+                send_task_assignment_email(user.email, task.title, board.name, user.username)
     
     db.session.commit()
     
@@ -546,6 +655,8 @@ def update_task(task_id):
             if is_valid_assignee:
                 task_assignee = TaskAssignee(task_id=task.id, user_id=user_id)
                 db.session.add(task_assignee)
+                user = User.query.get(user_id)
+                send_task_assignment_email(user.email, task.title, board.name, user.username)
     
     db.session.commit()
     
@@ -617,7 +728,11 @@ def get_task(task_id):
     board = Board.query.get(task.board_id)
     
     # Check if user has access to this task
-    is_member = BoardMember.query.filter_by(board_id=board.board_id, user_id=session['user_id']).first()
+    is_member = BoardMember.query.filter_by(
+        board_id=board.id,  # Corrected from board.board_id to board.id
+        user_id=session['user_id']
+    ).first()
+    
     if task.user_id != session['user_id'] and board.user_id != session['user_id'] and not is_member:
         return jsonify({'error': 'Forbidden'}), 403
     
@@ -632,7 +747,8 @@ def get_task(task_id):
         'priority': task.priority,
         'technology': task.technology
     })
-
+    
+    
 @app.route('/logout')
 def logout():
     session.pop('user_id', None)
@@ -740,7 +856,8 @@ def invite_board_member(board_id):
     
     db.session.add(invitation)
     db.session.commit()
-    
+    send_invitation_email(user.email, board.name, user.username)
+
     flash(f'Invitation sent to {user.username}', 'success')
     return redirect(url_for('manage_members', board_id=board_id))
 
@@ -1077,9 +1194,14 @@ def get_task_assignees(task_id):
     return jsonify({
         'assignees': assignees
     })
+    
+
 
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
     app.run(debug=True)
+    scheduler = BackgroundScheduler()
+    scheduler.add_job(func=check_deadlines, trigger='interval', hours=1)
+    scheduler.start()
 
