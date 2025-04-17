@@ -1,0 +1,7 @@
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\InternalCodes\.net\CustomExceptions\bin\Debug\CustomExceptions.exe.config
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\InternalCodes\.net\CustomExceptions\bin\Debug\CustomExceptions.exe
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\InternalCodes\.net\CustomExceptions\bin\Debug\CustomExceptions.pdb
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\InternalCodes\.net\CustomExceptions\obj\Debug\CustomExceptions.csproj.AssemblyReference.cache
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\InternalCodes\.net\CustomExceptions\obj\Debug\CustomExceptions.csproj.CoreCompileInputs.cache
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\InternalCodes\.net\CustomExceptions\obj\Debug\CustomExceptions.exe
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\InternalCodes\.net\CustomExceptions\obj\Debug\CustomExceptions.pdb

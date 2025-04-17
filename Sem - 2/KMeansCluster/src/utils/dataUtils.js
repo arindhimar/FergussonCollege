@@ -1,4 +1,3 @@
-// Generate random data for testing
 export const generateRandomData = (count) => {
     const data = []
   

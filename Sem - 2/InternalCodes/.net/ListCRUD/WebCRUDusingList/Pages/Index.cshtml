@@ -1,0 +1,42 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Simple CRUD";
+}
+
+<h2>Student CRUD (All in One)</h2>
+
+<form method="post">
+    <input asp-for="Student.Id" placeholder="ID" />
+    <input asp-for="Student.Name" placeholder="Name" />
+    <input asp-for="Student.Age" placeholder="Age" />
+    <button type="submit" formaction="?handler=Add">Add</button>
+    <button type="submit" formaction="?handler=Edit">Update</button>
+</form>
+
+<hr />
+<a href="c:\users\arin dhimar\documents\fergussoncollege\sem - 2\internalcodes\.net\listcrud\webcrudusinglist\pages\index.cshtml.cs">c:\users\arin dhimar\documents\fergussoncollege\sem - 2\internalcodes\.net\listcrud\webcrudusinglist\pages\index.cshtml.cs</a>
+<a href="c:\users\arin dhimar\documents\fergussoncollege\sem - 2\internalcodes\.net\listcrud\webcrudusinglist\pages\index.cshtml">c:\users\arin dhimar\documents\fergussoncollege\sem - 2\internalcodes\.net\listcrud\webcrudusinglist\pages\index.cshtml</a>
+<table>
+    <tr><th>ID</th><th>Name</th><th>Age</th><th>Actions</th></tr>
+    @foreach (var s in IndexModel.Students)
+    {
+        <tr>
+            <td>@s.Id</td>
+            <td>@s.Name</td>
+            <td>@s.Age</td>
+            <td>
+                <form method="post" style="display:inline">
+                    <input type="hidden" name="Student.Id" value="@s.Id" />
+                    <input type="hidden" name="Student.Name" value="@s.Name" />
+                    <input type="hidden" name="Student.Age" value="@s.Age" />
+                    <button type="submit" formaction="?handler=Edit">Edit</button>
+                </form>
+                <form method="post" style="display:inline">
+                    <input type="hidden" name="id" value="@s.Id" />
+                    <button type="submit" formaction="?handler=Delete">Delete</button>
+                </form>
+            </td>
+        </tr>
+    }
+</table>

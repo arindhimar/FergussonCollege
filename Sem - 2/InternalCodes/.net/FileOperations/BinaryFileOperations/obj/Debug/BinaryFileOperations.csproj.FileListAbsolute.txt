@@ -1,0 +1,7 @@
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\InternalCodes\.net\FileOperations\BinaryFileOperations\bin\Debug\BinaryFileOperations.exe.config
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\InternalCodes\.net\FileOperations\BinaryFileOperations\bin\Debug\BinaryFileOperations.exe
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\InternalCodes\.net\FileOperations\BinaryFileOperations\bin\Debug\BinaryFileOperations.pdb
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\InternalCodes\.net\FileOperations\BinaryFileOperations\obj\Debug\BinaryFileOperations.csproj.AssemblyReference.cache
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\InternalCodes\.net\FileOperations\BinaryFileOperations\obj\Debug\BinaryFileOperations.csproj.CoreCompileInputs.cache
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\InternalCodes\.net\FileOperations\BinaryFileOperations\obj\Debug\BinaryFileOperations.exe
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\InternalCodes\.net\FileOperations\BinaryFileOperations\obj\Debug\BinaryFileOperations.pdb

@@ -331,6 +331,47 @@ const KMeansExplanation = () => {
               compares to other methods to choose the right approach for your specific needs.
             </p>
 
+            {/* Emoji Clustering Comparison */}
+            <div className="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg mb-4">
+              <h4 className="font-medium text-gray-800 dark:text-gray-200 mb-2">Visual Comparison with Emoji Data:</h4>
+              <p className="text-gray-700 dark:text-gray-300 mb-3">Dataset: 🍎 🍏 🍌 🐇 🐇 🦒 🦒 🌍</p>
+              
+              <div className="grid md:grid-cols-2 gap-4">
+                <div className="bg-white dark:bg-gray-600 p-3 rounded-md">
+                  <h5 className="font-medium text-sky-600 dark:text-sky-400 mb-2">K-Means (K=3)</h5>
+                  <p className="text-sm text-gray-700 dark:text-gray-300">
+                    [🍎 🍏] [🍌] [🐇 🐇 🦒 🦒 🌍]<br/>
+                    <span className="text-xs text-red-500">Mixes animals/globes due to circular clusters</span>
+                  </p>
+                </div>
+                
+                <div className="bg-white dark:bg-gray-600 p-3 rounded-md">
+                  <h5 className="font-medium text-purple-600 dark:text-purple-400 mb-2">Hierarchical</h5>
+                  <p className="text-sm text-gray-700 dark:text-gray-300">
+                    [🍎 🍏 🍌] [🐇 🐇 🦒 🦒] [🌍]<br/>
+                    <span className="text-xs text-green-500">Shows natural groupings at different levels</span>
+                  </p>
+                </div>
+                
+                <div className="bg-white dark:bg-gray-600 p-3 rounded-md">
+                  <h5 className="font-medium text-orange-600 dark:text-orange-400 mb-2">DBSCAN</h5>
+                  <p className="text-sm text-gray-700 dark:text-gray-300">
+                    [🍎 🍏 🍌] [🐇 🐇 🦒 🦒]<br/>
+                    <span className="text-xs text-green-500">Correctly ignores outlier (🌍)</span>
+                  </p>
+                </div>
+                
+                <div className="bg-white dark:bg-gray-600 p-3 rounded-md">
+                  <h5 className="font-medium text-green-600 dark:text-green-400 mb-2">GMM</h5>
+                  <p className="text-sm text-gray-700 dark:text-gray-300">
+                    🍏: 90% Fruit, 10% Animal<br/>
+                    🦒: 70% Animal, 30% Fruit<br/>
+                    <span className="text-xs text-blue-500">Handles ambiguous cases</span>
+                  </p>
+                </div>
+              </div>
+            </div>
+
             <div className="overflow-x-auto mb-4">
               <table className="min-w-full bg-white dark:bg-gray-700 rounded-lg overflow-hidden">
                 <thead className="bg-gray-100 dark:bg-gray-600">
@@ -373,66 +414,66 @@ const KMeansExplanation = () => {
                   </tr>
                   <tr>
                     <td className="py-3 px-4 text-sm font-medium text-purple-600 dark:text-purple-400">
-                      Hierarchical Clustering
+                      Hierarchical
                     </td>
                     <td className="py-3 px-4 text-sm text-gray-700 dark:text-gray-300">
                       <ul className="list-disc list-inside">
-                        <li>No need to specify number of clusters</li>
-                        <li>Produces a dendrogram for visualization</li>
-                        <li>Can find clusters of different shapes</li>
+                        <li>No need to specify cluster count</li>
+                        <li>Visual dendrogram output</li>
+                        <li>Handles non-spherical shapes</li>
                       </ul>
                     </td>
                     <td className="py-3 px-4 text-sm text-gray-700 dark:text-gray-300">
                       <ul className="list-disc list-inside">
                         <li>Computationally expensive (O(n³))</li>
-                        <li>Not suitable for large datasets</li>
-                        <li>Can't undo previous steps</li>
+                        <li>Not scalable to large datasets</li>
+                        <li>Steps cannot be undone</li>
                       </ul>
                     </td>
                     <td className="py-3 px-4 text-sm text-gray-700 dark:text-gray-300">
-                      Smaller datasets where hierarchy visualization is valuable
+                      Small datasets where hierarchy matters
                     </td>
                   </tr>
                   <tr>
                     <td className="py-3 px-4 text-sm font-medium text-orange-600 dark:text-orange-400">DBSCAN</td>
                     <td className="py-3 px-4 text-sm text-gray-700 dark:text-gray-300">
                       <ul className="list-disc list-inside">
-                        <li>No need to specify number of clusters</li>
-                        <li>Can find arbitrarily shaped clusters</li>
+                        <li>No need to specify K</li>
+                        <li>Finds arbitrary shapes</li>
                         <li>Robust to outliers</li>
                       </ul>
                     </td>
                     <td className="py-3 px-4 text-sm text-gray-700 dark:text-gray-300">
                       <ul className="list-disc list-inside">
                         <li>Sensitive to parameter settings</li>
-                        <li>Struggles with varying density clusters</li>
-                        <li>Less efficient for high-dimensional data</li>
+                        <li>Struggles with varying densities</li>
+                        <li>Poor for high-dimensional data</li>
                       </ul>
                     </td>
                     <td className="py-3 px-4 text-sm text-gray-700 dark:text-gray-300">
-                      Datasets with noise and non-spherical clusters
+                      Noisy data with non-spherical clusters
                     </td>
                   </tr>
                   <tr>
                     <td className="py-3 px-4 text-sm font-medium text-green-600 dark:text-green-400">
-                      Gaussian Mixture Models
+                      GMM
                     </td>
                     <td className="py-3 px-4 text-sm text-gray-700 dark:text-gray-300">
                       <ul className="list-disc list-inside">
-                        <li>Soft clustering (probability of membership)</li>
-                        <li>Can find elliptical clusters</li>
+                        <li>Soft clustering (probabilities)</li>
+                        <li>Finds elliptical clusters</li>
                         <li>More flexible than K-Means</li>
                       </ul>
                     </td>
                     <td className="py-3 px-4 text-sm text-gray-700 dark:text-gray-300">
                       <ul className="list-disc list-inside">
-                        <li>More complex to implement</li>
-                        <li>Slower than K-Means</li>
-                        <li>Can overfit with insufficient data</li>
+                        <li>More complex implementation</li>
+                        <li>Slower computation</li>
+                        <li>Can overfit small datasets</li>
                       </ul>
                     </td>
                     <td className="py-3 px-4 text-sm text-gray-700 dark:text-gray-300">
-                      Overlapping clusters with varying sizes and densities
+                      Overlapping clusters with different densities
                     </td>
                   </tr>
                 </tbody>
@@ -561,4 +602,3 @@ const KMeansExplanation = () => {
 }
 
 export default KMeansExplanation
-

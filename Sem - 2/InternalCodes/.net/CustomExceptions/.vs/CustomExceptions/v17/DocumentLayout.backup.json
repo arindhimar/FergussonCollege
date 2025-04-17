@@ -1,0 +1,71 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\InternalCodes\\.net\\CustomExceptions\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{25D10598-D73A-47B6-B1C3-E4F7EAFE1EA9}|CustomExceptions.csproj|c:\\users\\arin dhimar\\documents\\fergussoncollege\\sem - 2\\internalcodes\\.net\\customexceptions\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{25D10598-D73A-47B6-B1C3-E4F7EAFE1EA9}|CustomExceptions.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{25D10598-D73A-47B6-B1C3-E4F7EAFE1EA9}|CustomExceptions.csproj|c:\\users\\arin dhimar\\documents\\fergussoncollege\\sem - 2\\internalcodes\\.net\\customexceptions\\userexception.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{25D10598-D73A-47B6-B1C3-E4F7EAFE1EA9}|CustomExceptions.csproj|solutionrelative:userexception.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{25D10598-D73A-47B6-B1C3-E4F7EAFE1EA9}|CustomExceptions.csproj|c:\\users\\arin dhimar\\documents\\fergussoncollege\\sem - 2\\internalcodes\\.net\\customexceptions\\customexceptions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{25D10598-D73A-47B6-B1C3-E4F7EAFE1EA9}|CustomExceptions.csproj|solutionrelative:customexceptions.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 2,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "UserException.cs",
+              "DocumentMoniker": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\InternalCodes\\.net\\CustomExceptions\\UserException.cs",
+              "RelativeDocumentMoniker": "UserException.cs",
+              "ToolTip": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\InternalCodes\\.net\\CustomExceptions\\UserException.cs*",
+              "RelativeToolTip": "UserException.cs*",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAoAAAAVAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-17T12:04:37.495Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "CustomExceptions.cs",
+              "DocumentMoniker": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\InternalCodes\\.net\\CustomExceptions\\CustomExceptions.cs",
+              "RelativeDocumentMoniker": "CustomExceptions.cs",
+              "ToolTip": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\InternalCodes\\.net\\CustomExceptions\\CustomExceptions.cs*",
+              "RelativeToolTip": "CustomExceptions.cs*",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABIAAAAIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-17T12:02:40.487Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\InternalCodes\\.net\\CustomExceptions\\Program.cs",
+              "RelativeDocumentMoniker": "Program.cs",
+              "ToolTip": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\InternalCodes\\.net\\CustomExceptions\\Program.cs",
+              "RelativeToolTip": "Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABEAAAAjAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-17T12:02:21.654Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

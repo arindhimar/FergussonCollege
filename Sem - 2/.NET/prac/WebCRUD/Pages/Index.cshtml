@@ -1,0 +1,28 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+<form method="post">
+    <input type="text" asp-for="Student.id" placeholder="ID" />
+    <input type="text" asp-for="Student.name" placeholder="Name" />
+    <input type="text" asp-for="Student.age" placeholder="Age" />
+    <button type="submit" formaction="?handler=Add">Add</button>
+    <button type="submit" formaction="?handler=Edit">Edit</button>
+
+</form>
+
+<h2>Student List</h2>
+@foreach (var s in IndexModel.Students)
+{
+    <p>@s.id</p>
+    <p>@s.name</p>
+    <p>@s.age</p>
+    <form method="post">
+        <input type="hidden" name="id" value="@s.id" />
+        <button type="submit" formaction="?handler=Delete">Delete</button>
+    </form>
+    
+    <br/>
+}
