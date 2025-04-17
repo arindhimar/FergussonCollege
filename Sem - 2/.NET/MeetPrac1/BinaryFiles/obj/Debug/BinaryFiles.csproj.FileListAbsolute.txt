@@ -1,0 +1,7 @@
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\MeetPrac1\BinaryFiles\obj\Debug\BinaryFiles.csproj.AssemblyReference.cache
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\MeetPrac1\BinaryFiles\obj\Debug\BinaryFiles.csproj.CoreCompileInputs.cache
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\MeetPrac1\BinaryFiles\bin\Debug\BinaryFiles.exe.config
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\MeetPrac1\BinaryFiles\bin\Debug\BinaryFiles.exe
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\MeetPrac1\BinaryFiles\bin\Debug\BinaryFiles.pdb
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\MeetPrac1\BinaryFiles\obj\Debug\BinaryFiles.exe
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\MeetPrac1\BinaryFiles\obj\Debug\BinaryFiles.pdb

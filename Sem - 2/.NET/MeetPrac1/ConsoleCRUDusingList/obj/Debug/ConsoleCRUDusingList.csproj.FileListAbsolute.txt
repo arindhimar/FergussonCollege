@@ -1,0 +1,7 @@
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\MeetPrac1\ConsoleCRUDusingList\bin\Debug\ConsoleCRUDusingList.exe.config
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\MeetPrac1\ConsoleCRUDusingList\bin\Debug\ConsoleCRUDusingList.exe
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\MeetPrac1\ConsoleCRUDusingList\bin\Debug\ConsoleCRUDusingList.pdb
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\MeetPrac1\ConsoleCRUDusingList\obj\Debug\ConsoleCRUDusingList.csproj.AssemblyReference.cache
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\MeetPrac1\ConsoleCRUDusingList\obj\Debug\ConsoleCRUDusingList.csproj.CoreCompileInputs.cache
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\MeetPrac1\ConsoleCRUDusingList\obj\Debug\ConsoleCRUDusingList.exe
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\MeetPrac1\ConsoleCRUDusingList\obj\Debug\ConsoleCRUDusingList.pdb

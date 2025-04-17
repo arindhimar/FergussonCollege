@@ -1,0 +1,71 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\MeetPrac1\\CustomException\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{928AC358-DB8F-47C9-9775-B0A47A3FDAC8}|CustomException.csproj|c:\\users\\arin dhimar\\documents\\fergussoncollege\\sem - 2\\.net\\meetprac1\\customexception\\customexec.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{928AC358-DB8F-47C9-9775-B0A47A3FDAC8}|CustomException.csproj|solutionrelative:customexec.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{928AC358-DB8F-47C9-9775-B0A47A3FDAC8}|CustomException.csproj|c:\\users\\arin dhimar\\documents\\fergussoncollege\\sem - 2\\.net\\meetprac1\\customexception\\mycus.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{928AC358-DB8F-47C9-9775-B0A47A3FDAC8}|CustomException.csproj|solutionrelative:mycus.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{928AC358-DB8F-47C9-9775-B0A47A3FDAC8}|CustomException.csproj|c:\\users\\arin dhimar\\documents\\fergussoncollege\\sem - 2\\.net\\meetprac1\\customexception\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{928AC358-DB8F-47C9-9775-B0A47A3FDAC8}|CustomException.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 0,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "CustomExec.cs",
+              "DocumentMoniker": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\MeetPrac1\\CustomException\\CustomExec.cs",
+              "RelativeDocumentMoniker": "CustomExec.cs",
+              "ToolTip": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\MeetPrac1\\CustomException\\CustomExec.cs",
+              "RelativeToolTip": "CustomExec.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAAnAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-17T17:07:15.943Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "MyCus.cs",
+              "DocumentMoniker": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\MeetPrac1\\CustomException\\MyCus.cs",
+              "RelativeDocumentMoniker": "MyCus.cs",
+              "ToolTip": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\MeetPrac1\\CustomException\\MyCus.cs",
+              "RelativeToolTip": "MyCus.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAABKAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-17T17:05:29.548Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\MeetPrac1\\CustomException\\Program.cs",
+              "RelativeDocumentMoniker": "Program.cs",
+              "ToolTip": "C:\\Users\\Arin Dhimar\\Documents\\FergussonCollege\\Sem - 2\\.NET\\MeetPrac1\\CustomException\\Program.cs",
+              "RelativeToolTip": "Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAA1AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-04-17T17:04:29.19Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
