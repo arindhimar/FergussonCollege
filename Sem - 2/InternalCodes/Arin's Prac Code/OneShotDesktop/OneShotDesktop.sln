@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35913.81 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OneShotDesktop", "OneShotDesktop.csproj", "{4D76F546-361F-4D50-AA72-41A8CC1B96B3}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4D76F546-361F-4D50-AA72-41A8CC1B96B3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D76F546-361F-4D50-AA72-41A8CC1B96B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D76F546-361F-4D50-AA72-41A8CC1B96B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D76F546-361F-4D50-AA72-41A8CC1B96B3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A29898D7-A773-4939-9137-76E1A041E790}
+	EndGlobalSection
+EndGlobal

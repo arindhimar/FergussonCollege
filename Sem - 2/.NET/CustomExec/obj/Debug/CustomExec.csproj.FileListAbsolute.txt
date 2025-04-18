@@ -1,0 +1,7 @@
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\CustomExec\bin\Debug\CustomExec.exe.config
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\CustomExec\bin\Debug\CustomExec.exe
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\CustomExec\bin\Debug\CustomExec.pdb
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\CustomExec\obj\Debug\CustomExec.csproj.AssemblyReference.cache
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\CustomExec\obj\Debug\CustomExec.csproj.CoreCompileInputs.cache
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\CustomExec\obj\Debug\CustomExec.exe
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\CustomExec\obj\Debug\CustomExec.pdb
