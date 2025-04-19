@@ -1,0 +1,7 @@
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\MeetingPrac3\Inheritance\bin\Debug\Inheritance.exe.config
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\MeetingPrac3\Inheritance\bin\Debug\Inheritance.exe
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\MeetingPrac3\Inheritance\bin\Debug\Inheritance.pdb
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\MeetingPrac3\Inheritance\obj\Debug\Inheritance.csproj.AssemblyReference.cache
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\MeetingPrac3\Inheritance\obj\Debug\Inheritance.csproj.CoreCompileInputs.cache
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\MeetingPrac3\Inheritance\obj\Debug\Inheritance.exe
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\MeetingPrac3\Inheritance\obj\Debug\Inheritance.pdb

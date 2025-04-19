@@ -1,0 +1,7 @@
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\MeetingPrac3\LINQListCRUD\bin\Debug\LINQListCRUD.exe.config
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\MeetingPrac3\LINQListCRUD\bin\Debug\LINQListCRUD.exe
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\MeetingPrac3\LINQListCRUD\bin\Debug\LINQListCRUD.pdb
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\MeetingPrac3\LINQListCRUD\obj\Debug\LINQListCRUD.csproj.AssemblyReference.cache
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\MeetingPrac3\LINQListCRUD\obj\Debug\LINQListCRUD.csproj.CoreCompileInputs.cache
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\MeetingPrac3\LINQListCRUD\obj\Debug\LINQListCRUD.exe
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\MeetingPrac3\LINQListCRUD\obj\Debug\LINQListCRUD.pdb

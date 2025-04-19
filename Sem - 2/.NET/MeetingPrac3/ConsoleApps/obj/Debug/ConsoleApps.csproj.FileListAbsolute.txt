@@ -1,0 +1,7 @@
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\MeetingPrac3\ConsoleApps\bin\Debug\ConsoleApps.exe.config
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\MeetingPrac3\ConsoleApps\bin\Debug\ConsoleApps.exe
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\MeetingPrac3\ConsoleApps\bin\Debug\ConsoleApps.pdb
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\MeetingPrac3\ConsoleApps\obj\Debug\ConsoleApps.csproj.AssemblyReference.cache
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\MeetingPrac3\ConsoleApps\obj\Debug\ConsoleApps.csproj.CoreCompileInputs.cache
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\MeetingPrac3\ConsoleApps\obj\Debug\ConsoleApps.exe
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\.NET\MeetingPrac3\ConsoleApps\obj\Debug\ConsoleApps.pdb

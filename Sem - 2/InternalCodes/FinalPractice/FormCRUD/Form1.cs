@@ -29,7 +29,10 @@ namespace FormCRUD
         {
             if(listBox1.Items.Count > 0)
             {
-                listBox1.Items.RemoveAt(listBox1.SelectedIndex);
+                if (listBox1.SelectedIndex >= 0)
+                {
+                    listBox1.Items.RemoveAt(listBox1.SelectedIndex);
+                }
             }
         }
     }
