@@ -1,0 +1,7 @@
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\InternalCodes\FinalPractice\XML\bin\Debug\XML.exe.config
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\InternalCodes\FinalPractice\XML\bin\Debug\XML.exe
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\InternalCodes\FinalPractice\XML\bin\Debug\XML.pdb
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\InternalCodes\FinalPractice\XML\obj\Debug\XML.csproj.AssemblyReference.cache
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\InternalCodes\FinalPractice\XML\obj\Debug\XML.csproj.CoreCompileInputs.cache
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\InternalCodes\FinalPractice\XML\obj\Debug\XML.exe
+C:\Users\Arin Dhimar\Documents\FergussonCollege\Sem - 2\InternalCodes\FinalPractice\XML\obj\Debug\XML.pdb
