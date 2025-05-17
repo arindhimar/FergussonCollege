@@ -1,22 +1,25 @@
 import pandas as pd
 import requests
-from urllib.parse import urlparse, parse_qs
+import re
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 def extract_file_id(drive_url):
-    if "id=" in drive_url:
-        return parse_qs(urlparse(drive_url).query).get("id", [None])[0]
-    if "/file/d/" in drive_url:
-        return drive_url.split("/file/d/")[1].split("/")[0]
-    if "/document/d/" in drive_url:
-        return drive_url.split("/document/d/")[1].split("/")[0]
+    """
+    Extracts the Google Drive or Docs file ID from the URL.
+    Handles formats:
+      - https://drive.google.com/file/d/<ID>/
+      - https://docs.google.com/document/d/<ID>/
+      - https://...id=<ID>
+    """
+    m = re.search(r'/[a-zA-Z]+/d/([^/?&]+)', drive_url)
+    if m:
+        return m.group(1)
+    m = re.search(r'[?&]id=([^&]+)', drive_url)
+    if m:
+        return m.group(1)
     return None
 
 def check_link(name, url, session, timeout=10):
-    """
-    Returns (name, ok, msg, url) for a single link check.
-    Uses HEAD for Drive files, GET for Docs.
-    """
     if not isinstance(url, str) or not url.startswith("http"):
         return name, False, "No URL", url
 
@@ -24,7 +27,7 @@ def check_link(name, url, session, timeout=10):
     if not file_id:
         return name, False, "Invalid URL", url
 
-    # choose method/endpoint
+    # Determine appropriate method and URL
     if "docs.google.com/document" in url:
         method, check_url = session.get, url
     else:
@@ -37,63 +40,62 @@ def check_link(name, url, session, timeout=10):
 
     final = resp.url
     status = resp.status_code
+    body = resp.text.lower() if method == session.get else ""
 
-    # quick login/permission gates from headers and URL
-    if "accounts.google.com" in final or "ServiceLogin" in final:
+    # Handle known permission issues
+    if "accounts.google.com" in final or "servicelogin" in final:
         return name, False, "Login required", url
-    if status in (403, ):
+    if status == 403:
         return name, False, "Forbidden (403)", url
-    if status in (404, ):
+    if status == 404:
         return name, False, "Not Found (404)", url
-    # treat 200/302/303 as public
+    if method == session.get and any(kw in body for kw in ("you need permission", "access denied", "request access")):
+        return name, False, "Permission denied", url
     if status in (200, 302, 303):
         return name, True, "Public", url
 
     return name, False, f"HTTP {status}", url
 
 if __name__ == "__main__":
-    excel_path  = "Students-Registration-For-Placement-Drives.xlsx"
-    sheet_name  = "CS"
-    name_idx    = 1
-    url_idx     = 12
-    max_workers = 10   # tune this to your bandwidth/CPU
+    # Configuration
+    excel_path = "Students-Registration-For-Placement-Drives.xlsx"
+    sheet_name = "CS"
+    name_col = 1   # Column B (0-indexed)
+    url_col = 12   # Column M (0-indexed)
+    max_workers = 12
 
-    # load sheet
-    df = pd.read_excel(
-        excel_path, sheet_name=sheet_name,
-        skiprows=[0], header=None, engine="openpyxl"
-    )
-    names = df[name_idx].astype(str).tolist()
-    urls  = df[url_idx].astype(str).tolist()
+    # Load with pandas
+    df = pd.read_excel(excel_path, sheet_name=sheet_name, header=None, skiprows=[0], engine="openpyxl")
 
-    # prepare session
+    # Filter out rows with both name and url missing
+    df_filtered = df[[name_col, url_col]].dropna(how="all")
+
+    names = df_filtered[name_col].astype(str).str.strip().tolist()
+    urls  = df_filtered[url_col].astype(str).str.strip().tolist()
+
     session = requests.Session()
     session.headers.update({"User-Agent": "DriveLinkChecker/1.0"})
 
-    # parallel check
     results = []
-    with ThreadPoolExecutor(max_workers=max_workers) as exe:
-        futures = [
-            exe.submit(check_link, name, url, session)
-            for name, url in zip(names, urls)
-        ]
-        for fut in as_completed(futures):
-            results.append(fut.result())
+    with ThreadPoolExecutor(max_workers=max_workers) as executor:
+        futures = [executor.submit(check_link, n, u, session) for n, u in zip(names, urls)]
+        for future in as_completed(futures):
+            results.append(future.result())
 
-    # print
-    print(f"{'Name':<30s} | {'OK':<2s} | {'Status':<16s} | URL")
-    print("-" * 100)
-    inaccessible = []
+    # Display results
+    print(f"{'Name':<30} | {'OK':<2} | {'Status':<18} | URL")
+    print("-" * 110)
+    failures = []
     for name, ok, msg, url in results:
         mark = "✅" if ok else "❌"
-        print(f"{name:<30s} | {mark:<2s} | {msg:<16s} | {url}")
+        print(f"{name:<30} | {mark:<2} | {msg:<18} | {url}")
         if not ok:
-            inaccessible.append((name, msg))
+            failures.append((name, msg))
 
-    # summary
-    if inaccessible:
+    # Summary
+    if failures:
         print("\nStudents with inaccessible links:")
-        for name, reason in inaccessible:
+        for name, reason in failures:
             print(f"  {name} → {reason}")
     else:
-        print("\nAll links are publicly accessible!")
+        print("\n✅ All links are publicly accessible!")
