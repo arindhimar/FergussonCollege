@@ -1,0 +1,20 @@
+{
+  "search_keyword": "hot wheels",
+  "pages_to_scan": 5,
+  "price_thresholds": {
+    "mainline": 179,
+    "silver": 299,
+    "premium": 549
+  },
+  "price_tolerance": 20,
+  "notification": {
+    "method": "telegram",
+    "telegram": {
+      "bot_token": "YOUR_TELEGRAM_BOT_TOKEN",
+      "chat_id": "YOUR_CHAT_ID"
+    }
+  },
+  "filters": {
+    "include_out_of_stock": false
+  }
+}
