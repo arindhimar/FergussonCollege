@@ -1,0 +1,56 @@
+Absolutely! Here's a breakdown of **easy**, **medium**, and **hard** interview questions\*\* based on your **Swar Setu – Bridge of Words** project:
+
+---
+
+### ✅ EASY QUESTIONS
+
+These test your understanding of what you built and why:
+
+1. **What is Swar Setu and what problem does it solve?**
+2. **What technologies did you use in this project?**
+3. **How do users interact with the platform?**
+4. **What are the different user roles in Swar Setu?**
+5. **How do users upload books?**
+6. **Which languages are supported for translation and TTS?**
+7. **What is the purpose of the Bhashini API in your project?**
+8. **Can users read and listen to the books?**
+9. **What is the role of the publisher in your system?**
+10. **How long did it take to complete the project?**
+
+---
+
+### 🧠 MEDIUM QUESTIONS
+
+These require understanding of backend/frontend architecture, feature design, and technical challenges:
+
+1. **How does the book translation and audio generation pipeline work?**
+2. **How did you integrate the Bhashini API for translation and TTS?**
+3. **How did you implement voice command support in the UI?**
+4. **What database structure did you design for storing books and their categories?**
+5. **How does the role-based access control (RBAC) work in your app?**
+6. **What steps did you take to make the UI accessible for visually impaired users?**
+7. **How are uploaded files (PDFs, covers, audios) stored and retrieved?**
+8. **What happens if a translation or TTS conversion fails?**
+9. **How did you handle secure authentication in your platform?**
+10. **How did your team divide the work during development?**
+
+---
+
+### 🔥 HARD QUESTIONS
+
+These test your ability to solve edge cases, think about scalability, and handle real-world deployment:
+
+1. **How would you scale Swar Setu to handle thousands of users and files?**
+2. **How would you make TTS more natural, especially for regional accents?**
+3. **If the Bhashini API becomes unavailable, how would you handle fallback gracefully?**
+4. **How would you make the platform work offline for remote schools with limited internet?**
+5. **How would you test accessibility features for non-visual users effectively?**
+6. **What would you change in your architecture if you were to make Swar Setu a SaaS platform for NGOs?**
+7. **How would you handle copyright and moderation issues for user-uploaded books?**
+8. **How can AI improve book recommendations for visually impaired readers?**
+9. **How would you optimize PDF-to-audio generation for large books or slow devices?**
+10. **What are some ethical considerations when handling content for vulnerable users like blind students?**
+
+---
+
+Would you like **model answers** for each difficulty level or suggestions for **live demo talking points** during interviews?

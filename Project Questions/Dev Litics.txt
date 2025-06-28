@@ -1,0 +1,74 @@
+If you’ve added **Dev-Litics** to your resume or portfolio, interviewers may ask questions across various levels — from basic conceptual understanding to deep architectural and technical challenges. Below are **categorized questions** along with **sample answers and intent** behind each:
+
+---
+
+### ✅ **Easy Level Questions**
+
+1. **What is Dev-Litics and why did you build it?**
+   *Intent:* Test clarity and purpose.
+   **Answer:**
+   Dev-Litics is an AI-powered IDE extension and dashboard platform that tracks real coding activity—like time spent, languages used, and projects worked on. We built it to solve the problem of fake resume data and help recruiters, students, and teachers get real insights into developer productivity.
+
+2. **How does the IDE extension track coding time?**
+   *Intent:* Understand tracking mechanism.
+   **Answer:**
+   It uses event listeners for file edits and keystrokes. If there is no interaction for 3–4 seconds, it pauses the timer. It records start-stop timestamps, language based on file type, and project folders to log activity accurately.
+
+3. **What technologies did you use in this project?**
+   *Intent:* Evaluate tech stack knowledge.
+   **Answer:**
+   We used TypeScript for the VS Code extension, React for the dashboard, Clerk for auth, FastAPI for the backend, and GPT-based summarization models for AI functionality.
+
+---
+
+### 🔁 **Medium Level Questions**
+
+4. **How is fake resume detection actually achieved through Dev-Litics?**
+   *Intent:* Validate problem-solution fit.
+   **Answer:**
+   Instead of relying on self-declared skills, we use real-time tracked data—like hours coded, languages used, and project history. This data forms a verifiable timeline that HRs can use to compare with resume claims.
+
+5. **How does the AI summarize commits?**
+   *Intent:* Test your NLP and AI pipeline understanding.
+   **Answer:**
+   We fetch commit messages via Git APIs, preprocess them (grouping by time window), and feed them into an LLM-based summarizer (like GPT). It then generates a human-readable summary suitable for platforms like LinkedIn or X.
+
+6. **How do you ensure privacy and security of user data?**
+   *Intent:* Check data handling awareness.
+   **Answer:**
+   All data is tracked in-memory and stored securely with encrypted identifiers. Users have full control over what gets shared. OAuth2 is used for Git/social auth, and Clerk handles session/token security.
+
+---
+
+### 🔍 **Hard Level Questions**
+
+7. **How would you scale Dev-Litics for thousands of concurrent users?**
+   *Intent:* Judge system design and scalability.
+   **Answer:**
+   We’d decouple tracking, summarization, and analytics into microservices. Use Kafka or Redis streams for async event handling, and deploy the summarizer separately with queues (e.g., Celery + RabbitMQ). We’d use PostgreSQL with read replicas or switch to time-series DBs for efficient analytics.
+
+8. **What challenges did you face while implementing real-time coding activity tracking?**
+   *Intent:* Test debugging, system design, and edge-case handling.
+   **Answer:**
+   One major challenge was differentiating between "idle but focused" and "actually inactive" time. Also, tracking across multiple files/projects required a dynamic project mapping system. We handled these using file watchers, debounce mechanisms, and smart idle-time cutoffs.
+
+9. **How would you prevent users from faking activity (e.g., auto-scripts that simulate keystrokes)?**
+   *Intent:* Push your solution against edge threats.
+   **Answer:**
+   We can use anomaly detection via ML to flag unnatural patterns like perfect 8-hour streaks or evenly spaced commits. Additionally, we can track real interaction types (like typing speed variance, frequent alt-tabbing) to validate true activity.
+
+---
+
+### 💡 Bonus Questions
+
+10. **How is your project different from existing productivity tools like WakaTime?**
+    *Answer:*
+    Unlike passive trackers, Dev-Litics connects with **HR dashboards, resume verification, and AI-driven social summaries**—which makes it suitable not just for personal productivity but for **career validation and recruitment.**
+
+11. **If you were to productize this tomorrow, what would be your business model?**
+    *Answer:*
+    Freemium for individuals, paid analytics for colleges and companies, and a paid resume verification badge for job seekers.
+
+---
+
+Would you like mock answers for these too or help in converting them into a presentation format or flashcards for prep?

@@ -1,0 +1,62 @@
+Here’s a categorized list of **interview questions** that can be asked if you’ve added your **AnimeX (Anime Streaming Platform)** project to your resume — including **easy, medium, and hard-level** questions, tailored for both backend and full-stack perspectives:
+
+---
+
+### ✅ **Easy-Level Questions**
+
+1. **What is AnimeX and what features does it provide?**
+   *Answer tip*: Briefly explain that it’s a full-stack streaming platform with HLS video delivery, episode uploads, genre management, etc.
+
+2. **Which technologies did you use in AnimeX?**
+   *Answer*: React, Tailwind CSS, Flask, MySQL, FFmpeg, JQuery, Bootstrap.
+
+3. **How does HLS work in your project?**
+   *Answer*: HLS (HTTP Live Streaming) is used for adaptive video streaming. I used FFmpeg to convert uploaded video files into segmented `.ts` chunks and an `.m3u8` playlist, which can then be streamed efficiently.
+
+4. **What database did you use and why?**
+   *Answer*: MySQL – it provides reliable relational storage and integrates well with Flask and structured episode/genre schemas.
+
+5. **What is FFmpeg and how did you use it?**
+   *Answer*: FFmpeg is a multimedia framework. I used it to convert uploaded video files to HLS format in a background thread.
+
+---
+
+### 🟨 **Medium-Level Questions**
+
+6. **Explain how the episode upload and processing system works.**
+   *Answer*: The user uploads a video via a form, which is saved, and then background processing using Python threads converts it to HLS format. The final `.m3u8` URL is saved in the DB for streaming.
+
+7. **How did you ensure that uploads don’t block the server?**
+   *Answer*: I used Python’s `ThreadPoolExecutor` to offload the FFmpeg processing task, allowing the Flask app to remain responsive.
+
+8. **How is your file system structured for uploads?**
+   *Answer*: Each upload is saved in a UUID-named subdirectory inside an `uploads/` folder. The folder contains the raw video and generated HLS segments and playlist.
+
+9. **How did you secure file uploads?**
+   *Answer*: By validating file extensions (e.g., `.mp4`, `.mkv`) before saving and generating safe, unique folder structures. I also used `secure_filename` from Werkzeug.
+
+10. **How does genre management work?**
+    *Answer*: Genres can be created, updated inline, searched, and deleted via AJAX + Flask APIs. Genre info is stored in a `genres` table linked to anime.
+
+---
+
+### 🔴 **Hard-Level Questions**
+
+11. **How would you scale AnimeX for thousands of concurrent users streaming videos?**
+    *Answer*: Use a CDN to serve HLS segments, offload static assets, move the FFmpeg queue to a distributed system like Celery + Redis, and migrate from local uploads to S3 or similar.
+
+12. **What would you do differently to improve performance and reliability?**
+    *Answer*: Introduce retry logic for failed FFmpeg tasks, store video metadata in Redis for quick access, async upload status notifications, database normalization, and role-based access control.
+
+13. **Explain the queue system you implemented and alternatives.**
+    *Answer*: I used `ThreadPoolExecutor` for background processing. For production, I would switch to Celery with Redis for better task scheduling, retry mechanisms, and scalability.
+
+14. **How does your project ensure that either all processing happens or nothing is stored?**
+    *Answer*: It uses try-except blocks to rollback (or not insert into DB) if FFmpeg fails. To improve, I would add a database transaction or use temporary directories until processing succeeds.
+
+15. **How do you prevent broken videos or partial uploads from being streamed?**
+    *Answer*: By only saving the `.m3u8` link in the database after successful FFmpeg processing. No reference is made to the episode unless the full job succeeds.
+
+---
+
+Let me know if you’d like tailored **answers** for any of the above, or if you're expecting **HR-focused questions** too!
