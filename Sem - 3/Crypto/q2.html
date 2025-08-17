@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modified Caesar Cipher</title>
+    <script>
+        function cipher(input, key) {
+            let result = "";
+            let shift = Number(key);
+            for (let i = 0; i < input.length; i++) {
+                let code = input.charCodeAt(i);
+                result += String.fromCharCode((code + shift) % 256);
+            }
+            return result;
+        }
+
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const input = document.getElementById("inputField");
+            const key = document.getElementById("keyField");
+            const output = document.getElementById("outputField");
+
+            function update() {
+                output.textContent = cipher(input.value, key.value);
+            }
+
+            input.addEventListener("input", update);
+            key.addEventListener("input", update);
+        });
+    </script>
+</head>
+
+<body>
+    <div>
+        <input type="text" id="inputField">
+        <input type="text" id="keyField" value="0">
+        <p id="outputField"></p>
+    </div>
+</body>
+
+</html>
