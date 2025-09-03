@@ -1,0 +1,19 @@
+HTTrack3.49-2+htsswf+htsjava launched on Sun, 20 Jul 2025 19:08:46 at https://livestudent.deccansociety.org/ +*.png +*.gif +*.jpg +*.jpeg +*.css +*.js -ad.doubleclick.net/* -mime:application/foobar
+(winhttrack -qwC2%Ps2u1%s%uN0%I0p3DaK0H0%kf2A25000%f#f -F "Mozilla/4.5 (compatible; HTTrack 3.0x; Windows 98)" -%F "<!-- Mirrored from %s%s by HTTrack Website Copier/3.x [XR&CO'2014], %s -->" -%l "en, *" https://livestudent.deccansociety.org/ -O1 "C:\My Web Sites\FC" +*.png +*.gif +*.jpg +*.jpeg +*.css +*.js -ad.doubleclick.net/* -mime:application/foobar )
+
+Information, Warnings and Errors reported for this mirror:
+note:	the hts-log.txt file, and hts-cache folder, may contain sensitive information,
+	such as username/password authentication for websites mirrored in this project
+	do not share these files/folders if you want these information to remain private
+
+19:08:50	Error: 	"Not Found" (404) at link https://livestudent.deccansociety.org/images/apple-touch-icon.png (from https://livestudent.deccansociety.org/)
+19:09:06	Warning: 	Found for https://livestudent.deccansociety.org/StudentPortalDashboard/Index/
+19:09:06	Warning: 	File has moved from https://livestudent.deccansociety.org/StudentPortalDashboard/Index/ to /StudentLogin/Index
+19:09:07	Error: 	"Not Found" (404) at link https://livestudent.deccansociety.org/img/ajax-loader1.gif (from https://livestudent.deccansociety.org/Layout/Css?v=wDEjzd_poEWqekwE5F-RV5Q06b_ThGP0pMUDPEYUqZY1)
+19:09:07	Error: 	"Not Found" (404) at link https://livestudent.deccansociety.org/img/blur-background09.jpg (from https://livestudent.deccansociety.org/Layout/Css?v=wDEjzd_poEWqekwE5F-RV5Q06b_ThGP0pMUDPEYUqZY1)
+19:09:07	Error: 	"Not Found" (404) at link https://livestudent.deccansociety.org/Layout/iCheck/minimal/minimal.png (from https://livestudent.deccansociety.org/Layout/Css?v=wDEjzd_poEWqekwE5F-RV5Q06b_ThGP0pMUDPEYUqZY1)
+19:09:07	Error: 	"Not Found" (404) at link https://livestudent.deccansociety.org/Layout/iCheck/minimal/minimal@2x.png (from https://livestudent.deccansociety.org/Layout/Css?v=wDEjzd_poEWqekwE5F-RV5Q06b_ThGP0pMUDPEYUqZY1)
+19:09:07	Error: 	"Not Found" (404) at link https://livestudent.deccansociety.org/StudentLogin/images/apple-touch-icon.png (from https://livestudent.deccansociety.org/StudentLogin/Index)
+
+HTTrack Website Copier/3.49-2 mirror complete in 21 seconds : 60 links scanned, 52 files written (5041435 bytes overall) [3820490 bytes received at 181928 bytes/sec], 1747506 bytes transferred using HTTP compression in 22 files, ratio 28%, 1.0 requests per connection
+(6 errors, 2 warnings, 0 messages)

@@ -1,0 +1,21 @@
+{% if (todo==null) %}
+
+<form action="/add" method="POST">
+    <input type="text" name="title"><br>
+    <input type="text" name="desc"><br>
+    <input type="submit" value="Add">
+</form>
+{% endif %}
+
+
+{% for todo in todos %}
+<p>Title = {{todo[1]}}, desc = {{todo[2]}} | <a href="/delete/{{todo[0]}}">Delete</a> | <a href="/edit/{{todo[0]}}">Edit</a></p>
+{% endfor %}
+
+{% if (todo) %}
+<form method="POST">
+    <input type="text" name="title" value="{{todo[1]}}"><br>
+    <input type="text" name="desc" value="{{todo[2]}}"><br>
+    <input type="submit" value="Edit">
+</form>
+{% endif %}

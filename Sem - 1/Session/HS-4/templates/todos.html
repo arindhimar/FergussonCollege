@@ -1,0 +1,7 @@
+{% for todo in todos %}
+  <div>
+    <h3>{{ todo[1] }}, {{ todo[2] }}</h3>
+    <a href="/todos/{{ todo[0] }}/edit">Edit</a>
+    <a href="/todos/{{ todo[0] }}/delete">Delete</a>
+  </div>
+{% endfor %}

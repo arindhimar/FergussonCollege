@@ -6,13 +6,10 @@ def extract_file_id(drive_url):
     """
     Extracts the file or document ID from Google Drive or Docs share URLs.
     """
-    # URL pattern with id= query
     if "id=" in drive_url:
         return parse_qs(urlparse(drive_url).query).get("id", [None])[0]
-    # Drive file: /file/d/<ID>/
     if "/file/d/" in drive_url:
         return drive_url.split("/file/d/")[1].split("/")[0]
-    # Google Docs: /document/d/<ID>/
     if "/document/d/" in drive_url:
         return drive_url.split("/document/d/")[1].split("/")[0]
     return None
@@ -25,7 +22,6 @@ def is_drive_link_public(url, timeout=10):
     if not file_id:
         return False, "Invalid URL"
 
-    # Use the original URL for Docs, download endpoint for Drive files
     if "docs.google.com/document" in url:
         check_url = url
     else:
@@ -40,7 +36,6 @@ def is_drive_link_public(url, timeout=10):
     body = resp.text.lower()
     status = resp.status_code
 
-    # Check for login or permission gates
     if "accounts.google.com" in final or "serviceLogin" in final:
         return False, "Login required"
     if "you need permission" in body or "access denied" in body:
@@ -48,7 +43,6 @@ def is_drive_link_public(url, timeout=10):
     if "sign in" in body and "google.com" in final:
         return False, "Sign-in required"
 
-    # Public if we land on a Googleusercontent or Docs page without login
     if status in (200, 302, 303):
         return True, "Public"
     if status == 403:
@@ -58,13 +52,11 @@ def is_drive_link_public(url, timeout=10):
     return False, f"HTTP {status}"
 
 if __name__ == "__main__":
-    # ─── CONFIG ───
     excel_path   = "Students-Registration-For-Placement-Drives.xlsx"
     sheet_name   = "CS"
-    name_idx     = 1    # zero-based index of the Name column
-    url_col_idx  = 12   # zero-based index of the Drive/Docs URLs
+    name_idx     = 1    
+    url_col_idx  = 12   
 
-    # 1) Read sheet skipping the top descriptive row, no header
     df = pd.read_excel(
         excel_path,
         sheet_name=sheet_name,
@@ -73,11 +65,9 @@ if __name__ == "__main__":
         engine="openpyxl"
     )
 
-    # 2) Extract names and URLs
     names = df[name_idx].astype(str).tolist()
     urls  = df[url_col_idx].astype(str).tolist()
 
-    # 3) Batch-check and print by name
     inaccessible = []
     print(f"{'Name':<30s} | {'OK':<2s} | {'Status':<16s} | URL")
     print("-" * 100)
@@ -91,7 +81,6 @@ if __name__ == "__main__":
         if not ok:
             inaccessible.append((name, url, msg))
 
-    # 4) Summary by name
     if inaccessible:
         print("\nStudents with inaccessible links:")
         for name, url, reason in inaccessible:

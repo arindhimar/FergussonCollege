@@ -1,0 +1,6 @@
+# HTTrack Website Copier Cookie File
+# This file format is compatible with Netscape cookies
+livestudent.deccansociety.org	TRUE	/	FALSE	1999999999	__RequestVerificationToken	RE-NCKyrHACIpPHy2YqifX8zCHshZzVsZ-eOV415VucTp7M8hZbl_ktrc725K5zTIWWw0dOrf0O6QVcu3Wa70-WccUoF2snUu8R5ZynRGpY1
+livestudent.deccansociety.org	TRUE	/	FALSE	1999999999	ASP.NET_SessionId	mlkgwi1cgy5jvaoe2xjhv0vk
+livestudent.deccansociety.org	TRUE	/	FALSE	1999999999	SameSite	Lax
+

@@ -1,0 +1,4 @@
+<a href="/add">Add</a>
+{% for todo in todos %}
+    <p>{{todo[1]}},{{todo[2]}}|<a href="/edit/{{todo[0]}}">Edit</a>|<a href="/delete/{{todo[0]}}">Delete</a></p>
+{% endfor %}

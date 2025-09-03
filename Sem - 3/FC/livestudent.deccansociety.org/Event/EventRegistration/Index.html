@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<!-- Mirrored from livestudent.deccansociety.org/Event/EventRegistration/Index by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 20 Jul 2025 13:38:53 GMT -->
+<!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
+<head>
+    
+    <title>Event Registration</title>
+    <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
+    <link href="../../Main2/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="../../Main2/css/timeout-dialog.css" rel="stylesheet" />
+    <link href="../../Layout/Csscf50.css?v=wDEjzd_poEWqekwE5F-RV5Q06b_ThGP0pMUDPEYUqZY1" rel="stylesheet"/>
+
+    
+    <style>
+        .submenuss {
+            margin-left: 12px;
+        }
+
+        .label {
+            margin-top: 2px;
+        }
+
+        .menu-back > a:hover, .menu-back > a:focus {
+            background-color: #444 !important;
+        }
+
+        #imgLogo {
+            margin-left: 45px;
+        }
+    </style>
+</head>
+<body class="skin-black" oncontextmenu="return false;">
+    <!-- header logo: style can be found in header.less -->
+    <header class="header">
+        <a href="../../StudentPortalDashboard/Index/index.html" class="logo">
+            <!-- Add the class icon to your logo image or logo icon to add the margining -->
+            
+        </a>
+        <!-- Header Navbar: style can be found in header.less -->
+        <nav class="navbar navbar-static-top" role="navigation">
+            <!-- Sidebar toggle button-->
+            
+            
+            <div class="navbar-left">
+                <ul class="nav navbar-nav" id="navMenu">
+                </ul>
+            </div>
+            <div class="navbar-right">
+                <ul class="nav navbar-nav">
+                    
+                    <li class="dropdown messages-menu">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="Click here to exit" onclick="logout();">
+                            <i class="fa  fa-sign-out"></i>&nbsp; Exit
+                        </a>
+                        
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <div class="wrapper row-offcanvas row-offcanvas-left">
+        <!-- Left side column. contains the logo and sidebar -->
+        <aside class="left-side sidebar-offcanvas">
+            <!-- sidebar: style can be found in sidebar.less -->
+            <section class="sidebar">
+                <!-- Sidebar user panel -->
+                <div class="user-panel">
+
+                    <div class="pull-left info">
+
+                    </div>
+                </div>
+
+                <!-- /.search form -->
+                <!-- sidebar menu: : style can be found in sidebar.less -->
+               
+            </section>
+            <!-- /.sidebar -->
+        </aside>
+
+        <!-- Right side column. Contains the navbar and content of the page -->
+        <aside class="right-side">
+            <!-- Content Header (Page header) -->
+            <script type="text/javascript">
+              
+            </script>
+
+            <!-- Main content -->
+            <section class="content">
+                <input type="hidden" id="hdnSessionTimeOut" value="90" />
+                
+                
+<link rel="stylesheet" href="../../../cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
+<link href="../../Content/datepicker/css/bootstrap-datetimepicker.css" rel="stylesheet" />
+<style type="text/css">
+    body {
+        font-family: "Lucida Grande",Helvetica,Arial,Verdana,sans-serif;
+        font-size: 14px;
+    }
+
+    h2 {
+        font-size: 24px !important;
+    }
+
+    #calendar {
+        max-width: 900px;
+        margin: 0 auto;
+    }
+    /*body
+    {
+        font-family: Calibri;
+        background-color: #f0f0f0;
+    }
+
+    #demo-1
+    {
+        width: 110%;
+        margin: 2em auto 0 auto;
+        max-width: 40em;
+        border: 1px solid #666;
+    }*/
+    .fc-event {
+        width: 60px;
+        float: right;
+    }
+
+    .fc-sun {
+        color: red;
+    }
+
+    .monthly-event-indicator {
+        width: 20px !important;
+        float: right;
+    }
+</style>
+
+<div class="modal fade" id="preview" tabindex="-1" role="dialog" aria-labelledby="myModalLabel1" aria-hidden="true">
+    <div class="modal-dialog modal-lg" style="width: 750px">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title" id="myModalLabel1">Preview</h4>
+            </div>
+            <div class="modal-body" style="height: 600px">
+
+                <iframe width='700' height='600' cellspacing="0" scrolling="yes"
+                    marginwidth="0" marginheight="0" id="urIframe1" frameborder='10'  style="overflow-x:scroll;overflow-y:scroll;"></iframe>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<div class="row">
+    <div class="col-sm-12">
+        <div class="myAlert-fullscreen alert" id="divAlter">
+            <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+            <strong style="font-size: larger" id="StrmMsg">!</strong>
+        </div>
+    </div>
+    <div class="col-md-12">
+        <div class="panel panel-info">
+            <div class="panel-heading">Event Registration</div>
+            <div class="panel-body">
+                <div id="divRegistration" style="display:none">
+                    <div class="col-md-6">
+                        <div class="form-horizontal">
+                            <div class="form-group">
+                                <div class="col-sm-4 form-label">First Name<span style="color: #FF0000; font-weight: bold;">*</span></div>
+                                <div class="col-sm-8">
+                                    <input id="txtFirstName" class="form-control" placeholder="Enter First Name" maxlength="256" tabindex="2"  readonly/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-4 form-label">
+                                    Middle Name
+                                </div>
+                                <div class="col-sm-8">
+                                    <input id="txtMiddleName" class="form-control" placeholder="Enter Middle Name" maxlength="256" tabindex="3" readonly/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-4 form-label">Last Name<span style="color: #FF0000; font-weight: bold;">*</span></div>
+                                <div class="col-sm-8">
+                                    <input id="txtLastName" class="form-control" placeholder="Enter Last Name" maxlength="256" tabindex="4" readonly/>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-sm-4 form-label">Mobile<span style="color: #FF0000; font-weight: bold;">*</span></div>
+                                <div class="col-sm-8">
+                                    <div class="input-group">
+                                        <input id="txtMobile" class="form-control" placeholder="Enter Mobile Number" maxlength="10" tabindex="5" onkeypress="return CheckInteger(event,this)" />
+                                        <span class="input-group-addon"><span class="fa fa-mobile-phone"></span></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="col-sm-4 form-label">Email<span style="color: #FF0000; font-weight: bold;">*</span></div>
+                                <div class="col-sm-8">
+                                    <div class="input-group">
+
+                                        <input id="txtEmail" class="form-control" placeholder="Enter Email eg.(abc@xyz.com)" maxlength="64" tabindex="6" />
+                                        <span class="input-group-addon"><span class="fa fa-envelope"></span></span>
+                                    </div>
+
+
+
+                                </div>
+                            </div>
+                              <div class="form-group">
+                                    <div class="col-md-4 form-label">
+                                      Document
+                                        <span style="color: #FF0000; font-weight: bold">*</span>
+                                    </div>
+                                    <div class="col-sm-8">
+                                        
+                                       
+                                        <label for="image1" class="custom-file-upload" tabindex="4">
+                                         <i class="fa fa-folder-open"></i>&nbsp;Browse...
+                                        </label>
+                                        <input id="image1" class="fileUplode" tabindex="5" name='image1' type="file" style="display: none;">
+                                        <label id="file-name"></label>
+                                       
+                                         <input type="hidden" id="hdnFileName" name="hdnFileName" />
+                                         <input type="hidden" id="hdnFileSize" name="hdnFileSize" />
+                                         <input type="hidden" id="hdnFilePath" name="hdnFilePath" />
+                                        <input type="hidden" id="hdnEventDocumentId" name="hdnEventDocumentId" />
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                <div class="col-sm-4">
+                                </div>
+                                <div class="col-sm-3">
+                                    <div id="FileUpload_Preview">
+                                        <a href="#" id="imgLink" download>
+                                           
+                                            <img src="../../Images/Common/nophoto.jpg" id="imgPhoto1" width="100" height="100" style="border: solid 1px lightblue"/>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="col-sm-5" style="font-size: 12px; color: red;">
+                                    Please Select valid file(e.g. JPG,PNG,PDF)
+                                    <br />
+                                    (Max Size 200 Kb)
+                                    <br />
+                                    <br />
+                                    <span id="downloadMsg" style="display: none;" >(Click image to download the file)</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                
+                                    <div class="col-md-12">
+                                        <div class="form-horizontal" id="listDiv">
+                                        </div>
+                                    </div>
+
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6" id="pnlEventDetails" style="display:none">
+                        <div class="col-md-12">
+                            <div class="panel panel-info">
+                                <div class="panel-heading">
+                                    Event Details
+                                </div>
+                                <div class="panel-body">
+                                    <div class="col-md-12">
+                                        <div class="form-horizontal">
+                                            <div class="form-group">
+                                                <div class="col-sm-4 form-label">Event Name</div>
+                                                <div class="col-sm-8">
+                                                    <label id="lblEventName"></label>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="col-sm-4 form-label">Event Type</div>
+                                                <div class="col-sm-8">
+                                                    <label id="lblEventType"></label>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="col-sm-4 form-label">Event Date</div>
+                                                <div class="col-sm-8">
+                                                    <label id="lblEventDate"></label>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <div class="col-sm-4 form-label">Event Time</div>
+                                                <div class="col-sm-8">
+                                                    <label id="lblEvenTime"></label>
+                                                </div>
+                                            </div>
+                                            <div class="form-group">
+                                                <div class="col-sm-4 form-label">Venue</div>
+                                                <div class="col-sm-8">
+                                                    <label id="lblVenue"></label>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <div class="col-sm-4 form-label">Registration Fees</div>
+                                                <div class="col-sm-8">
+                                                    <label id="lblRegistrationFee"></label>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    
+
+                
+                        
+                        <div class="form-group">
+                            <div class="col-sm-12" style="text-align: center;">
+                                <button id="btnSubmit" class="btn btn-success"><span class="fa fa-floppy-o" aria-hidden="true">&nbsp;Submit</span></button>
+                                <button type="button" id="btnCancel" class="btn btn-warning"><span class="fa fa-ban" aria-hidden="true">&nbsp;Cancel</span></button>
+                                <input type="hidden" id="hdnEventMasterId" value="" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-12" id="divCert" style="display: block;">
+                    <br />
+                    <div class="panel panel-info">
+                        <div class="panel-heading">Active Event List <div style="float:right"><span style="color: #FF0000; font-weight: bold;">*</span>Note:Use Requery Button To know Your Payment Status</div></div>
+                        <div class="panel-body">
+
+
+                            <div class="form-horizontal">
+                                <div class="row table-responsive" style="width: 100%; margin: 0 auto;">
+                                    <table id="example" style="width: 100%;overflow-x:visible;overflow-y:visible;" class="table table-bordered dt-responsive nowrap">
+                                        <thead>
+
+                                            <tr>
+
+                                                <th style="width: 30%;" class="text-left">
+                                                    EVENT NAME
+                                                </th>
+                                                <th style="width: 20%;" class="text-left">
+                                                    ORGANISER
+                                                </th>
+                                                <th style="width: 20%;" class="text-left">
+                                                    DATE
+                                                </th>
+                                                 <th style="width: 10%;text-align:center;" >
+                                                    VIEW
+                                                </th>
+                                                <th style="width: 20%;" class="text-center">
+                                                    REGISTER FOR EVENT
+                                                </th>
+                                               
+                                                <th style="width: 20%;" class="text-center">
+                                                    DETAILS
+                                                </th>
+                                                <th style="width: 20%;" class="text-center">
+                                                    PAYMENT STATUS
+                                                </th>
+                                            </tr>
+
+                                        </thead>
+                                        <tbody id="TimeTableBody">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="myModalEvent" role="dialog">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title headingpanl">Event Details</h4>
+            </div>
+            <div class="modal-body">
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="form-group">
+
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <div class="form-horizontal">
+                                        <div class="form-group">
+                                            <div class="col-sm-4 form-label">Event Name</div>
+                                            <div class="col-sm-8">
+                                                <label id="lblEventNameDetails"></label>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-4 form-label">Event Type</div>
+                                            <div class="col-sm-8">
+                                                <label id="lblEventTypeDetails"></label>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-4 form-label">Event Date</div>
+                                            <div class="col-sm-8">
+                                                <label id="lblEventDateDetails"></label>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-sm-4 form-label">Event Time</div>
+                                            <div class="col-sm-8">
+                                                <label id="lblEvenTimeDetails"></label>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="col-sm-4 form-label">Venue</div>
+                                            <div class="col-sm-8">
+                                                <label id="lblVenueDetails"></label>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <div class="col-sm-4 form-label">Registration Fees</div>
+                                            <div class="col-sm-8">
+                                                <label id="lblRegistrationFeeDetails"></label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+
+            </section>
+            <!-- /.content -->
+        </aside>
+        <!-- /.right-side -->
+    </div>
+    <!-- ./wrapper -->
+    <script src="../../Layout/jquery3475?v=Lqw5daIPSmgr9_VoxhO71R9fzdngvQS9fg7Oc9drQE41"></script>
+
+    
+    <script src="../../../cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+    <script src="../../../cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
+    <script src="../../Content/Demo/moment.js"></script>
+    <script src="../../Content/Demo/fullcalendar.js"></script>
+    <script src="../../Content/datepicker/js/bootstrap-datetimepicker.js"></script>
+    <script src="../../Scripts/Event/EventRegistration.js"></script>
+    
+
+    <script>
+        var viewApplication = function (url) {
+            $('#urIframe1').attr('src', url);
+            $('#preview').modal('show');
+           // $('.toolbar').addClass('dispaly', 'none');
+        }
+        EventRegistration.Init();
+        function CheckInteger(evt, element) {
+            var charCode = (evt.which) ? evt.which : event.keyCode
+            if (charCode == 8) return true;
+            if ((charCode < 48 || charCode > 57))
+                return false;
+            return true;
+        }
+        function ApplyData(id) {
+            $("#hdnEventMasterId").val(id);
+            $("#divCert").css('display', 'none');
+            $("#divRegistration").css('display', 'block');
+            $("#pnlEventDetails").css('display', 'block')
+            $.ajax({
+                url: '/Event/EventRegistration/GetEventDetails',
+                type: 'Post',
+                data: { EventMasterId: id },
+                success: function (data) {
+                    if (data != null) {
+                        $("#pnlEventDetails").css("display", "block");
+                        $("#lblEventName").text(data.EventName);
+                        $("#lblEventType").text(data.EventTypeName);
+                        $("#lblEventDate").text(data.EventFromDate + " - " + data.EventToDate);
+                        $("#lblEvenTime").text(data.EventFromTime + " - " + data.EventToTime);
+                        $("#lblVenue").text(data.Venue);
+                        $("#lblRegistrationFee").text(data.Amount);
+                        EventRegistration.GetQuestionAnswer(id);
+                        if (data.StudentId != 0) {
+                            $("#txtFirstName").val(data.FirstName);
+                            $("#txtMiddleName").val(data.MiddleName);
+                            $("#txtLastName").val(data.LastName);
+                        }
+
+                    } else {
+                        alert("Event Details Not Available!")
+                        $("#hdnEventMasterId").val(0);
+                        $("#pnlEventDetails").css("display", "none");
+                        $("#divRegistration").css('display', 'none');
+                        $("#divCert").css('display', 'block');
+                        return false;
+                    }
+                }
+            })
+        }
+
+        function GetDetailsData(id) {
+            //$("#hdnEventMasterId").val(id);
+            //$("#divCert").css('display', 'none');
+            //$("#divRegistration").css('display', 'block');
+            //$("#pnlEventDetails").css('display', 'block')
+          
+            $.ajax({
+                url: '/Event/EventRegistration/GetEventDetails',
+                type: 'Post',
+                data: { EventMasterId: id },
+                success: function (data) {
+                    if (data != null) {
+                        $("#myModalEvent").modal('show');
+                        //$("#pnlEventDetails").css("display", "block");
+                        $("#lblEventNameDetails").text(data.EventName);
+                        $("#lblEventTypeDetails").text(data.EventTypeName);
+                        $("#lblEventDateDetails").text(data.EventFromDate + " - " + data.EventToDate);
+                        $("#lblEvenTimeDetails").text(data.EventFromTime + " - " + data.EventToTime);
+                        $("#lblVenueDetails").text(data.Venue);
+                        $("#lblRegistrationFeeDetails").text(data.Amount);
+
+
+                    } else {
+                        alert("Event Details Not Available!")
+                        //$("#hdnEventMasterId").val(0);
+                        //$("#pnlEventDetails").css("display", "none");
+                        //$("#divRegistration").css('display', 'none');
+                        //$("#divCert").css('display', 'block');
+                        return false;
+                    }
+                }
+            })
+        }
+        function GetRequeryData(id) {
+            debugger;
+            window.location.href = '/Event/CCAvenueRequery/Index?EventId='+ id;
+           
+        }
+    </script>
+
+    
+    
+    
+    <script src="../../Main2/JS/timeout-dialog.js"></script>
+    
+    <script type="text/javascript">
+        $(function () {
+            var fnTimeOut = function () {
+                var sessionTimeout = $('#hdnSessionTimeOut').val();
+                //alert(sessionTimeout);
+                jQuery.timeoutDialog.setupDialogTimer({
+                    timeout: sessionTimeout * 60,
+                    countdown: 60,
+                    logout_redirect_url: '/StudentPortalDashboard/ApplicationLogout',
+                    keep_alive_url: '/StudentPortalDashboard/Keepalive'
+                });
+            };
+            fnTimeOut();
+        });
+    </script>
+    <script>
+
+        function logout() {
+            if (confirm("Are you sure you want to Exit!")) {
+                window.location.href = GetLogOutUrl();
+            }
+            else {
+                return false;
+            }
+        }
+        //CheckOnlineRegistrationStatus();
+        //FY Admission Form
+        //CheckFYOnlineRegistrationStatusForm();
+        //CheckOnlineRegistrationStatusNew();
+        //CheckOnlineRegistrationStatusNewForm();
+       
+        //  CheckStudentAccessForItle();
+        $('#togglingg').click(function () {
+            $('#imgLogo').toggle('display');
+        });
+
+        if ($('#YEARNUMBER').val() == '1') {
+            if ($('#isJuniorCourse').val() == 'False') {
+                $('#admSenior').css('display', 'block');
+            }
+            else {
+                $('#admJunior').css('display', 'block');
+                $('#admJuniorReprint').css('display', 'block');
+            }
+        }
+
+       // CheckStudentAccessForItle();
+        history.pushState(null, null, document.URL);
+        window.addEventListener('popstate', function () {
+            history.pushState(null, null, document.URL);
+        });
+    </script>
+</body>
+
+<!-- Mirrored from livestudent.deccansociety.org/Event/EventRegistration/Index by HTTrack Website Copier/3.x [XR&CO'2014], Sun, 20 Jul 2025 13:39:00 GMT -->
+</html>
