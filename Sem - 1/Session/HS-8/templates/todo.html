@@ -1,0 +1,27 @@
+<h1> Todo App </h1>
+
+{% if(todo) %}
+
+<form method="POST">
+    <input type="text" name="name" value="{{todo[1]}}"><br>
+    <input type="text" name="desc" value="{{todo[2]}}"><br>
+    <input type="submit" value="Edit">
+</form>
+
+{% else %}
+
+<form action="add" method="POST">
+    <input type="text" name="name" ><br>
+    <input type="text" name="desc" ><br>
+    <input type="submit" value="add">
+</form>
+
+{% endif %}
+
+{% for todo in todos %}
+
+<ul>
+    <li> Title : {{todo[1]}} , Desc : {{todo[2]}} | <a href="/delete/{{todo[0]}}">Delete</a> | <a href="/update/{{todo[0]}}">Update</a> </li>
+</ul>
+
+{% endfor %}

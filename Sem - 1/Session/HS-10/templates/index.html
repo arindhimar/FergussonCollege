@@ -1,0 +1,30 @@
+{% if edit_todo is defined %}
+
+<form action="/edit/{{ edit_todo[0] }}" method="POST">
+    <input type="text" name="title" value="{{edit_todo[1]}}"><br>
+    <input type="text" name="desc" value="{{edit_todo[2]}}"><br>
+    <input type="submit" value="edit">
+</form>
+{% else %}
+<form action="/add" method="POST">
+    <input type="text" name="title"><br>
+    <input type="text" name="desc"><br>
+    <input type="submit" value="Add">
+</form>
+
+{% endif %}
+
+
+
+
+
+
+{% for todo in todos %}
+
+<ul>
+    <li> Title : {{todo[1]}} , Desc : {{todo[2]}} | <a href="/delete/{{todo[0]}}">Delete</a> | <a href="/edit/{{todo[0]}}">Edit</a></li>
+</ul>
+
+
+
+{% endfor %}
