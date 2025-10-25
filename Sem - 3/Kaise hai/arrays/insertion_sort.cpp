@@ -10,6 +10,11 @@ int main(){
         int curr = v[i];
         int j = i - 1;
 
+        cout<<"Iteration";
+        for (auto i : v) {
+        cout << i << " ";
+    }
+    cout<<endl;
         while (j >= 0 && v[j] > curr) {
             v[j + 1] = v[j];
             j--;
