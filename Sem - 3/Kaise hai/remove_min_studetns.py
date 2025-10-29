@@ -1,36 +1,23 @@
 heights = [6, 2, 2, 8, 6, 1, 3, 2]
 
-original = heights[:]  
-removed_indices = []
-
-n = len(heights)
+tempB = True
+l = len(heights)
 maxEle = max(heights)
-idx = heights.index(maxEle)
+lE = heights.index(maxEle)
+print("Peak Index:", lE)
 
-i = 1
-while i < idx:
-    if heights[i - 1] >= heights[i]:
-        removed_indices.append(original.index(heights[i]))
-        heights.pop(i)
-        idx -= 1
-        n -= 1
-        # don't increment i here
-    else:
-        i += 1
+leftRemovals = 0
+rightRemovals = 0
 
-i = idx + 1
-while i < len(heights):
-    if heights[i - 1] <= heights[i]:
-        removed_indices.append(original.index(heights[i]))
-        heights.pop(i)
-        n -= 1
-        # don't increment i here
-    else:
-        i += 1
+for i in range(1, lE + 1):
+    if heights[i] <= heights[i - 1]:
+        leftRemovals += 1  
+for i in range(lE + 1, l):
+    if heights[i] >= heights[i - 1]:
+        rightRemovals += 1 
+totalRemovals = leftRemovals + rightRemovals
 
-if len(heights) < 3 or idx == 0 or idx == len(heights) - 1:
+if l - totalRemovals < 3 or leftRemovals == lE or rightRemovals == (l - lE - 1):
     print("NOT POSSIBLE")
 else:
-    print("Remaining mountain:", heights)
-    print("Students removed:", len(original) - len(heights))
-    print("Indices removed:", sorted(set(removed_indices)))
+    print("Minimum to remove:", totalRemovals)
