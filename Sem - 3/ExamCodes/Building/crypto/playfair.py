@@ -30,7 +30,7 @@ mtrx.append([combined[i] for i in range(10,15) ])
 mtrx.append([combined[i] for i in range(15,20) ])
 mtrx.append([combined[i] for i in range(20,25) ])
 
-print(mtrx)
+# print(mtrx)
 
 
 pt1 = "attack"
@@ -73,4 +73,4 @@ for pair in tempL:
         encText += mtrx[r1][c2pos]
         encText += mtrx[r2][c1pos]
 
-print( encText)
+print(encText)

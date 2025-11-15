@@ -17,3 +17,6 @@ aCIbC=[min(x,y) for x,y in zip(aC,bC)]
 # print(aCIbC)
 
 print(aUbC==aCIbC)
+
+
+

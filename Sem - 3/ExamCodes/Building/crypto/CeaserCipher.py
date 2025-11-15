@@ -2,7 +2,7 @@ plainText="THis is as asjdkahs as mdbkasd ams das d asadnkasn"
 
 lowerPlainText=plainText.lower()
 
-print(lowerPlainText)
+# print(lowerPlainText)
 
 key=128
 

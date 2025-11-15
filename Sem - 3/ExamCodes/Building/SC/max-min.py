@@ -33,7 +33,7 @@ for i in range(r1):
     for j in range(c2):
         temp=[]
         for k in range(c1):
-            temp.append(min(l1[i][k], l2[k][j]))
+            temp.append(min(l1[i][k],l2[k][j]))
         row.append(max(temp))
     maxMin.append(row)
     
