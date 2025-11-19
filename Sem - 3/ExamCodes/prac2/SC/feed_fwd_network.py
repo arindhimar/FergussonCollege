@@ -1,8 +1,8 @@
 def f(net):
-    if net>0:
-        return 0
-    else: 
+    if net>=1:
         return 1
+    else: 
+        return 0
 
 w1=w2=w3=w4=w5=w6=w7=w8=0.2
 

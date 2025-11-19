@@ -6,6 +6,7 @@ enc={}
 
 for i in key:
     enc[i]=""
+    
 
 j=0
 

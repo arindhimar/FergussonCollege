@@ -9,7 +9,7 @@ for i in range(k):
     enc[i]=""
     
 
-print(enc)
+# print(enc)
 
 j=0
 for ch in pt:
